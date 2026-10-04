@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechLink — Accueil Client (Responsive)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+  :root {
+    --primary: #7C3AED;
+    --primary-dark: #6D28D9;
+    --primary-light: #F5F3FF;
+    --success: #16A34A;
+    --warning: #F59E0B;
+    --error: #DC2626;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --background: #F9FAFB;
+    --surface: #FFFFFF;
+    --border: #E5E7EB;
+    --technician-color: #0891B2;
+    --radius: 16px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+    --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #E5E7EB;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 60px;
+    padding: 40px;
+    min-height: 100vh;
+  }
+
+  /* ─── LABELS ─── */
+  .label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 16px;
+  }
+
+  /* ─── MOBILE FRAME ─── */
+  .mobile-wrapper { display: flex; flex-direction: column; align-items: center; }
+  .mobile {
+    width: 375px;
+    height: 812px;
+    background: var(--background);
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .mobile .status-bar {
+    height: 44px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .mobile .notch {
+    width: 120px;
+    height: 28px;
+    background: #111;
+    border-radius: 0 0 18px 18px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+  }
+
+  /* ─── WEB FRAME ─── */
+  .web-wrapper { display: flex; flex-direction: column; align-items: center; }
+  .web {
+    width: 820px;
+    height: 812px;
+    background: var(--background);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+  }
+  .web .browser-bar {
+    height: 40px;
+    background: #F3F4F6;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+  }
+  .web .browser-bar .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .web .browser-bar .dot.r { background: #FF5F57; }
+  .web .browser-bar .dot.y { background: #FDBC40; }
+  .web .browser-bar .dot.g { background: #28C840; }
+  .web .browser-bar .url {
+    flex: 1;
+    margin-left: 12px;
+    height: 26px;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  /* ─── APP CONTENT ─── */
+  .app-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .web .app-content {
+    max-width: 560px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 40px;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--surface);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .avatar {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 18px;
+  }
+  .greeting { font-size: 13px; color: var(--text-secondary); }
+  .user-name { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+  .header-icons { display: flex; gap: 4px; }
+  .icon-btn {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    position: relative;
+  }
+  .icon-btn .badge {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px;
+    background: var(--error);
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+  }
+
+  /* ─── CTA BUTTON ─── */
+  .cta-section { padding: 20px; }
+  .cta-btn {
+    width: 100%;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border: none;
+    border-radius: var(--radius);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    font-family: inherit;
+  }
+  .cta-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45); }
+
+  /* ─── STATS ROW ─── */
+  .stats-row {
+    display: flex;
+    gap: 10px;
+    padding: 0 20px 16px;
+  }
+  .stat-card {
+    flex: 1;
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .stat-card .stat-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 8px;
+    font-size: 18px;
+  }
+  .stat-card .stat-value { font-size: 20px; font-weight: 800; color: var(--text-primary); }
+  .stat-card .stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+  /* ─── SECTIONS ─── */
+  .section { padding: 0 20px 16px; }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .section-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+  .section-link { font-size: 13px; font-weight: 600; color: var(--primary); cursor: pointer; }
+
+  /* ─── MISSION CARD ─── */
+  .mission-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    border: 1px solid var(--border);
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .mission-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .mission-category {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mission-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .mission-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .mission-date { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .status-in-progress { background: rgba(124,58,237,0.1); color: var(--primary); }
+  .status-enroute { background: rgba(8,145,178,0.1); color: var(--technician-color); }
+  .status-quote { background: rgba(245,158,11,0.1); color: var(--warning); }
+
+  .mission-progress {
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  .mission-progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--primary);
+  }
+
+  .mission-tech {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .tech-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(8,145,178,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--technician-color);
+  }
+  .tech-name { font-size: 13px; color: var(--text-primary); font-weight: 500; }
+  .tech-role { font-size: 11px; color: var(--text-secondary); }
+
+  /* ─── BOTTOM NAV ─── */
+  .bottom-nav {
+    height: 64px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px;
+    flex-shrink: 0;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .nav-item.active { color: var(--primary); }
+  .nav-item .material-icons-round { font-size: 22px; }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-card {
+    background: var(--primary-light);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+    border: 1px dashed rgba(124,58,237,0.25);
+  }
+  .empty-card .material-icons-round { font-size: 40px; color: var(--primary); opacity: 0.5; }
+  .empty-card p { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ MOBILE ════════════════ -->
+<div class="mobile-wrapper">
+  <div class="label">📱 Vue Mobile</div>
+  <div class="mobile">
+    <div class="notch"></div>
+    <div class="status-bar">17:35</div>
+
+    <div class="app-content">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-top">
+          <div class="header-left">
+            <div class="avatar">J</div>
+            <div>
+              <div class="greeting">Bonjour 👋</div>
+              <div class="user-name">Jean Kamga</div>
+            </div>
+          </div>
+          <div class="header-icons">
+            <div class="icon-btn">
+              <span class="material-icons-round">notifications_none</span>
+              <div class="badge"></div>
+            </div>
+            <div class="icon-btn">
+              <span class="material-icons-round">dark_mode</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-section">
+        <button class="cta-btn">
+          <span class="material-icons-round">add_circle</span>
+          Signaler un problème
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(124,58,237,0.1);">
+            <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">assignment</span>
+          </div>
+          <div class="stat-value">3</div>
+          <div class="stat-label">En cours</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(22,163,74,0.1);">
+            <span class="material-icons-round" style="color: var(--success); font-size: 20px;">check_circle</span>
+          </div>
+          <div class="stat-value">12</div>
+          <div class="stat-label">Terminées</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(245,158,11,0.1);">
+            <span class="material-icons-round" style="color: var(--warning); font-size: 20px;">receipt_long</span>
+          </div>
+          <div class="stat-value">1</div>
+          <div class="stat-label">Devis reçu</div>
+        </div>
+      </div>
+
+      <!-- Active missions -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Missions actives</span>
+          <span class="section-link">Voir tout</span>
+        </div>
+
+        <div class="mission-card">
+          <div class="mission-card-top">
+            <div class="mission-category">
+              <div class="mission-icon" style="background: rgba(124,58,237,0.1);">🔧</div>
+              <div>
+                <div class="mission-name">Plomberie</div>
+                <div class="mission-date">Aujourd'hui, 14:30</div>
+              </div>
+            </div>
+            <div class="status-badge status-in-progress">En cours</div>
+          </div>
+          <div class="mission-tech">
+            <div class="tech-avatar">N</div>
+            <div>
+              <div class="tech-name">Nick — Plombier</div>
+              <div class="tech-role">⭐ 5.0 · 4 missions</div>
+            </div>
+          </div>
+          <div class="mission-progress"><div class="mission-progress-bar" style="width: 60%;"></div></div>
+        </div>
+
+        <div class="mission-card">
+          <div class="mission-card-top">
+            <div class="mission-category">
+              <div class="mission-icon" style="background: rgba(8,145,178,0.1);">⚡</div>
+              <div>
+                <div class="mission-name">Électricité</div>
+                <div class="mission-date">Hier, 09:15</div>
+              </div>
+            </div>
+            <div class="status-badge status-enroute">En route</div>
+          </div>
+          <div class="mission-tech">
+            <div class="tech-avatar">P</div>
+            <div>
+              <div class="tech-name">Paul — Électricien</div>
+              <div class="tech-role">⭐ 4.8 · 7 missions</div>
+            </div>
+          </div>
+          <div class="mission-progress"><div class="mission-progress-bar" style="width: 30%; background: var(--technician-color);"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <span class="material-icons-round">home</span>
+        Accueil
+      </div>
+      <div class="nav-item">
+        <span class="material-icons-round">history</span>
+        Historique
+      </div>
+      <div class="nav-item">
+        <span class="material-icons-round">chat_bubble_outline</span>
+        Messages
+      </div>
+      <div class="nav-item">
+        <span class="material-icons-round">person_outline</span>
+        Profil
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ WEB ════════════════ -->
+<div class="web-wrapper">
+  <div class="label">💻 Vue Web (Responsive)</div>
+  <div class="web">
+    <div class="browser-bar">
+      <div class="dot r"></div>
+      <div class="dot y"></div>
+      <div class="dot g"></div>
+      <div class="url">🔒 techlink-app.web.app/client/home</div>
+    </div>
+
+    <div class="app-content" style="overflow-y: auto;">
+      <!-- Header -->
+      <div class="header" style="border-bottom: none; padding: 24px 0;">
+        <div class="header-top">
+          <div class="header-left">
+            <div class="avatar">J</div>
+            <div>
+              <div class="greeting">Bonjour 👋</div>
+              <div class="user-name">Jean Kamga</div>
+            </div>
+          </div>
+          <div class="header-icons">
+            <div class="icon-btn">
+              <span class="material-icons-round">notifications_none</span>
+              <div class="badge"></div>
+            </div>
+            <div class="icon-btn">
+              <span class="material-icons-round">dark_mode</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div style="padding-bottom: 24px;">
+        <button class="cta-btn">
+          <span class="material-icons-round">add_circle</span>
+          Signaler un problème
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row" style="padding: 0 0 20px;">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(124,58,237,0.1);">
+            <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">assignment</span>
+          </div>
+          <div class="stat-value">3</div>
+          <div class="stat-label">En cours</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(22,163,74,0.1);">
+            <span class="material-icons-round" style="color: var(--success); font-size: 20px;">check_circle</span>
+          </div>
+          <div class="stat-value">12</div>
+          <div class="stat-label">Terminées</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(245,158,11,0.1);">
+            <span class="material-icons-round" style="color: var(--warning); font-size: 20px;">receipt_long</span>
+          </div>
+          <div class="stat-value">1</div>
+          <div class="stat-label">Devis reçu</div>
+        </div>
+      </div>
+
+      <!-- Active missions -->
+      <div class="section" style="padding: 0 0 20px;">
+        <div class="section-header">
+          <span class="section-title">Missions actives</span>
+          <span class="section-link">Voir tout</span>
+        </div>
+
+        <div class="mission-card">
+          <div class="mission-card-top">
+            <div class="mission-category">
+              <div class="mission-icon" style="background: rgba(124,58,237,0.1);">🔧</div>
+              <div>
+                <div class="mission-name">Plomberie</div>
+                <div class="mission-date">Aujourd'hui, 14:30</div>
+              </div>
+            </div>
+            <div class="status-badge status-in-progress">En cours</div>
+          </div>
+          <div class="mission-tech">
+            <div class="tech-avatar">N</div>
+            <div>
+              <div class="tech-name">Nick — Plombier</div>
+              <div class="tech-role">⭐ 5.0 · 4 missions</div>
+            </div>
+          </div>
+          <div class="mission-progress"><div class="mission-progress-bar" style="width: 60%;"></div></div>
+        </div>
+
+        <div class="mission-card">
+          <div class="mission-card-top">
+            <div class="mission-category">
+              <div class="mission-icon" style="background: rgba(8,145,178,0.1);">⚡</div>
+              <div>
+                <div class="mission-name">Électricité</div>
+                <div class="mission-date">Hier, 09:15</div>
+              </div>
+            </div>
+            <div class="status-badge status-enroute">En route</div>
+          </div>
+          <div class="mission-tech">
+            <div class="tech-avatar">P</div>
+            <div>
+              <div class="tech-name">Paul — Électricien</div>
+              <div class="tech-role">⭐ 4.8 · 7 missions</div>
+            </div>
+          </div>
+          <div class="mission-progress"><div class="mission-progress-bar" style="width: 30%; background: var(--technician-color);"></div></div>
+        </div>
+      </div>
+
+      <!-- Completed section -->
+      <div class="section" style="padding: 0 0 20px;">
+        <div class="section-header">
+          <span class="section-title">Missions récentes</span>
+        </div>
+        <div class="empty-card">
+          <span class="material-icons-round">inbox</span>
+          <p>Vos missions terminées apparaîtront ici</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

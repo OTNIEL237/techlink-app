@@ -1,0 +1,33 @@
+{
+  "@@locale": "en",
+  "appTitle": "TechLink",
+  "hello": "Hello",
+  "searchHint": "What are you looking for today?",
+  "categoriesTitle": "Categories",
+  "popularServicesTitle": "Popular Services",
+  "missionStatus": "Mission Status",
+  "findExpert": "Find the best expert",
+  "mapDescription": "View available technicians around you on the map.",
+  "openMap": "Open Map",
+  "newQuoteAlert": "📋 New quote received! Review and accept below.",
+  "yourTechnician": "Your technician",
+  "yourProblem": "Your problem",
+  "reportProblem": "Report a problem",
+  "quoteAccepted": "Quote accepted ✓",
+  "quoteReceived": "📋 Quote received — Your review",
+  "totalToPay": "Total to pay",
+  "reject": "Reject",
+  "acceptQuote": "Accept Quote",
+  "payNow": "💳 Pay Now (MTN / Orange)",
+  "rateTechnician": "Rate {name}",
+  "@rateTechnician": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "howWasIt": "How was the service?",
+  "leaveComment": "Leave a comment (optional)...",
+  "sendReview": "Submit Review"
+}

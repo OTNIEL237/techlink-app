@@ -1,0 +1,31 @@
+# Dossiers de build (Les coupables des 4 Go !)
+build/
+.dart_tool/
+.pub-cache/
+.packages
+mobile/build/
+mobile/.dart_tool/
+mobile/.pub-cache/
+
+# Fichiers de dépendances (inutiles sur Git)
+node_modules/
+supabase/.temp/
+.env
+
+# Fichiers système Windows/Mac
+.DS_Store
+Thumbs.db
+*.log
+
+# Caches de l'IDE et GROS fichiers
+.vscode/
+.idea/
+*.iml
+*.hprof
+*.tmp
+~$*
+.gradle/
+mobile/android/.gradle/
+mobile/android/local.properties
+backend/node_modules/
+backend/.env

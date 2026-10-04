@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schéma Architecture TechLink</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        .mermaid-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="mermaid-container">
+        <div class="mermaid">
+            graph LR
+                classDef niveau fill:#e8f4f8,stroke:#3498db,stroke-width:3px,stroke-dasharray: 5 5,color:#2c3e50,font-weight:bold
+                classDef box fill:#ffffff,stroke:#2c3e50,stroke-width:2px,color:#000000,font-weight:bold,rx:5,ry:5
+                classDef db fill:#ffffff,stroke:#2c3e50,stroke-width:2px,shape:cylinder,color:#000000,font-weight:bold
+
+                subgraph TIER1 [NIVEAU 1 : CLIENT]
+                    direction TB
+                    APP[📱 App Mobile Flutter<br/>Client, Technicien & Admin]:::box
+                end
+
+                subgraph TIER2 [NIVEAU 2 : SERVEUR D'APPLICATION]
+                    direction TB
+                    NODE[Environnement<br/>Node.js]:::box
+                    EXP[Framework<br/>Express.js]:::box
+                    NODE --- EXP
+                end
+
+                subgraph TIER3 [NIVEAU 3 : SGBD]
+                    direction TB
+                    SUPA[(Base de données<br/>Supabase / PostgreSQL)]:::db
+                end
+
+                subgraph TIER4 [NIVEAU 4 : API]
+                    direction TB
+                    PAY[API de Paiement<br/>CamerPay]:::box
+                    IA[Modèle NLP<br/>Groq / Gemini API]:::box
+                end
+
+                TIER1 -- "REQUÊTES HTTPS" --> TIER2
+                TIER2 -- "RÉPONSES HTTPS" --> TIER1
+
+                TIER2 -- "REQUÊTES SQL" --> TIER3
+                TIER3 -- "RÉPONSES BD" --> TIER2
+
+                TIER2 -- "REQUÊTES" --> TIER4
+                TIER4 -- "RÉPONSES" --> TIER2
+
+                class TIER1,TIER2,TIER3,TIER4 niveau
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

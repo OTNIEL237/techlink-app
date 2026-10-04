@@ -1,0 +1,2300 @@
+﻿ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿì¥Á
+bjbjënën
+DEDICACE
+
+
+
+
+REMERCIEMENTS
+
+Nous tenons à remercier toutes les personnes qui ont contribué de près ou de loin au bon déroulement de notre projet, à la réalisation de ce rapport jusqu
+à la présentation de notre travail. Nos sincères remerciements s
+adressent :
+Au représentant résident de l
+Institut africain d
+Informatique et représentation du Cameroun M. ABANDA Armand Claude.
+À mon encadrant académique, Mme MAGNE Prudence pour son coaching, son soutien et ses conseils tout au long de notre période de stage académique ;
+À mon encadrant professionnel également directeur de SANGOTECH SARL M. NSANGOU Ghislain pour ses conseils, son dévouement dans le travail et suggestions avisés qui nous ont aidés à mener à bien notre travail.
+Aux membres du jury qui seront responsable de notre évaluation.
+A tout le corps administratif et professoral de l
+IAI-Cameroun ;
+A mon ami NDONGO ZAMBO Arsène pour ses encouragement son aide dans la réalisation du projet.
+Ma mère Mme. NGUIALA KAMGANG JEANNINE pour son amour inconditionnel et ses conseils.
+Mon père M. SOUOP FOSSO JEAN CLAUDE pour son amour inconditionnel et ses conseils.
+A mes frères et s
+urs pour leurs conseils et leurs soutient.
+A mes amis pour leurs encouragements.
+A toutes les personnes qui m
+ont prodigué des conseils, leurs attentons et leurs encouragements.
+
+
+
+
+
+
+
+
+
+
+RESUME
+
+Malgré la digitalisation croissante des services de proximité, la recherche d'un technicien qualifié lors d'une panne domestique ou matérielle demeure un processus fastidieux pour les particuliers, souvent source de délais et de surcoûts. Ce document détaille la conception et le développement d'une plateforme intelligente de mise en relation entre clients et techniciens de dépannage. L'application permet le signalement rapide d'incidents et intègre un module d'intelligence artificielle (propulsé par l'API Groq) capable de fournir un pré-diagnostic et des mesures d'urgence en attendant l'intervention physique. Sur le plan méthodologique, l'architecture du système a été entièrement modélisée en UML selon le processus unifié 2TUP, garantissant une analyse rigoureuse des besoins métiers. L'implémentation technique repose sur le framework Flutter pour le développement d'une interface mobile réactive, adossé à un environnement backend combinant Node.js et Supabase pour la persistance des données, la sécurité et la gestion des authentifications. In fine, ce projet apporte une réponse concrète pour moderniser le secteur du dépannage, en optimisant les temps de prise en charge pour les usagers tout en numérisant l'activité des artisans indépendants.
+
+Mots clés : Plateforme de mise en relation, Assistance au dépannage, Intelligence artificielle, Modélisation UML, Géolocalisation.
+
+
+ABSTRACT
+
+Despite the increasing digitalization of local services, finding a qualified technician during a domestic or hardware breakdown remains a tedious process for individuals, often resulting in delays and additional costs. This document details the design and development of an intelligent matchmaking platform connecting clients with repair technicians. The application enables rapid incident reporting and integrates an artificial intelligence module (powered by the Groq API) capable of providing a pre-diagnosis and emergency measures while awaiting physical intervention. Methodologically, the system architecture was fully modeled in UML using the 2TUP unified process, ensuring a rigorous analysis of business requirements. The technical implementation relies on the Flutter framework for developing a responsive mobile interface, backed by a backend environment combining Node.js and Supabase for data persistence, security, and authentication management. Ultimately, this project provides a concrete solution to modernize the repair sector by optimizing response times for users while digitizing the workflow of independent craftsmen.
+Keywords: Matchmaking platform, Repair assistance, Artificial intelligence, UML modeling, Geolocation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SOMMAIRE
+
+
+DEDICACE	
+REMERCIEMENTS	
+SOMMAIRE	
+LISTE DES TABLEAUX	
+LISTE DES FIGURES	
+RESUME	
+ABSTRACT	
+LISTE DES SIGLES ET ABREVIATIONS	
+GLOSSAIRE	
+INTRODUCTION GENERALE	
+PARTIE 1 : PHASE D
+INSERTION	
+PHASE TECHNIQUE	
+DOSSIER I : DOSSIER DE L
+EXISTANT	
+DOSSIER II : CAHIER DES CHARGES	
+DOSSIER III : DOSSIER D
+ANALYSE	
+DOSSIER IV : DOSSIER DE CONCEPTION	
+DOSSIER V : DOSSIER DE REALISATION	
+DOSSIERS VI : DOSSIER DE REALISATION	
+DOSSIERS VII : GUIDE D
+UTILISATION	
+CONCLUSION GÉNÉRALE	
+BIBLIOGRAPHIE	
+WEBOGRAPHIE	
+TABLE DES MATIÈRES	
+    LISTE DES TABLEAUX
+
+
+ TOC \h \z \c "Tableau" 
+Tableau 1:ressources matérielles De SANGOTECH Sarl	
+Tableau 2:présentation des systèmes existants	
+Tableau 3:critique et limite de l'existant	
+Tableau 4:ressources logicielles du projet (source : mercuriale des prix 2026)	
+Tableau 5:ressources matérielles du projet (source : mercuriale des prix 2026)	
+Tableau 6:ressources humaines du projet (source : mercuriale des prix 2026)	
+Tableau 7:estimation globale du cout du projet (source : mercuriale des prix 2026)	
+Tableau 8:comparaison entre merise et uml	
+Tableau 9: comparaison processus unifiés	
+Tableau 10:formalisme diagramme de cas d'utilisation	
+Tableau 11:types de relation du diagramme de cas d'utilisation	
+Tableau 12:formalisme description textuelle	
+Tableau 13: description textuelle de s'authentifier	
+Tableau 14:description textuelle du cas créer mission	
+Tableau 15:description textuelle du cas envoyer le devis	
+Tableau 16:formalisme diagramme de communication	
+Tableau 17:formalisme diagramme de séquence	
+Tableau 18:formalisme diagramme d'activité	
+Tableau 19:formalisme diagramme de classe	
+Tableau 20:formalisme diagramme d'état transition	
+Tableau 21:formalisme diagramme de paquetage	
+Tableau 22:technologie choisis	
+Tableau 23:formalisme diagramme de paqueta	
+Tableau 24: formalisme diagramme de composant	
+LISTE DES FIGURES
+
+
+ TOC \h \z \c "Figure" 
+Figure 1:diagramme de Gantt	
+Figure 2:processus 2TUP	
+Figure 3:diagramme de cas d'utilisation global du système	
+Figure 4:digramme du cas  d'utilisation créer mission	
+Figure 5:diagramme du cas d'utilisation executer la mission	
+Figure 6:diagramme du cas d'utilisation gerer les utilisateurs	
+Figure 7:diagramme de communication du cas s'authentifier	
+Figure 8:diagramme de communication du cas créer mission	
+Figure 9:diagramme de communication du cas payer devis	
+Figure 10:exemple de diagramme de séquence	
+Figure 11:diagramme de séquence du cas s
+authentifier	
+Figure 12:diagramme de séquence du cas créer mission	
+Figure 13 :diagramme de séquence du cas payer devis	
+Figure 14:diagramme d'activité du cas s
+authentifier	
+Figure 15:diagramme d'activité du cas créer mission	
+Figure 16:diagramme d'activité du cas payer devis	
+Figure 17:diagramme de classe de notre système	
+Figure 18:diagramme d'état transition créer un compte	
+Figure 19:diagramme état transition de l
+objet notification	
+Figure 20:diagramme de paquetage	
+Figure 21 :exemple diagramme de déploiement	
+Figure 22:diagramme de déploiement	
+Figure 23: exemple diagramme de composant	
+Figure 24:diagramme de composant	
+Figure 25:test unitaire de  Valider le format d'un e-mail	
+Figure 26:test intégration de camerpay	
+Figure 27:page de login	
+Figure 28: page du client	
+Figure 29: page du technicien	
+Figure 30: page de  Signalement de la panne	
+Figure 31: page de recherche automatique de techniciens	
+Figure 32:page de localisation du client	
+LISTE DES SIGLES ET ABREVIATIONS
+
+API: Application Programming Interface
+BDD: Base De Données
+GPS : Global Positioning System
+HTTP : HyperText Transfer Protocol
+HTTPS : HyperText Transfer Protocol Secure
+IA : Intelligence Artificielle
+JSON : JavaScript Object Notation
+JWT : JSON Web Token
+NLP : Natural Language Processing
+SQL : Structured Query Language
+UI : User Interface
+UML : Unified Modeling Language
+UX : User Experienc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+GLOSSAIRE
+
+2TUP (Two Tracks Unified Process) : Méthode de développement logiciel basée sur le processus unifié, séparant les besoins fonctionnels et techniques.
+Assistance au dépannage : Ensemble de services permettant d
+aider un utilisateur à résoudre une panne ou un problème technique.
+Flutter : Framework de développement utilisé pour créer des applications mobiles et web à partir d
+un seul code source.
+Géolocalisation : Technologie permettant de déterminer la position géographique d
+un utilisateur ou d
+un service pour optimiser les interventions.
+Groq : Plateforme d
+intelligence artificielle utilisée pour exécuter des modèles d
+IA rapides, notamment pour l
+analyse de texte et les réponses automatisées.
+Intelligence artificielle (IA) : Technologie permettant à une machine d
+imiter certaines capacités humaines comme l
+analyse, la compréhension et la prise de décision.
+Mise en relation : Processus consistant à connecter un utilisateur à un prestataire de service correspondant à son besoin.
+Node.js : Environnement d
+exécution JavaScript côté serveur permettant de développer des applications backend performantes.
+Supabase : Plateforme backend offrant une base de données, l
+authentification et des API en temps réel.
+UML (Unified Modeling Language) : Langage de modélisation utilisé pour représenter visuellement la structure et le fonctionnement d
+un système logiciel
+INTRODUCTION GENERALE
+Aujourd
+hui, le numérique occupe une place centrale dans presque tous les aspects de notre quotidien. Grâce à l
+intelligence artificielle, aux applications mobiles et aux services en ligne, il est devenu plus simple d
+accéder à de nombreux besoins. Pourtant, dans le domaine du dépannage domestique, plusieurs difficultés persistent encore. Beaucoup de personnes ont du mal à trouver rapidement un technicien fiable, adapté à leur problème, et doivent souvent faire face à des délais d
+intervention longs, parfois imprévisibles, ainsi qu
+à un manque de clarté sur les coûts des services. Cette situation montre clairement la nécessité de repenser ce secteur en s
+appuyant sur des solutions numériques plus modernes et plus efficaces. L
+idée est donc d
+exploiter les technologies actuelles, notamment la géolocalisation et l
+intelligence artificielle, afin de faciliter la mise en relation entre les clients et les techniciens, tout en améliorant la rapidité et la qualité des interventions. C
+est dans cette perspective que s
+inscrit mon projet intitulé « Mise en place d
+une plateforme intelligente d
+assistance au dépannage et de mise en relation avec des techniciens ». L
+objectif est de concevoir une application capable d
+aider les utilisateurs en situation de panne, de leur proposer une assistance intelligente pour les guider temporairement, et de les connecter rapidement à des techniciens disponibles et qualifiés. Notre méthodologie de travail débutera par une phase d
+insertion pour présenter l
+entreprise et montrer comment nous avons intégré l
+entreprise. Ensuite nous poursuivront a la phase technique qui comportera le dossier de l
+existant, le cahier des charges, le dossier d
+analyse, le dossier de conception, le dossier de réalisation et le guide d
+utilisation.
+
+
+
+PARTIE 1 : PHASE D
+INSERTION
+
+
+
+RESUME 
+Le dossier d
+insertion est le tout premier document rédigé durant la période de stage académique. C
+est la partie du stage qui présente la structure d
+accueil, son fonctionnement, ainsi que l
+accueil de l
+étudiant en entreprise. Cette phase d
+INTRODUCTION
+La phase d
+insertion constitue une étape importante de notre stage, car elle nous a permis de découvrir notre environnement professionnel et de nous familiariser progressivement avec le fonctionnement de l
+entreprise. Elle a également favorisé notre intégration au sein de l
+équipe de travail et notre compréhension de l
+organisation de la structure d
+accueil. Cette phase s
+est articulée autour de deux principaux aspects : l
+accueil et l
+intégration en entreprise, qui nous ont permis de prendre nos repères et de nous adapter à notre nouvel environnement de travail, puis la présentation de la structure, à travers laquelle nous avons découvert l
+organisation, les activités et le fonctionnement de SANGOTECH SARL.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ACCEUIL ET INTEGRATION ENTREPRISE
+  I.1 ACCUEIL
+Un accueil chaleureux nous a été réservé par Monsieur NSANGOU Ghislain, PDG de SANGOTECH SARL, le lundi 6 juillet 2026, marquant ainsi le début de notre période de stage. Dès notre arrivée, il nous a présenté l
+entreprise, son fonctionnement ainsi que les différentes activités qui y sont menées. Il nous a également entretenus sur les objectifs du stage, les règles à respecter et l
+attitude professionnelle à adopter tout au long de notre séjour en entreprise. Nous avons ensuite été présentés au personnel de Sangotech SARL et avons eu l
+occasion de découvrir les différents espaces de travail ainsi que notre environnement professionnel. Cet échange nous a permis de mieux comprendre les attentes de l
+entreprise et de définir les bonnes pratiques nécessaires au bon déroulement de notre stage. À la fin de cette rencontre, Monsieur NSANGOU Ghislain a insisté sur l
+importance du sérieux, de la discipline, du savoir-faire et du savoir-être, indispensables à une bonne intégration dans le monde professionnel.
+  I.2 INTEGRATION
+Durant cette phase d
+intégration, qui a duré exactement deux semaines, il a été question pour nous de nous adapter à notre structure d
+accueil et de nous familiariser avec son fonctionnement interne. Cette période nous a permis de découvrir l
+organisation de Sangotech SARL, de côtoyer les différents collaborateurs et de mieux comprendre les activités de l
+entreprise ainsi que les différents services impliqués directement ou indirectement dans la réalisation de notre projet. Au cours de cette phase, nous avons également eu l
+occasion de présenter nos idées de projets, d
+échanger avec les responsables et de sélectionner la solution la plus pertinente et réalisable afin d
+en faire notre thème de stage. Cette immersion nous a ainsi permis de mieux cerner les exigences professionnelles et techniques nécessaires à la mise en 
+uvre de notre projet.
+
+
+
+PRESENTATION DE LA STRUCTURE
+
+
+
+
+Historique
+SANGOTECH SARL est une entreprise spécialisée dans les solutions numériques et les services informatiques. Créée en mars 2026, elle a été fondée dans le but d'accompagner les particuliers, les entreprises et les organisations dans leur transformation digitale à travers des solutions technologiques innovantes. Depuis sa création, SANGOTECH SARL intervient dans plusieurs domaines, notamment le développement d'applications web et mobiles, la géolocalisation GPS, la formation numérique, les jeux en ligne et les services liés aux technologies émergentes. Grâce à son engagement en faveur de l'innovation, de la qualité et de la satisfaction de ses clients, l'entreprise ambitionne de devenir un acteur majeur du numérique au Cameroun et en Afrique.
+
+Situation géographique
+SANGOTECH SARL est une entreprise située dans la ville de Douala, plus précisément dans le quartier Akwa, l
+un des principaux centres administratifs, commerciaux et économiques de la ville. Sa localisation au c
+ur de Douala lui permet de bénéficier d
+un environnement favorable au développement de ses activités et d
+une bonne accessibilité. 
+
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:plan de localisation de SANGOTECH SARL
+
+
+
+
+ Mission
+SANGOTECH SARL a pour mission d
+accompagner les particuliers, les entreprises et les organisations dans leur transformation numérique en proposant des solutions technologiques innovantes adaptées à leurs besoins. Elle intervient dans plusieurs domaines, notamment le développement d
+applications web et mobiles, les services de géolocalisation GPS, la formation numérique, les solutions de divertissement digital ainsi que les services liés aux nouvelles technologies. À travers ses différentes activités, l
+entreprise vise à simplifier l
+accès aux outils numériques, à améliorer la performance des structures et à contribuer au développement de l
+écosystème technologique au Cameroun.
+
+Activité et réalisations
+SANGOTECH SARL a pour objectif principal de proposer des solutions numériques innovantes afin de répondre aux besoins des particuliers, des entreprises et des organisations tout en garantissant la satisfaction de sa clientèle. Ses activités s
+articulent autour de plusieurs domaines technologiques, notamment :
+Le développement d
+applications web et mobiles ;
+La conception de solutions numériques sur mesure ;
+La création de sites web et de plateformes digitales ;
+Les services de géolocalisation GPS et de suivi de véhicules ;
+La formation dans le domaine du numérique et des nouvelles technologies ;
+Le développement de jeux en ligne ;
+Les solutions liées aux technologies financières et aux cryptomonnaies ;
+L
+accompagnement des entreprises dans leur transformation digitale.
+Comme exemples de réalisations de SANGOTECH SARL, nous pouvons citer :
+La plateforme SANGOTECH Digital IT dédiée au développement de sites web, applications mobiles et solutions numériques ;
+Les solutions de géolocalisation GPS pour le suivi et la sécurisation des véhicules ;
+Les plateformes de jeux en ligne développées par SANGOTECH Game Dev ;
+Les services de formation numérique proposés par SANGOTECH Formation ;
+La plateforme Crypto Link Douala spécialisée dans les services d
+achat et de vente de cryptomonnaies ;
+Le développement de solutions numériques adaptées aux besoins spécifiques des entreprises et des particuliers.
+Organisation et fonctionnement de la structure
+Organigramme
+SANGOTECH SARL est organisée autour de plusieurs directions et services, chacun ayant des missions spécifiques contribuant au bon fonctionnement et au développement de l
+entreprise. Dans le cadre de notre stage, nous avons été affectés à la Direction Technique et Développement, qui intervient notamment dans les activités liées au développement et à la mise en 
+uvre des solutions informatiques de l
+entreprise.
+
+
+Presentation de la division de developpement
+La division de développement constitue le principal pôle technique de SANGOTECH SARL. Elle est responsable de la conception, du développement, des tests et de la maintenance des solutions numériques proposées par l
+entreprise. C
+est au sein de cette division que sont réalisés la majorité des projets informatiques répondant aux besoins des clients.
+Elle est notamment chargée de :
+L
+analyse des besoins des clients et la rédaction des spécifications techniques des projets ;
+La conception, le développement et le déploiement d
+applications web et mobiles ;
+La conception et l
+intégration de solutions innovantes basées sur les technologies numériques ;
+La mise en 
+uvre des bonnes pratiques de développement et le respect des normes de qualité logicielle ;
+Les tests, la validation et la maintenance des applications développées ;
+L
+amélioration continue des solutions existantes et la veille technologique ;
+L
+assistance technique et le support aux utilisateurs des différentes plateformes développées par SANGOTECH SARL.
+
+Ressources matérielles et logicielles
+SANGOTECH SARL dispose pour son fonctionnement de nombreux équipements pour un service fiable, rapide et efficace.
+
+RESSOURCES MATERIELLES
+Tableau 
+ SEQ Tableau \* ARABIC 
+:ressources matérielles De SANGOTECH Sarl
+Quantité
+Equipements
+Marque
+image
+Ordinateur de bureau
+HP, DELL, IBM
+Ordinateurs portables
+Acer, Lenovo, HP, DELL
+Routeurs
+D-Link
+Switch
+D-Link
+Onduleurs
+Caisse de matériels de maintenance
+scanner
+imprimantes
+
+RESSOURCES LOGICIELLES
+
+UNIVERS BINAIRE SARL dispose de plusieurs ressources logicielles lui permettant d
+effectuer ses différentes tâches quotidiennes. Il s
+agit notamment de :
+Les systèmes d
+exploitation tels que Debian 6.0 et Windows 10
+Les logiciels d
+application tels que Microsoft 2013 pour le traitement de texte
+Les IDE pour le développement logiciel tels que NetBeans
+Le SGBD Mysql
+
+
+
+
+CONCLUSION
+Cette phase d
+insertion nous a permis de nous familiariser avec notre environnement professionnel, de nous intégrer au sein de l
+équipe et de mieux comprendre le fonctionnement de SANGOTECH SARL. La découverte de l
+organisation de l
+entreprise et de la Direction Technique et Développement, au sein de laquelle nous avons effectué notre stage, nous a également permis de mieux cerner notre cadre de travail et les missions qui nous ont été confiées.Cette première étape ayant ainsi favorisé notre adaptation à l
+entreprise, nous pouvons désormais aborder la phase suivante consacrée au déroulement de notre stage et aux différentes activités réalisées au sein de la structure.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PHASE TECHNIQUE
+
+
+RESUME
+La phase technique du projet a débuté par l
+étude de l
+existant et la définition du cahier des charges afin de comprendre les besoins et les limites des solutions actuelles. Elle s
+est poursuivie par l
+analyse et la conception du système pour modéliser les fonctionnalités et l
+architecture. Ensuite, la réalisation a permis de développer concrètement la plateforme suivie des tests de fonctionnement pour vérifier sa fiabilité. Enfin, un guide d
+utilisation a été élaboré pour faciliter la prise en main du système.
+
+
+                                PLAN 
+
+
+
+DOSSIER I : DOSSIER DE L
+EXISTANT
+
+
+
+RESUME
+Le dossier de l
+existant consiste à étudier le fonctionnement du système actuel afin d
+en comprendre les caractéristiques, les performances ainsi que les limites. Il met en évidence les insuffisances et les besoins non pris en compte, ce qui permet de mieux orienter la conception de la future solution. Cette analyse aide également à identifier les points forts et les points faibles du système en place, afin de proposer des améliorations adaptées pour optimiser la solution à développer.
+
+                                                                   PLAN 
+
+
+ PRESENTATIONT DU PROJET
+Dans un contexte où les pannes domestiques nécessitent une prise en charge rapide et efficace, l
+usage des technologies numériques devient indispensable pour améliorer la mise en relation entre les particuliers et les techniciens qualifiés. Aujourd
+hui, de nombreux utilisateurs rencontrent encore des difficultés pour trouver rapidement un professionnel compétent, tandis que les techniciens peinent parfois à optimiser la gestion de leurs interventions. C
+est dans cette optique que s
+inscrit notre projet intitulé « Mise en place d
+une plateforme intelligente d
+assistance au dépannage et de mise en relation avec des techniciens ». L
+objectif est de proposer une solution digitale innovante permettant aux utilisateurs de signaler facilement une panne, de bénéficier d
+un diagnostic préliminaire grâce à une intelligence artificielle, et d
+être mis en relation avec les techniciens les plus proches et les plus adaptés à leur besoin. La plateforme intègre des technologies modernes telles que la géolocalisation et l
+intelligence artificielle afin d
+assurer un matching efficace entre les demandes des clients et les profils des techniciens disponibles. Cette approche permet d
+améliorer la rapidité des interventions, de renforcer la transparence des services et de rendre l
+accès au dépannage plus simple et plus accessible à tout moment. Pour les utilisateurs, cela se traduit par une réduction significative des délais d
+attente et une meilleure qualité de service. Pour les techniciens, la plateforme offre une meilleure visibilité, une optimisation de leur activité et un accès facilité à une clientèle plus large. Ainsi, cette solution contribue à moderniser le secteur du dépannage et à améliorer l
+efficacité globale des services proposés.
+
+ÉTUDE DE L
+EXISTANT
+Description de l
+existant
+Pour mieux appréhender notre étude, nous avons jugé nécessaire de recueillir certaines informations sur les pratiques actuelles des particuliers en matière de dépannage à domicile. Lorsqu
+une panne survient, le particulier recherche un technicien capable d
+intervenir pour résoudre son problème. Cette recherche s
+effectue principalement par recommandation d
+un proche, à travers les contacts personnels ou au sein de groupes de discussion. Une fois le technicien identifié, le particulier prend généralement contact avec lui par appel téléphonique ou par messagerie afin de lui présenter la panne et de convenir des modalités d
+intervention. Les échanges peuvent également porter sur la disponibilité du technicien, le coût de la prestation et le lieu d
+intervention. Après accord entre les deux parties, le technicien se rend au domicile du particulier afin d
+effectuer le dépannage. Le processus actuel repose ainsi principalement sur la recherche d
+un technicien par des moyens informels, suivie d
+échanges directs pour organiser et réaliser l
+intervention.
+Les systèmes existants
+Il existe déjà plusieurs plateformes hors du Cameroun qui fournissent des services dépannages à domicile. En voici quelques-unes : 
+Tableau 
+ SEQ Tableau \* ARABIC 
+:présentation des systèmes existants
+Nom de la plateforme
+Description
+MesDépanneurs.fr
+Plateforme spécialisée dans le dépannage à domicile (plomberie, électricité, serrurerie), offrant une estimation des prix et une intervention rapide via des professionnels certifiés.
+France
+AlloVoisins
+Réseau de mise en relation entre particuliers et prestataires locaux pour divers services et petits travaux, basé sur les avis et la proximité géographique.
+France
+Depann&Moi
+Service de dépannage rapide permettant aux utilisateurs de décrire leur problème et de recevoir un devis estimatif ainsi qu
+une mise en relation avec un artisan qualifié.
+France
+TaskRabbit
+Plateforme internationale de services à domicile connectant les utilisateurs à des prestataires pour des tâches variées, avec système de réservation et de notation.
+États-Unis / International
+RepaREK
+Application de réparation et dépannage spécialisée dans les appareils électroniques et électroménagers, facilitant la mise en relation entre clients et techniciens locaux.
+Sénégal
+
+CRITIQUE ET LIMITE DE L
+EXISTANT
+Tableau 
+ SEQ Tableau \* ARABIC 
+:critique et limite de l'existant
+LIMITES
+CONSEQUENCES
+SOLUTION PROPOSÉE
+Difficulté à trouver un technicien fiable et disponible (recherche informelle via bouche-à-oreille, WhatsApp, contacts personnels).
+Perte de temps, stress important et prolongation de la panne entraînant des désagréments (aliments périssables, interruption d
+activités).
+Mise en place d
+une plateforme centralisée avec profils vérifiés des techniciens, incluant compétences, localisation et disponibilité en temps réel.
+Absence de transparence sur les tarifs avant intervention.
+Risque de surfacturation, manque de confiance et tensions lors du paiement.
+Système de devis estimatif ou tarifs standardisés selon le type de panne, accessible avant validation de la demande.
+Délais d
+intervention longs et incertains.
+Désorganisation de l
+utilisateur et attente prolongée sans garantie d
+intervention rapide.
+Système de réservation avec créneaux horaires et choix du technicien selon sa disponibilité et sa proximité.
+Absence de suivi et de garantie après intervention.
+Risque de récidive de la panne, absence de recours et perte de confiance envers les techniciens.
+Mise en place d
+un système de suivi des interventions avec garantie et historique accessible sur la plateforme.
+Manque de confiance lié à l
+absence d
+évaluation des techniciens.
+Difficulté à choisir un prestataire fiable et qualité de service incertaine.
+Système de notation et d
+avis clients permettant d
+évaluer les techniciens et d
+améliorer la qualité des services.
+
+PROBLEMATIQUE
+Au regard des limites de l
+existant (recherche informelle, manque de fiabilité et délais élevés), il en ressort la question suivante : comment concevoir une plateforme intelligente permettant d
+optimiser la mise en relation entre particuliers et techniciens de dépannage de manière rapide, fiable et assistée par l
+intelligence artificielle ?
+
+PROPOSITION DE SOLUTION
+Pour répondre à la problématique identifiée, nous proposons la mise en place d
+une plateforme intelligente d
+assistance au dépannage et de mise en relation avec des techniciens. Cette solution numérique a pour objectif de faciliter l
+accès aux services de dépannage en permettant aux utilisateurs de trouver rapidement des techniciens qualifiés et disponibles en fonction de leurs besoins. La plateforme offrira aux utilisateurs la possibilité de signaler une panne, de consulter les profils des techniciens, de suivre l
+évolution des interventions et d
+échanger directement avec les professionnels à travers un système de messagerie intégré. Elle intégrera également une intelligence artificielle capable d
+analyser les descriptions des pannes et de fournir une assistance préliminaire afin d
+orienter efficacement les utilisateurs. Grâce à la géolocalisation, le système pourra identifier les techniciens les plus proches et les plus adaptés à chaque demande, réduisant ainsi les délais d
+intervention. Un système d
+évaluation permettra également aux utilisateurs de noter les prestations reçues afin d'améliorer la qualité des services proposés. Cette plateforme vise à moderniser le secteur du dépannage en offrant une solution rapide, fiable et accessible, tout en favorisant une meilleure visibilité et une meilleure gestion de l
+activité des techniciens.
+
+
+
+
+
+
+
+
+
+
+
+
+
+DOSSIER II : CAHIER DES CHARGES
+
+
+RESUME 
+Le cahier des charges est un document essentiel qui formalise les besoins et attentes des utilisateurs vis-à-vis du système à développer. Il précise de manière claire les objectifs du projet, les fonctionnalités attendues ainsi que les contraintes à respecter. Il sert de référence tout au long du développement afin de garantir que la solution finale répond correctement aux exigences exprimées par le client.
+                                  PLAN 
+
+
+CONTEXTE ET JUSTIFICATION DU PROJET
+Contexte
+Dans un contexte marqué par la croissance continue du secteur du bâtiment et des services de maintenance au Cameroun, la demande en prestations de dépannage domestique connaît une augmentation significative, notamment dans les grandes villes comme Yaoundé et Douala. Cette évolution s
+accompagne également d
+une transformation numérique progressive, portée par l
+adoption croissante des smartphones, des applications mobiles et des services en ligne. Cependant, malgré ce potentiel économique et technologique, le secteur du dépannage reste encore dominé par des pratiques traditionnelles de mise en relation. Les particuliers rencontrent souvent des difficultés pour identifier rapidement des techniciens fiables et compétents, avec des délais d
+intervention variables et un manque de transparence sur la qualité et les coûts des services. De leur côté, de nombreux techniciens qualifiés peinent à être visibles et à accéder facilement à une clientèle régulière. Cette situation met en évidence un besoin réel de modernisation du secteur à travers des solutions numériques capables de structurer l
+offre et la demande. C
+est dans ce cadre que s
+inscrit la nécessité de développer une plateforme intelligente de mise en relation et d
+assistance au dépannage, afin d
+améliorer l
+accessibilité, la rapidité et la fiabilité des services domestiques.
+Justification
+Le projet de mise en place d
+une plateforme intelligente de mise en relation entre clients et techniciens de dépannage se justifie par les points suivants :
+Améliorer l
+accès aux services de dépannage en regroupant plusieurs prestations (plomberie, électricité, climatisation, électroménager, etc.) sur une seule plateforme afin de faciliter la recherche de techniciens fiables et disponibles.
+Valoriser les compétences des techniciens locaux en leur offrant une meilleure visibilité et un espace pour présenter leurs services, tarifs et disponibilités.
+Moderniser la relation client-prestataire grâce à des outils numériques tels que la messagerie intégrée, les notifications et les devis en ligne, favorisant la transparence et la confiance.
+Garantir la qualité des interventions à travers un système d
+évaluation et de retour d
+expérience permettant de juger les prestations des techniciens.
+Intégrer une intelligence artificielle capable d
+analyser les pannes, de proposer un diagnostic initial et d
+orienter vers les techniciens les plus adaptés.
+Réduire le stress en situation d
+urgence en permettant la localisation rapide des techniciens disponibles à proximité pour une intervention rapide.
+Stimuler l
+économie locale en valorisant les artisans de proximité et en facilitant l
+accès à une clientèle plus large.
+Offrir un gain de temps et de confort aux utilisateurs grâce à une recherche simplifiée et un accès rapide aux services de dépannage.
+
+OBJECTIFS DU PROJET
+Objectif général
+L
+objectif de ce projet est de simplifier l
+accès aux services de dépannage à domicile en mettant en relation directe les clients avec des techniciens qualifiés à travers une plateforme numérique intelligente.
+
+Objectifs spécifiques
+Les objectifs spécifiques de ce projet sont :
+Permettre aux utilisateurs de signaler facilement une panne via une interface simple et intuitive.
+Intégrer un système d
+intelligence artificielle capable d
+analyser la description des pannes et de proposer un premier diagnostic.
+Améliorer la rapidité de mise en relation entre les clients et les techniciens disponibles et proches.
+Mettre à disposition des profils de techniciens détaillés (compétences, localisation, disponibilité et avis).
+Faciliter la communication entre clients et techniciens grâce à une messagerie intégrée.
+Assurer un système d
+évaluation et de notation des techniciens après chaque intervention.
+Optimiser la gestion des interventions afin de réduire les délais et améliorer la qualité du service.
+
+BENEFICIAIRES ET CIBLES
+Cibles
+Le projet de plateforme intelligente de mise en relation entre clients et techniciens de dépannage s
+adresse à plusieurs catégories d
+utilisateurs.
+Les particuliers : ils représentent les principaux utilisateurs de la solution. Ils pourront facilement solliciter un technicien en cas de panne domestique et accéder rapidement à des professionnels qualifiés. La plateforme leur évite les recherches longues et incertaines et leur permet de se baser sur des informations fiables comme les avis et la disponibilité.
+Les techniciens de dépannage : ils constituent l
+offre de service du système. Grâce à la plateforme, ils peuvent gagner en visibilité, recevoir davantage de demandes et mieux organiser leur activité. Cela leur permet également d
+élargir leur clientèle et d
+améliorer leur rentabilité.
+
+Bénéficiaires
+Le projet de plateforme intelligente de mise en relation entre clients et techniciens de dépannage profite à plusieurs acteurs :
+L
+économie locale et la communauté : en valorisant les artisans et techniciens de proximité, la plateforme contribue au développement des services locaux. Elle favorise les prestations de proximité, réduit la dépendance aux structures éloignées et renforce les échanges économiques au sein des communautés.
+Les clients : ils bénéficient d
+un accès rapide et simplifié à des services de dépannage fiables. La plateforme leur offre plus de transparence sur les tarifs, une meilleure traçabilité des interventions ainsi qu
+un suivi des prestations. Elle améliore également la gestion des situations d
+urgence et réduit les risques liés à des prestataires non qualifiés grâce aux profils vérifiés et aux évaluations.
+Les techniciens : ils profitent d
+une meilleure visibilité et d
+un accès élargi à la clientèle. La plateforme leur permet d
+augmenter leurs opportunités de travail, de mieux organiser leurs interventions et de professionnaliser leur activité. Elle contribue aussi à sécuriser les échanges et à simplifier la gestion de leur relation avec les clients.
+
+EXPRESSION DES BESOINS
+BESOINS FONCTIONNELS
+L'architecture fonctionnelle de la plateforme TechLink a été pensée pour répondre aux parcours spécifiques de quatre profils d'acteurs distincts.
+A. Besoins du Visiteur (Utilisateur non authentifié)
+Inscription et Authentification : Création de compte sécurisée par email/mot de passe avec choix du rôle (Client ou Technicien).
+Sécurisation des routes : Redirection automatique vers la page de connexion pour tout utilisateur non connecté (écran Splash).
+B. Besoins du Client
+Gestion du profil utilisateur : Modification des informations personnelles, gestion de la sécurité (mot de passe) et paramètres de l'application.
+Pré-diagnostic assiste par IA :
+Saisie d'un problème technique (texte).
+Upload de photos pour l'analyse visuelle de la panne.
+Génération d'un diagnostic, des causes possibles et des solutions immédiates par l'IA.
+Création de mission : Lancement d'une recherche de technicien basée sur les résultats de l'analyse IA.
+Suivi de l'intervention : Écran dédié au suivi en temps réel du statut de la mission en cours.
+Communication en temps réel :
+Chat textuel intégré.
+Appels Audio VoIP pour parler directement au technicien.
+Historique des appels (entrants, sortants, manqués).
+Historique : Consultation de la liste de toutes les missions passées.
+C. Besoins du Technicien
+Gestion des Abonnements : Obligation de choisir et de payer un plan d'abonnement via Mobile Money pour activer le compte et pouvoir recevoir des missions.
+Statut de Validation : Écran de blocage ("En attente de validation") tant que l'administrateur n'a pas vérifié les documents.
+Tableau de bord et Disponibilité : Bouton switch pour passer "En ligne" ou "Hors ligne" afin de gérer la réception des demandes.
+Gestion des demandes : Réception des offres de mission, avec possibilité d'accepter ou de refuser.
+Communication avec le client : Accès au chat textuel et réception/émission d'appels audio .
+Suivi financier : Écran "Revenus" affichant les statistiques des gains et l'historique des interventions réalisées.
+Gestion du profil : Modification de la bio, de l'expérience et des spécialités.
+D. Besoins de l'Administrateur (Back-office mobile)
+Tableau de bord Global : Affichage des statistiques de base de la plateforme.
+Modération des Techniciens :
+Liste des techniciens "En attente", "Approuvés" et "Rejetés".
+Consultation détaillée du profil d'un technicien (informations, visualisation des documents uploadés).
+Boutons d'action pour Approuver ou Rejeter définitivement un profil.
+
+BESOINS NON FONCTIONNELS
+Outre ses fonctionnalités métiers, TechLink doit satisfaire des exigences techniques et qualitatives fondamentales pour son exploitation en production :
+Confidentialité : garantir que seules les personnes autorisées peuvent accéder aux informations et aux données du système.
+Intégrité : garantir que les données restent exactes, fiables et ne sont pas modifiées ou altérées sans autorisation.
+Disponibilité : assurer que les données, les services et les fonctionnalités du système restent accessibles aux utilisateurs autorisés lorsqu
+ils en ont besoin.
+Authentification : vérifier l
+identité des utilisateurs avant de leur permettre d
+accéder aux ressources du système.
+Non-répudiation : garantir qu
+une personne ne puisse pas nier avoir effectué une action ou réalisé une opération sur le système.
+Performances et Faible Latence : Le système exige un temps de réponse minimal pour gérer les urgences. Le pré-diagnostic IA s'appuie sur l'API Groq pour une inférence ultra-rapide. La messagerie et l'audio (WebRTC) fonctionnent en temps réel, tandis que Flutter assure une fluidité d'interface à 60 FPS.
+Ergonomie (UI/UX) : L'interface est intuitive et épurée pour limiter le stress du client en situation de panne. Elle respecte les standards mobiles (Material Design/Cupertino), est parfaitement "Responsive" et intègre le mode sombre (Dark Mode) pour le confort visuel.
+Robustesse et Tolérance aux pannes : L'application intercepte les anomalies (perte réseau, refus GPS, latence API) pour afficher des messages clairs sans jamais provoquer de crash applicatif.
+Évolutivité (Scalabilité) : L'architecture décentralisée séparant le frontend (Flutter) du backend cloud (Supabase et Node.js) garantit au système de pouvoir absorber une forte montée en charge sans nécessiter de refonte logicielle.
+
+PLANNIFICATION DU PROJET
+Cette étape nous permettra de représenter la répartition des tâches sur des intervalles de temps bien définis. Pour cette planification, nous ferons recours au logiciel Gantt Project. Nous obtiendrons donc un chronogramme de Gantt qui représentera visuellement l
+état d
+avancement de nos différentes tâches.
+DEROULEMENT
+Le diagramme de Gantt est un outil qui permet sur un même plan de faire apparaitre les taches d
+un projet sur leur ordonnancement et dépendance ainsi que le suivit de l
+avancement et les ressources affectées.
+
+
+
+
+
+
+
+
+
+
+DIAGRAMME DE GANTT
+
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme de Gantt
+
+ESTIMATION DU COUT DU PROJET
+Ressources logicielles
+Tableau 
+ SEQ Tableau \* ARABIC 
+:ressources logicielles du projet (source : mercuriale des prix 2026)
+Ressources
+Description
+Coût (FCFA)
+Windows 11 Pro
+Système d'exploitation
+Microsoft Office 2021 Professionnel
+Suite bureautique pour la rédaction du rapport
+Sybase PowerAMC
+Logiciel de conception et modélisation UML
+Visual Studio Code
+Environnement de développement intégré (IDE)
+- (Open Source)
+GitHub
+Plateforme d'hébergement et de gestion des versions
+- (Gratuit)
+Supabase (PostgreSQL)
+Système de gestion de base de données en Cloud
+- (Tier gratuit)
+API Groq (Modèle IA)
+Service Cloud pour le pré-diagnostic intelligent
+- (Gratuit)
+API CamerPay
+Interface de paiement Mobile Money
+- (Gratuit)
+TOTAL GLOBAL ESTIMÉ
+Coût total du projet selon la Mercuriale
+
+RESSOURCES MATERIELLES
+Tableau 
+ SEQ Tableau \* ARABIC 
+:ressources matérielles du projet (source : mercuriale des prix 2026)
+Ressources
+Description
+Coût estimé (FCFA)
+Ordinateur portable Lenovo
+Machine de développement principale (AMD Ryzen 3 4300U, 12 Go de RAM, carte graphique Radeon)
+Smartphone Android
+Appareil physique pour les tests de l
+application mobile en conditions réelles
+Disque SSD externe 1 To
+Stockage et sauvegarde du projet, des bases de données, des fichiers et des versions de l
+application
+Routeur Wi-Fi
+Mise en place d
+un réseau local pour les tests de communication et de connectivité de l
+application
+Onduleur
+Protection de l
+ordinateur et des équipements contre les coupures et variations de tension pendant le développement
+Casque avec microphone
+Tests des fonctionnalités audio et des appels vocaux de TechLink
+Câble USB / accessoires de connexion
+Connexion du smartphone à l
+ordinateur et transfert de fichiers lors des tests
+TOTAL MATÉRIEL
+
+RESSOURCES HUMAINES
+Tableau 
+ SEQ Tableau \* ARABIC 
+:ressources humaines du projet (source : mercuriale des prix 2026)
+Fonction
+Quantité
+CU/jour (en FCFA)
+Durée (en jours)
+Total (en FCFA)
+Analyste / Concepteur
+Designer (UI/UX)
+Développeur Frontend
+Développeur Backend
+Testeur (QA)
+Formateur
+TOTAL
+60 Jours
+
+ESTIMATION GLOBALE DU PROJET
+Tableau 
+ SEQ Tableau \* ARABIC 
+:estimation globale du cout du projet (source : mercuriale des prix 2026)
+Désignations
+Montant
+Ressources logicielles
+Ressources matérielles
+Ressources humaines
+Imprévus (fourchettes 10%/total)
+TOTAL
+
+CONTRAINTE DU PROJET
+Les contraintes font référence non pas aux obstacles, mais plutôt aux exigences qui nous ont été données par notre encadreur pour le travail que nous devons fournir. Pour ce faire nous pouvons les classer de la manière suivante :
+Cout
+La réalisation de notre projet requerra un investissement global de 2 953 500 francs CFA, couvrant les coûts de personnel, de matériel et de logiciels, pour assurer son succès et répondre aux attentes. 
+Qualité 
+La qualité principale de l'application TechLink réside dans sa capacité à répondre parfaitement et efficacement aux exigences des particuliers ainsi qu'à celles des techniciens, en leur offrant une plateforme fiable et totalement adaptée à leurs besoins respectifs.
+
+Delai
+La réalisation de l
+application mobile TechLink est prévue sur une durée de trois mois, correspondant à la durée du projet. Ce délai constitue la période accordée pour réaliser l
+ensemble des travaux liés au développement de l
+application.
+
+LES LIVRABLES
+Après avoir développé et clôturé notre travail, nous devons fournir des biens livrables :
+Un rapport de fin de stage compose de :
+Un dossier de l
+existant
+Un cahier des charges 
+Un dossier d
+analyse 
+Un dossier de conception
+Un dossier de réalisation
+Un dossier des tests et de fonctionnalité 
+Un guide d
+installation et d
+utilisation
+Le code source du projet 
+
+
+DOSSIER III : DOSSIER D
+ANALYSE
+
+
+RESUME 
+Le dossier d
+analyse a pour but d
+affiner le choix de la méthode / démarche à utiliser tout au long du projet. Il permet dans la même lancée de faire comme son nom l
+indique une analyse détaillée du projet à mettre en 
+
+METHODOLOGIE ET LANGAGE D
+ANALYSE
+L
+analyse est une étape fondamentale dans la conception d
+un logiciel. C
+est la base de tous travaux de réalisation de système d
+information. Un système d
+information est un système organisé de ressources, de personnes, et de structures qui évoluent dans une organisation et dont le comportement coordonné vise à atteindre un but commun. Plusieurs méthodes de langages ont été développées pour faciliter et normaliser l
+analyse et la conception des systèmes d
+information parmi lesquels nous avons principalement UML (Unified Modelling Language) et MERISE.
+ETUDE COMPARATIVE UML ET MERISE
+L
+analyse est une étape fondamentale dans la conception d
+un logiciel. C
+est la base de tous travaux de réalisation de système d
+information. Un système d
+information est un système organisé de ressources, de personnes, et de structures qui évoluent dans une organisation et dont le comportement coordonné vise à atteindre un but commun. Plusieurs méthodes de langages ont été développées pour faciliter et normaliser l
+analyse et la conception des systèmes d
+information parmi lesquels nous avons principalement UML et MERISE. MERISE (Méthode d
+Étude et de Réalisation Informatique pour les Systèmes d
+Entreprise) est une méthode d
+analyse, de conception structurelle et de réalisation des systèmes d
+informations très utiles notamment dans les entreprises françaises. Elle est basée sur la séparation des données et des traitements à effectuer en plusieurs modèles conceptuels et physiques. Son but principal est d
+arriver à concevoir un système d
+information (SI). C
+est une méthode systémique d
+analyse et de conception de SI qui propose de considérer le système réel selon deux points de vue : une vue statique (données) et une vue dynamique (traitement). UML quant à lui, est un langage de modélisation des systèmes standards, qui utilise des diagrammes pour présenter chaque aspect d
+un système en s
+appuyant sur la notion d
+orienté objet qui est un véritable atout pour ce langage. UML propose donc une approche différente de celle de MERISE en ce sens qu
+il associe les données aux traitements. En effet, avec UML, centraliser les données d
+un type de traitement associé permet de limiter les points de maintenance dans le code et faciliter l
+accès à l
+information en cas d
+évolution de logiciel. De plus, UML décrit la dynamique du système d
+information comme un ensemble d
+opérations attachées aux objets du système
+
+
+
+Tableau 
+ SEQ Tableau \* ARABIC 
+:comparaison entre merise et uml
+CARACTERISTIQUE 
+MERISE 
+Domaine d'Application 
+Principalement utilisé en France. 
+Utilisé à l'échelle internationale. 
+Méthode 
+Structurée, séparation des données et des traitements. 
+Orientée objet, données associées aux traitements. 
+Concept de Base 
+Modèles conceptuels et physiques. 
+Diagrammes pour représenter les aspects du système. 
+Vue Statique 
+Modèle Entité-Relation (MER), modèle de données. 
+Diagramme de classes. 
+Vue Dynamique 
+Modèle de traitement (MOT). 
+Diagrammes de séquence, d'activités, d'états, etc. 
+Données 
+Centrées sur les données, puis les traitements. 
+Données associées aux traitements. 
+Maintenance du 
+Code 
+Plusieurs points de maintenance dans le code. 
+Moins de points de maintenance grâce à la centralisation des données. 
+Evolution du 
+Logiciel 
+Plus complexe en cas d'évolution du logiciel. 
+Plus flexible pour les évolutions. 
+Atouts 
+Approche structurée, adaptée aux entreprises françaises. 
+Notion d'orienté objet, adaptée à une variété de domaines. 
+Diagrammes 
+Principaux 
+Modèle Entité-Relation (MER), modèle des traitements (MOT). 
+Diagramme de classes, diagramme de séquence. 
+Utilisation 
+Courante 
+Utilisé principalement en France dans les années 80 et 90. 
+Utilisé dans le monde entier dans l'industrie informatique moderne. 
+
+CHOIX ET PRESENTATION DE LA DEMARCHE D
+ANALYSE
+Après cette étude comparative entre les méthodes UML et MERISE, notre choix sera porté sur la méthode UML. 
+Commençons par définir ce qu
+est UML :
+UML (Unified Modeling Language) est un langage de modélisation visuel normalisé, utilisé pour représenter, spécifier, construire et documenter les éléments d
+un système logiciel. Il ne s
+agit pas d
+un langage de programmation, mais d
+un langage graphique qui permet de créer des modèles compréhensibles par les développeurs, analystes, concepteurs et autres acteurs d
+un projet.
+Historique d
+UML
+UML a été créé dans les années 1990 par Grady Booch, Ivar Jacobson et James Rumbaugh, surnommés les 'Three Amigos'. Ils ont unifié leurs méthodes respectives (Booch, OMT : Object Modeling Technique et OOSE : Object Oriented Software Engineering) pour proposer un langage standard de modélisation orientée objet. En 1997, l
+OMG (Object Management Group) a adopté UML comme standard officiel.
+Pourquoi UML ?
+Notre choix s
+est porté sur UML car il offre un langage commun et visuel permettant de représenter un système de manière abstraite et structurée. Il facilite la communication entre les équipes techniques et non techniques, et permet de documenter les systèmes avant, pendant et après leur développement. 
+Avantage d
+UML
+En plus de cela il est également étayé par de nombreux avantage notamment :
+Le fait qu
+il puisse servir de base pour générer du code ou documenter un projet : UML permet de générer automatiquement du code à partir des modèles, ce qui accélère le processus de développement logiciel et réduit les erreurs. Ses modèles servent de documentation pour le système, fournissant des informations détaillées sur la structure, le comportement et les relations entre les différents éléments du dit système.
+Le fait qu
+il soit un langage standard et reconnu au niveau international : cela garantie une interopérabilité un diagramme UML créer par une équipe au Cameroun peut etre compris et lu sans ambigüité par une équipe en inde, aux Etats-Unis ou ailleurs
+Le fait qu
+il supporte l
+approche orientée objet et la conception modulaire : cela signifie qu
+il permet de représenter un système sous forme de classe et d
+objets qui regroupent à la fois les attributs et les méthodes ce qui correspond directement aux concepts de la programmation objet
+Inconvénient d
+UML
+UML n
+est pas non plus sans faille etant donné il possède aussi ses propres inconvénients on peut citer entre autres :
+Peut-être complexe et difficile à apprendre pour les débutants : UML comprend de nombreux types de diagramme, de notion et de notation spécifique pour un débutant ça peut sembler difficile et ralentir l
+adoption de celui-ci.
+N
+impose pas de méthodologie précise, ce qui peut mener à des interprétations différentes : UML laisse place à une certaine interprétation subjective, ce qui signifie qu'un diagramme peut être compris différemment par différentes personnes.
+Peu adapter aux petites équipes ou aux projets simples : pour des projets de faible envergure, l
+utilisation d
+UML peut sembler disproportionnée la modélisation peut alors être perçue comme une perte de temps plutôt qu
+un gain  
+La version d
+UML utilisée ici est la version 2.5.1 qui compte quatorze (14) diagrammes, et une division du système en deux (02) grandes vues :
+La vue statique composée des diagrammes UML structurels qui représente le système physiquement et comporte six (07) diagrammes
+Diagramme de classe
+Diagramme de composants
+Diagramme de structures composite
+Diagramme de déploiement
+Diagramme d
+objets
+Diagramme de packages
+Diagramme de profil
+La vue dynamique constituée des diagrammes UML comportementaux qui représente les interactions effectuées dans le système, elle comporte sept (07) diagrammes :
+Diagramme d'activité
+Diagramme de communication
+Diagramme global d
+interaction
+Diagramme de séquence
+Diagramme d'états-transition
+Diagramme de temps
+Diagramme de cas d
+utilisation
+UML étant un langage formel et normalisé, il est un bon support de communication dans l
+élaboration d
+une solution informatique, sa polyvalence et sa souplesse font de lui un langage universel. Pour développer des solutions, on a besoin de lui associer une méthode générique qui s
+attache à ses diagrammes. Il en existe plusieurs :  XUP (Unified process), RUP (Rational Unified Process), FDD (Feature Driven Development), etc
+
+ETUDE COMPARATIVE DES PROCESSUS UNIFIES
+La maîtrise des processus de développement implique une organisation et un suivi des activités : c
+est ce à quoi s
+attachent les différentes méthodes qui s
+appuient sur l
+utilisation du langage UML pour modéliser un système d
+information. UP (Unified Process) est une méthode générique de développement de logiciel. Générique signifie qu'il est nécessaired'adapter UP au contexte du projet, de l'équipe, du domaine et/ou de l'organisation (exemple : R.U.P, U.P, AUP, 2 TUP
+).
+Tableau 
+ SEQ Tableau \* ARABIC 
+: comparaison processus unifiés
+Processus unifier
+description
+avantages
+limites
+Rational Unified Process (RUP)
+Développé par Rational Software, RUP est l'une des implémentations les plus complètes et structurées du Unified Process. Il est basé sur une approche itérative et incrémentale 
+tres bon choix pour les projets de grande envergure et critiques où une structure rigoureuse, une documentation complète et une planification détaillée sont nécessaires 
+Lourdeur
+documentaire, cout élevé, complexité.
+Unified Process (UP)
+Cadre processus générique, UP est le fondement dont dérivent tous les autres processus unifiés. Il définit une approche itérative centrée sur l'architecture et les cas d'utilisation. 
+ tres bon choix pour comprendre les fondamentaux des processus itératifs. En tant que cadre générique
+il doit être adapté et n'est pas directement un choix de "flexibilité"
+Agile Unified Process (AUP)
+Créé par Scott Ambler, AUP est une adaptation agile du Unified Process qui vise à conserver sa structure de base tout en adoptant les valeurs et principes agiles.
+tres bon choix pour les projets nécessitant agilité et structure légère, sans la lourdeur du RUP. Idéal pour les équipes voulant un juste équilibre entre framework et flexibilité
+Moins adapté aux
+projets très réglementés ou complexes.
+
+
+
+
+
+Two Tracks Unified Process(2TUP) 
+Approche à double voie qui sépare explicitement les activités de découverte (track exploratoire) et de production (track d'exécution). Cette variante permet de mieux gérer l'incertitude et l'innovation en parallèle du développement proprement dit.
+Tres bon choix pour les projets innovants avec beaucoup d'incertitude, nécessitant une séparation claire entre la recherche de solution (track exploratoire) et le développement (track de production).
+Risque de
+Désynchronisation
+entre les deux branches.
+OUP/ Open UP
+Version open-source et gratuite du UP, simplifiée et personnalisable.
+Gratuit, accessible,
+adaptable
+Support limité,
+moins d
+outils
+intégrés.
+
+OIX ET PRESENTATION DU PROCESSUS
+Pour la réalisation de la plateforme TechLink, notre choix s'est porté sur le processus 2TUP (Two-Track Unified Process). Il s'agit d'une adaptation pragmatique du processus unifié (UP) qui organise le développement en cycles itératifs. Comme tout processus unifié, il s'articule autour de 4 grandes phases (Inception, Élaboration, Construction et Transition), elles-mêmes découpées en itérations. Cependant, la grande particularité et la force du 2TUP résident dans sa capacité à dissocier les aspects techniques des aspects fonctionnels du système. Les activités de développement s'y organisent suivant 5 workflows principaux : la capture des besoins, l'analyse, la conception, l'implémentation et les tests.
+Concrètement, après une étude préliminaire visant à identifier les acteurs (Client, Technicien, Administrateur), modéliser le contexte et rédiger le cahier des charges, le processus 2TUP se sépare en une architecture en forme de "Y", articulée autour de 3 branches essentielles :
+1. La branche fonctionnelle (Track fonctionnel) : Elle permet de se concentrer exclusivement sur le métier et les besoins des utilisateurs, indépendamment des technologies utilisées. Dans le cadre de TechLink, cette branche a permis d'analyser en profondeur le processus de dépannage à domicile, les règles de gestion des devis, et le parcours de géolocalisation des techniciens, afin de garantir une expérience utilisateur (UX) optimale et sans friction.
+2. La branche technique (Track technique) : Elle se concentre sur les contraintes technologiques, l'architecture et les choix d'infrastructure. Pour TechLink, cette branche a été primordiale afin de valider et d'intégrer notre stack technologique complexe : le framework mobile hybride (Flutter), le backend et la gestion temps réel de la base de données (Supabase), l'intégration du paiement par Mobile Money (CamerPay) et l'utilisation de l'intelligence artificielle pour le pré-diagnostic (API Groq).
+3. La phase de réalisation (La fusion du "Y") : C'est l'étape où la conception fonctionnelle (le "quoi") rencontre l'architecture technique (le "comment"). Elle consiste à assembler les éléments des deux branches précédentes pour entamer la phase de codage, aboutissant à la livraison d'une version robuste et fonctionnelle de l'application TechLink.
+Justification finale du choix : L'approche 2TUP est apparue comme une évidence pour TechLink. En effet, la complexité technique du projet (IA, paiements, géolocalisation) risquait de parasiter l'analyse des besoins métiers si les deux avaient été menés de front. Le 2TUP nous a permis de sécuriser l'architecture technologique très tôt, tout en affinant sereinement les processus métiers de mise en relation entre clients et techniciens.
+
+
+Source :
+ HYPERLINK "https://th.bing.com/" \h 
+https://th.bing.com/t
+h/id/OIP.C38r2RLmokcf35yBvOb3XQHaFK?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3 
+
+MODELISATION
+DIAGRAMME DES CAS D
+UTILISATION
+Les diagrammes de cas d
+utilisation identifient les fonctionnalités fournies par le système, ces fonctionnalités sont appelées ici cas d
+utilisations, les utilisateurs qui interagissent avec le système (acteurs), et les interactions entre ces derniers. C
+est une description de l
+ensemble des opérations que l
+utilisateur pourra effectuer dans le système. 
+Les cas d
+utilisations sont représentés par une ellipse contenant le nom du cas d
+utilisation. Un acteur et un cas d
+utilisation sont mis en relation par une association représentée par une ligne
+Tableau 
+ SEQ Tableau \* ARABIC 
+:formalisme diagramme de cas d'utilisation
+Composant du diagramme 
+Représentation Graphique 
+Acteur
+Cas d
+utilisation 
+Association 
+Trois types de relations sont pris en charge par la norme UML. Nous pouvons les distinguer dans le tableau ci-dessous : 
+Tableau 
+ SEQ Tableau \* ARABIC 
+:types de relation du diagramme de cas d'utilisation
+Type de relation 
+Description 
+Représentation graphique 
+Inclusion 
+Un cas 1 est un inclus dans un cas 2 si l'exécution du cas 1 passe obligatoirement par l
+exécution du cas 2. 
+Extension 
+On dit qu
+un cas 1 étend un autre cas 2 si la réalisation du cas 1 ajoute un ou plusieurs comportements à la réalisation du cas 2. 
+Généralisation 
+(Héritage) 
+Un cas 1 hérite d
+un cas 2 si le cas 1 en plus de réaliser complètement les actions du cas 2 réalise ou non d
+autres nouvelles actions. 
+
+
+
+
+
+
+
+
+
+DIAGRAMME DE CAS D
+UTILISATION GLOBALE
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme de cas d'utilisation global du système
+
+
+DIAGRAMME DU CAS SPECIFIQUE<<GERER SES MISSION>> POUR LE CLIENT
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:digramme du cas d
+utilisation créer mission
+Diagramme Du Cas Spécifique<< GERER SES MISSIONS>> pour le technicien
+
+ 
+DESCRIPTION TEXTUELLES
+Chaque cas d'utilisation, est associé à une série d'actions représentant la fonctionnalité voulue, ainsi que les stratégies à utiliser dans l'alternative où la validation échoue, ou des erreurs se produisent
+Le formalisme d
+une description textuelle est le suivant :  
+Tableau 
+ SEQ Tableau \* ARABIC 
+:formalisme description textuelle
+Le titre
+Résumé
+Brève description de l'objectif du cas d'utilisation.
+Acteurs
+Entités (humaines ou systèmes) qui interagissent avec le système.
+Responsable 
+Personne en charge du cas d'utilisation.
+Version
+Numéro de version de l
+application.
+Précondition 
+Conditions à remplir avant le déclenchement du cas d'utilisation.
+Scénario nominal
+Séquence principale des étapes d'exécution.
+Scénarios alternatifs
+Variantes ou chemins alternatifs du scénario principal.
+Post condition de succès 
+Résultat attendu si tout se passe bien.
+Post condition d
+échec 
+Conséquence en cas d'échec.
+
+Description textuelle du cas s
+authentifier
+Tableau 
+ SEQ Tableau \* ARABIC 
+: description textuelle de s'authentifier
+Titre
+S'authentifier
+Résumé
+Permet à un utilisateur de se connecter à son compte pour accéder aux fonctionnalités de l'application.
+Acteur
+Client, Technicien, Administrateur
+Responsable
+M. FEUNOU FOSSO Otniel
+Version
+Précondition
+L'utilisateur doit avoir installé l'application et posséder un compte valide.
+Scénario nominal
+1. L'utilisateur clique sur l'icône de l'application TechLink.
+2. Le système affiche la page de connexion.
+3. L'utilisateur remplit ses informations (email et mot de passe) et clique sur "Se connecter".
+4. Le système vérifie en local le format (type) des données saisies.
+5. Les données étant conformes, le système envoie la requête d'authentification à la base de données.
+6. Le SGBD renvoie une réponse au système.
+7. Le système interprète le résultat affiche un message de succès et connecte l'utilisateur à son espace.
+Scénarios alternatifs 
+4.a. Format de données non conforme : Si l'utilisateur saisit mal l
+email, le système affiche un message d'erreur de saisie locale et renvoie à l
+étape 3.
+7.a. Compte inexistant ou identifiants erronés : Le SGBD renvoie une réponse négative. Le système affiche un message d'erreur ("Identifiants incorrects") et renvoie à l
+étape 3.
+7.b. utilisateur bloquer : le SGBD envoie le résultat au système et l
+utilisateur est bloquer. Le système affiche le message d
+erreur (``utilisateur bloquer´´) et renvoie a l
+étape 3.
+Post-condition de succès
+L'utilisateur est connecté et redirigé vers l'interface correspondant à son rôle.
+Post-condition d
+échec
+L'utilisateur reste sur la page de connexion, aucun accès n'est accordé.
+
+     Description textuelle du cas créer mission
+Tableau 
+ SEQ Tableau \* ARABIC 
+:description textuelle du cas créer mission
+Titre
+Créer mission
+Résumé
+Permet à un client de décrire une panne (texte/voix), d'obtenir un pré-diagnostic IA, puis de soumettre la demande pour trouver un technicien.
+Acteur
+Client
+Responsable
+M. FEUNOU FOSSO Otniel
+Version
+Précondition
+Le client doit être authentifié sur l'application.
+Scénario nominal
+1. Le client clique sur 
+décrire mon problème
+ et accède à la page de description du problème.
+2. Le client sélectionne une catégorie ou le mode "Détection automatique", décrit sa panne (clavier/voix) et ajoute d'éventuelles photos et clique sur le bouton « Analyser avec l'IA ».
+3. Le système vérifie en local la validité de la saisie (min. 10 caractères) puis le système transmet les données à l'API d'Intelligence Artificielle (Groq).
+IA analyse le problème, confirme sa pertinence et renvoie un diagnostic.
+5. Le système valide le paramètre de pertinence Le système affiche l'écran présentant la solution IA au client.
+6. Le client clique sur « trouver un technicien » et confirme sa volonté de faire intervenir un technicien.
+7. Le système enregistre la demande (mission) dans la base de données et redirige le client vers la carte des techniciens disponibles.
+Scénarios alternatifs et d'exception
+3.a. Saisie invalide : Si le texte fait moins de 10 caractères, le système bloque l'envoi et demande de détailler le problème.
+4.a. Hors sujet : Si l'IA détecte que le texte ne correspond pas à une panne, le système affiche une alerte ("Problème non reconnu") et invite le client à reformuler.
+Post-condition de succès
+Le problème est pré-diagnostiqué, enregistré, et le client peut chercher un technicien.
+Post-condition d
+échec
+Le signalement est abandonné, la base de données reste intacte.
+
+	Description textuelle du cas envoyer le devis
+Tableau 
+ SEQ Tableau \* ARABIC 
+:description textuelle du cas envoyer le devis 
+Titre
+Envoyer devis
+Résumé
+Permet à un technicien d'estimer le coût d'une mission (main d'
+uvre, déplacement, pièces) et de transmettre cette proposition tarifaire au client pour validation.
+Acteur
+Technicien
+Responsable
+M. FEUNOU FOSSO Otniel
+Version
+Précondition
+Le technicien doit être authentifié sur l'application (s'authentifier).
+Scénario nominal
+1. Le technicien clique sur « Envoyer un devis ».
+2. Le système affiche le formulaire de devis.
+3. Le technicien saisit le montant et la description du devis et clique sur « Envoyer ».
+4. Le système vérifie le type de champs.
+5. Le système envoie les détails du devis via une requête API sécurisée.
+6. L'API effectue le traitement de la notification push.
+7. L'API renvoie le statut d'envoi au système.
+8. Le système envoie une requête d'insertion au SGBD pour créer le devis.
+9. Le SGBD enregistre les données.
+10. Le système affiche un message de confirmation.
+Scénarios alternatifs et d'exception
+4.a. Si champs incorrects : Après l'étape 4, si la vérification échoue, le système affiche un message d'erreur "Veuillez détailler davantage votre devis" au technicien et le renvoie à l
+étape 3.
+Post-condition de succès
+Le devis est enregistré dans le SGBD et le statut d'envoi de l'API est validé.
+Post-condition d
+échec
+Le processus s'arrête, aucune donnée n'est envoyée à l'API ni enregistrée dans le SGBD.
+
+DIAGRAMME DE COMMUNICATION
+Un diagramme de communication dans le langage de modélisation unifié fait référence à un graphique qui représente le flux de messages dans un système. En un mot, il montre comment les parties d
+un système interagissent ou, dans ce cas, communiquent entre elles. Comme tout autre diagramme, le diagramme de communication UML comporte également plusieurs composants qui constituent son intégralité. La bonne chose à propos de ce schéma est qu
+il peut être réalisé avec seulement quelques composants. 
+Tableau 
+ SEQ Tableau \* ARABIC 
+:formalisme diagramme de communication
+Composant  
+Description  
+Représentation 
+Acteur
+est une entité qui interagit avec le système ou qui est extérieur à lui. Sa représentation est identique à celui d
+un diagramme de cas d
+utilisation.         
+Objet 
+Il est représenté par un rectangle contenant le nom et le type de l'instance. 
+
+Objet 
+
+
+Les connecteurs 
+Les relations entre les lignes de vie sont appelées connecteurs et se représentent par un trait plein reliant deux lignes de vie. 
+Les messages 
+Désignent une communication particulière entre les lignes de vie, et sont généralement ordonnés selon un ordre de numéro croissant. 
+
+Diagramme de communication cas <<s
+authentifier>>
+
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme de communication du cas s'authentifier
+Diagramme de communication cas <<créer mission>>
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme de communication du cas créer mission
+Digramme de communication cas <<ENVOYER DEVIS>>
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme de communication du cas ENVOYER DEVIS
+DIAGRAMME DE SEQUENCE
+Les diagrammes de séquences sont des représentations graphiques des interactions entre les acteurs et le système selon un ordre chronologique dans la formulation UML. Le diagramme de séquences permet de décrire les interactions entre les objets au sein d
+un diagramme des cas d
+utilisation. Le diagramme de séquence énumère les objets horizontalement et le temps verticalement. Il modélise l
+exécution des différents modèles en fonction du temps. Dans ce diagramme, les objets et les acteurs sont énumérés en colonnes avec leur ligne de vie verticale indiquant la durée de vie de l
+objet.
+Le formalisme est le suivant : 
+Tableau 
+ SEQ Tableau \* ARABIC 
+:formalisme diagramme de séquence
+	Composant 	Description 	Représentation 
+Objet 
+Se décrit comme étant l
+instance d
+une classe 
+Acteur 
+agit d
+une personne qui interagit et communique avec le système. 
+Ligne de vie 
+La ligne de vie, représente le déroulement 
+temporel d'un processus. 
+Activation 
+agit ici du temps nécessaire pour qu
+un objet ou un acteur accomplisse une tâche, elle indique quand l
+objet effectue une action. 
+Message synchrone 
+ 
+On utilise ce symbole lorsqu
+un expéditeur doit attendre une réponse à un message avant de continuer. Le diagramme doit montrer à la fois l
+appel et la réponse
+
+
+Messages de retour asynchrones
+
+Les messages asynchrones ne nécessitent pas de réponse avant que l
+expéditeur ne continue. Seul l
+appel doit être inclus dans le diagramme.
+Message de retour
+ces messages sont des réponses aux appels.
+
+
+Exemple de diagramme de séquence : 
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:exemple de diagramme de séquence
+
+
+
+
+
+
+
+Diagramme de Séquence du cas <<s
+authentifier>>
+
+
+
+Diagramme de séquence du cas << créer mission>>
+
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme de séquence du cas créer mission
+
+
+
+Diagramme de séquence du cas <<envoyer le devis>> 
+
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+ : diagramme de séquence du cas payer devis
+
+
+
+
+
+DIAGRAMME D
+ACTIVITE
+Les diagrammes d'activités sont particulièrement adaptés à la description des cas d'utilisation. Plus précisément, ils viennent illustrer et consolider la description textuelle des cas d'utilisation. L
+usage général du diagramme d'activité permet de mettre l'accent sur les traitements et de formaliser graphiquement la séquence d
+actions réalisées dans un cas d'utilisation. 
+Tableau 
+ SEQ Tableau \* ARABIC 
+:formalisme diagramme d'activité
+Composant 	            Description 
+Représentation 
+Une action 
+Rectangle aux coins arrondis qui représente une opération élémentaire et instantanée 
+Une transition 
+Ligne qui représente le passage d
+une activité à une autre 
+ud initial 
+Cercle plein à partir duquel un flot débute dans un diagramme d
+activité 
+ SHAPE  \* MERGEFORMAT 
+ud final 
+ud de fin d'activité : un petit cercle plein marquant l
+arrêt l
+exécution de l'activité 
+enveloppante s'arrête 
+ SHAPE  \* MERGEFORMAT 
+ud de fin de flot : cercle vide barré d'une croix marquant l
+arrêt d
+un flot à 
+l'intérieur du diagramme 
+ SHAPE  \* MERGEFORMAT 
+Couloir 
+Les diagrammes d
+activités font intervenir les acteurs de chaque activité. Chaque activité sera placée dans une colonne (couloir) qui correspond à l
+acteur qui l
+effectue. 
+Barre de synchronisation 
+Barre horizontale sur laquelle convergent les activités qui sont exécutées en parallèle. 
+ SHAPE  \* MERGEFORMAT 
+
+
+
+Diagramme d
+activité cas <<s
+authentifier>>
+
+
+Diagramme d
+activité cas <<créer mission>>
+
+
+
+
+
+
+
+Diagramme d
+activité cas << envoyer devis >>
+
+
+DOSSIER IV : DOSSIER DE CONCEPTION
+
+RESUME 
+
+
+Le dossier de conception permet de modéliser dans son ensemble la solution proposée et de recueillir les informations nécessaires à la mise sur pied d
+une base de données complexes et efficaces. De ce fait il prévoit le système futur.
+
+PLAN 
+
+
+DIAGRAMME DE CLASSE
+Le diagramme de classe met en évidence d
+éventuelles relations entre ces classes. Le diagramme de classes comporte 6 concepts : classe, attribut, identifiant, relation, opération, généralisation/spécialisation. Ce diagramme est constitué des éléments suivants : 
+Classe :il s
+agit de la description abstraite à un ensemble d
+objet : elle définit leurs structures, leurs comportements et leurs relations. 
+L
+attribut : Il représente la modélisation d
+une information élémentaire représentée par son nom et format. 
+UML définit 3(trois) niveaux de visibilité pour les attributs : 
+Public (+) : l
+élément est visible par tous les clients de la classe. 
+Protégé (#) : l
+élément est visible que par les sous-classes ou les classes filles. 
+Privé (-) : l
+élément n
+est visible que par les objets de la classe auxquels il appartient. 
+L
+identifiant : c
+est un attribut particulier, qui permet de repérer de façon unique chaque objet, instance de la classe. 
+Multiplicité : elle définit le nombre d
+instance de la classe, elle est définie par un nombre entier ou un intervalle de valeur (1...1, 0...1, 1...*, 0...*). 
+Associations : Une association est une relation entre deux classes (association binaire) ou plus (association n-aire), qui décrit les connexions structurelles entre leurs instances. 
+Il existe plusieurs types de relations dont les plus connues sont les suivants : 
+Généralisation : : Relation d'héritage, dans laquelle les objets de l'élément spécialisé (Classe enfant) peuvent remplacer les objets de l'élément général 
+(Classe parent) 
+Agrégation : utilisé pour les relations de types « contenant / contenue » 
+
+La composition : La composition est un cas particulier de l
+agrégation dans laquelle la vie des composants est liée à celle des agrégats. 
+Le tableau suivant nous donne une liste assez détaillée du formalisme du diagramme de classe en un tableau :
+Tableau 
+ SEQ Tableau \* ARABIC 
+:formalisme diagramme de classe
+Elément 
+Représentation 
+Classe 
+Association 
+Composition 
+Agrégation 
+ SHAPE  \* MERGEFORMAT 
+Généralisation 
+Multiplicité 
+Modificateur d
+accès 
+
+
+
+
+
+
+
+
+
+
+
+
+ Diagramme de classe du système
+
+
+
+
+
+
+DIAGRAMME D
+ETAT TRANSITION
+Le diagramme d'états-transition est comme son nom l
+indique décrit les transitions entre les états et les actions que le système ou ses parties réalisent en réponse à un événement. Les diagrammes d'états-transitions permettent justement de spécifier les réactions d'une partie du système à des événements discrets. Un événement se produit à un instant précis et est dépourvu de durée.  
+Il est composé des éléments suivants : 
+Tableau 
+ SEQ Tableau \* ARABIC 
+:formalisme diagramme d'état transition
+
+Elément 
+Description 
+Représentation 
+Etat initial 
+Il s'agit de l'état dans lequel il se trouve lors de sa création. Est représenté par un point noir. 
+ SHAPE  \* MERGEFORMAT 
+Etat final 
+Correspond à une étape où l'objet n'est plus nécessaire dans le système et où il est détruit. Il se représente par un point entouré d
+un cercle. 
+Etat intermédiaire 
+Est une situation stable qui possède une certaine durée pendant laquelle un objet exécute une activité ou attend un 
+Événement. Il est représenté par un rectangle arrondi contenant son nom. 
+Transition 
+Une transition définit la réponse d'un objet à l'arrivée d'un événement. Elle est représentée par une flèche. 
+ 
+
+
+
+Diagramme d
+état transition de l
+objet compte
+
+
+
+
+
+Diagramme d
+état transition de l
+objet notification
+
+
+
+
+
+DIAGRAMME DE PAQUETAGE
+Les diagrammes de package (ou diagramme de paquetages) permettent de décomposer le système en catégories ou parties plus facilement observable s
+appelés « packages ». L'utilisation la plus courante pour les diagrammes de paquetages est d'organiser des diagrammes de Cas d'Utilisation et des diagrammes de Classes. Bien que l'utilisation des Diagrammes de Paquetages ne se limite pas à ces éléments UML. 
+Le formalisme est le suivant : 
+Composant 
+Description 
+Représentation 
+Package 
+Regroupement des cas d
+utilisation en catégorie 
+Merge
+Représente la fusion de deux packages. Le contenu du package cible est intégré au package source.
+Access
+Indique que les éléments d'un package ont accès aux éléments publics d
+un autre package.
+Import
+Permet à un package d
+importer les éléments publics d
+un autre package.
+Tableau 
+ SEQ Tableau \* ARABIC 
+:formalisme diagramme de paquetage
+
+
+Le diagramme paquetage de notre projet est le suivant :
+
+DOSSIER V : DOSSIER DE REALISATION
+
+
+RESUME 
+La réalisation consiste à la mise en 
+uvre de projets dans un langage de programmation conformément aux spécifications définies dans le dossier précédent. Elle renferme en son sein les diagrammes de composant et de déploiement. A la sortie de cette partie, il sera produit une documentation de programmation expliquant l
+architecture de la base de données et l
+architecture de notre code.
+
+PLAN 
+
+
+CHOIX DES TECHNOLOGIES
+Pour la réalisation de notre application nous avons utilisé des technologies récentes
+Il s
+agit entre autres de :
+Tableau 
+ SEQ Tableau \* ARABIC 
+:technologie choisis
+Outils logiciels
+Flutter
+Framework open-source développé par Google, utilisé pour créer l'application mobile native (Android et iOS) à partir d'une seule base de code avec des performances élevées.
+Langage de programmation orienté objet et optimisé pour la création d'interfaces utilisateur, utilisé par le framework Flutter.
+Node.js
+Environnement d'exécution JavaScript côté serveur, utilisé pour construire notre API Backend rapide, asynchrone et scalable.
+Supabase
+Plateforme Cloud de type "Backend-as-a-Service" (BaaS) utilisée pour la gestion de l'authentification sécurisée et l'accès aux données en temps réel.
+Groq AI
+Service Cloud d'Intelligence Artificielle reconnu pour sa vitesse d'inférence ultra-rapide, utilisé pour le module de pré-diagnostic automatisé des pannes.
+CamerPay / Campay
+API de paiement intégrée pour traiter les transactions financières locales via Mobile Money (MTN MoMo, Orange Money).
+GitHub
+Outils de gestion de versions et plateforme de collaboration en ligne, utilisés pour l'hébergement et le suivi des modifications du code source.
+Visual Studio Code
+Environnement de développement intégré (IDE) léger et extensible, utilisé pour l'écriture et le débogage de l'ensemble du code source.
+
+	Architecture physique et logique du système 
+
+ARCHITECTURE PHYSIQUE
+Notre plateforme de connexion directe client-technicien en cas de pannes domestiques est structurée selon une architecture client-serveur N-tiers. Cette approche distribuée et modulaire permet une séparation claire des responsabilités entre la couche de présentation (client lourd), la couche applicative, la couche de données et les services cloud externes. Elle garantit ainsi une meilleure maintenabilité, une évolutivité accrue et une haute disponibilité du système.
+Client Lourd (Application Mobile Flutter avec HTTPS) La couche cliente prend la forme d'une application mobile native (Android/iOS) développée avec le framework Flutter. Elle assure une connexion HTTPS obligatoire avec certificats SSL/TLS, garantissant le chiffrement de bout en bout des échanges. L'interface offre un design fluide (60 FPS), ergonomique et responsive. L'application intègre des mécanismes de validation locale et des interactions directes avec les capteurs matériels du téléphone (GPS) pour optimiser les performances avant toute sollicitation du réseau.
+Serveur d'Application (Node.js et Express) Le serveur Node.js, couplé au framework Express, constitue le c
+ur du Niveau 2 (Serveur d'Application). Il agit comme le moteur de la logique métier sécurisée. C'est lui qui orchestre les opérations sensibles, traite l'initialisation des paiements, valide les abonnements et sécurise les Webhooks. Il s'exécute de manière asynchrone, ce qui lui permet de traiter un très grand nombre de requêtes simultanées sans bloquer le processus principal.
+Serveur Base De Données (Supabase / PostgreSQL) Cette couche (Niveau 3) assure la gestion, la persistance et la sécurité des données. Elle s'appuie sur PostgreSQL hébergé dans le cloud Supabase. Son rôle est de garantir un stockage relationnel intègre. Elle gère également l'authentification des utilisateurs (Auth) et intègre des politiques de sécurité strictes au niveau des lignes (Row Level Security - RLS) pour s'assurer que chaque requête est légitime et cloisonnée.
+Serveur d'Intelligence Artificielle (Groq Cloud) Afin de ne pas surcharger le serveur d'application principal, le traitement cognitif lourd est délégué à ce tiers externe. L'API Groq analyse les descriptions textuelles des pannes envoyées par les clients et renvoie un pré-diagnostic intelligent avec une latence d'inférence ultra-faible, garantissant un temps de réponse quasi instantané en situation d'urgence.
+Serveur Transactionnel (CamerPay) Ce dernier niveau est dédié exclusivement à la sécurité et au traitement des flux financiers. Il s'agit d'une passerelle externe (API) qui gère l'interfaçage direct avec les opérateurs de Mobile Money (MTN, Orange). Il décharge notre système de la manipulation directe de fonds et notifie le serveur d'application de manière sécurisée (via Webhook) dès qu'un devis ou un abonnement est réglé avec succès.
+
+ARCHITECTURE LOGIQUE 
+L
+architecture logique que nous avons mise en place pour la plateforme TechLink repose sur une séparation claire des responsabilités entre la partie cliente et la partie serveur. Pour faciliter la maintenance, la modularité et l'évolutivité, nous avons opté pour une approche hybride : le modèle MVVM (Modèle-Vue-VueModèle) pour l'application mobile (Frontend) et le modèle MVC (Modèle-Vue-Contrôleur) pour le serveur (Backend).
+1. Architecture du Frontend (Application Mobile Flutter : MVVM)
+L'interface mobile utilise le patron de conception MVVM, parfaitement adapté à la nature réactive du
+framework Flutter.
+Le Modèle (Model) Le modèle représente les entités métiers (Clients, Techniciens, Missions, Devis) et la couche d'accès aux données. Dans notre projet, il est constitué des classes Dart situées dans les dossiers models/ et repositories/. Il encapsule la logique de communication avec les services externes (comme le SDK Supabase ou l'API Groq) et structure les données avant de les transmettre.
+La Vue (View) La vue correspond à l'interface graphique de l'application (les écrans interactifs). Développée à l'aide des "Widgets" Flutter, elle est responsable de l'affichage des informations et de la capture des actions de l'utilisateur (clics, formulaires, géolocalisation). La vue est "passive" : elle ne contient aucune logique métier complexe.
+Le VueModèle (ViewModel / Provider) C'est le chef d'orchestre côté client. Implémenté via le système de Providers dans Flutter, il fait le lien entre le Modèle et la Vue. Le VueModèle maintient l'état de l'application (ex: le statut d'une intervention). Dès qu'une donnée change dans le Modèle, le VueModèle notifie automatiquement la Vue qui se met à jour en temps réel sans rechargement manuel.
+2. Architecture du Backend (Serveur Node.js/Express : MVC)
+Le serveur applicatif utilise l'architecture standard MVC, optimisée pour la conception d'API RESTful.
+Le Modèle (Model) Ici, le modèle gère la persistance et l'intégrité des données critiques (notamment les transactions financières). Il traduit les requêtes de l'application en commandes compréhensibles par notre base de données PostgreSQL (via Supabase).
+Le Contrôleur (Controller) Le contrôleur contient le c
+ur de la logique métier sécurisée (ex: subscriptionController.js). Il reçoit les requêtes HTTP (via le routeur routes.js), applique les règles de gestion (vérification des paiements CamerPay, validation des abonnements), met à jour le Modèle, puis prépare la réponse à renvoyer.
+La Vue (View) Dans le contexte de notre API Node.js, la "Vue" ne représente pas une page HTML, mais correspond à la réponse standardisée au format JSON. C'est cette structure de données épurée qui est renvoyée et consommée par l'application mobile.
+Interactions globales du système
+Le cycle de vie d'une requête se déroule de la manière suivante :
+L'utilisateur interagit avec l'interface mobile (Vue Flutter).
+L'action est transmise au VueModèle (Provider), qui sollicite le Modèle pour formuler une requête HTTPS vers le serveur.
+Le routeur du Backend intercepte la requête et la transmet au Contrôleur Node.js approprié.
+Le Contrôleur exécute la logique métier et interroge le Modèle (base de données Supabase) si nécessaire.
+Le serveur prépare les données et les renvoie sous forme de réponse JSON (Vue de l'API).
+Le VueModèle du client reçoit ces données, met à jour son état interne, ce qui déclenche instantanément le rafraîchissement de la Vue sur le téléphone de l'utilisateur.
+
+DIAGRAMME DE DEPLOIEMENT 
+Le diagramme de déploiement est une vue statique qui sert à représenter l
+utilisation de l
+infrastructure physique par le système. Et la manière dont les composants du système sont répartis ainsi que les relations entre eux.
+Le formalisme est le suivant : 
+Tableau 
+ SEQ Tableau \* ARABIC 
+:formalisme diagramme de paqueta
+Elément 	Description 	Représentation 
+Les composants 
+Il représente une entité logicielle du système (Fichier de code source, programmes, documents, fichiers de ressource, etc.). Un composant est représenté par une boîte rectangulaire avec deux rectangles dépassant du côté gauche portant le nom du composant. 
+Les n
+ud représente un ensemble d'éléments matériels du système. Cette entité est représentée par un cube tridimensionnel. 
+Les Associations 
+ 
+Une association, représentée par une ligne pleine entre deux n
+uds, indique une ligne de communication entre les éléments matériels. 
+Les dépendances 
+Une dépendance est utilisée pour mobiliser la relation entre deux composants. La notation utilisée pour cette relation de dépendance est une flèche de pointillés. 
+ SHAPE  \* MERGEFORMAT 
+
+Diagramme de déploiement du projet 
+
+
+DIAGRAMME DE COMPOSANT
+Le diagramme de composants est principalement employé pour décrire les dépendances entre divers composants (les dépendances entre fichiers exécutables et les fichiers sources). Le diagramme de composants modélise les composants logiciels utilisés pour implémenter un système et l
+association entre ces composants 
+Le diagramme de composant décrit les composants et leurs dépendances dans leurs environnements de réalisation. A cet effet il est composé des éléments suivants : 
+
+Tableau 
+ SEQ Tableau \* ARABIC 
+: formalisme diagramme de composant
+Elément 	Description 	Représentation 
+Les Composants  
+Un composant représente une entité logicielle d'un système. Un composant est représenté par une boîte rectangulaire, avec deux rectangles dépassant du côté gauche. 
+Dépendances  
+Elles sont utilisées pour modéliser la relation entre deux composants. La notation utilisée pour cette relation de dépendance est une flèche pointillée, se dirigeant d'un composant donné au composant dont il dépend. 
+Interface (N
+Lien entre deux composants logiciels. Il en existe 2 : 
+Interface fournie 
+Interface requise 
+
+
+Exemple de diagramme de composants :
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+: exemple diagramme de composant
+Diagramme de composants logiciels du système
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme de composant
+
+
+
+
+
+
+DOSSIERS VI : DOSSIER DE REALISATION
+
+
+RESUME 
+Un test désigne une procédure de vérification partielle d'un système. Son objectif principal est d'identifier un nombre maximal de comportements problématiques du logiciel. Il permet ainsi, dès lors que les problèmes identifiés seront corrigés, d'en augmenter la qualité. 
+                      
+                                                    
+                                          PLAN 
+
+
+FONCTIONNALITES
+
+Authentification et Sécurité :
+S
+assurer que tous ceux qui accèdent au système ont la légitimité et les autorisations nécessaires (Connexion, Inscription, Déconnexion).
+Gestion du Profil (Client et Technicien) :
+Consulter son profil utilisateur
+Modifier ses informations personnelles
+Compléter son profil professionnel (pour le technicien)
+Soumettre son profil pour validation par l'administration (pour le technicien)
+Recherche et Diagnostic (Client) :
+Signaler une panne domestique
+Obtenir un pré-diagnostic instantané via l'Intelligence Artificielle
+Rechercher un technicien qualifié selon la catégorie de panne
+Consulter le profil et les avis d'un technicien
+Contacter un technicien (via chat ou appel)
+Gestion des interventions (Technicien) :
+Recevoir une notification de nouvelle mission
+Accepter ou refuser une mission proposée
+Localiser le client via le système GPS pour se rendre sur place
+Signaler le début et la fin de l'intervention
+Gestion de son intervention (Client) :
+Suivre le statut de son intervention en temps réel
+Valider la fin de son intervention
+Évaluer son intervention (laisser une note et un avis au technicien)
+Gestion des Devis (Client et Technicien) :
+Créer et envoyer un devis chiffré (Technicien)
+Consulter un devis reçu (Client)
+Accepter formellement un devis (Client)
+Refuser un devis (Client)
+Gestion des Paiements et Abonnements :
+Payer le montant du devis via Mobile Money (Client)
+Souscrire à un abonnement payant pour recevoir des missions (Technicien)
+Renouveler son abonnement via Mobile Money (Technicien)
+Consultations et Suivis (Client et Technicien) :
+Consulter ses notifications
+Consulter l'historique de ses interventions passées
+Gestion des comptes utilisateurs (Administrateur) :
+Ajouter un compte utilisateur
+Modifier un compte utilisateur
+Supprimer un compte utilisateur
+Désactiver un compte utilisateur temporairement
+Activer un compte utilisateur
+Vérifier les documents et confirmer un compte technicien (Validation)
+Rechercher un compte utilisateur
+
+TESTS 
+Un test logiciel est un processus qui consiste à évaluer et à vérifier si une application fait ce qu
+elle est censée faire. Le Comité Français des Test Logiciel (CFTL) identifie alors 4 niveaux de test à savoir : 
+Les tests unitaires 
+Ces tests portent sur une partie précise du logiciel (une fonction, une méthode, un module). Leur objectif est de vérifier le bon fonctionnement isolé de chaque élément d
+où le nom unitaire.
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:test unitaire de  Valider le format d'un e-ma
+Les tests d
+intégration Ces tests portent sur l'interaction entre plusieurs parties du logiciel ou avec des services externes (comme l'API de CamerPay). Leur objectif est de vérifier que ces éléments communiquent et fonctionnent correctement ensemble, d'où le nom d'intégration.
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:test intégration de camerpay
+Les tests système 
+Ces tests vérifient le comportement global de l
+application par rapport aux spécifications du cahier des charges. Ils incluent des scénarios proches de la réalité d
+utilisation, mais aussi des tests non fonctionnels (sécurité, performance, compatibilité, etc.). 
+Les tests d
+acceptation  
+Ils correspondent à la validation finale par les utilisateurs ou le client. Leur but est de confirmer que l
+application répond bien aux besoins exprimés. Ils permettent d
+obtenir un retour pertinent sur l
+ergonomie, la facilité d
+utilisation et l
+efficacité des fonctionnalités.
+
+
+
+
+
+DOSSIERS VII : GUIDE D
+UTILISATION
+
+
+RESUME 
+Le manuel d
+installation et d
+utilisation est le document établi après réalisation d
+une application, d
+un logiciel ou d
+une plateforme. Il renseigne sur la question « comment installer et utiliser le logiciel, l
+application ou la plateforme que l
+on a devant soi ? »
+
+PLAN 
+
+
+GUIDE D
+INSTALLATION
+	I.1. 	Langues 
+La langue par défaut de l'application TechLink sera le français, afin de s'adapter parfaitement aux techniciens et aux clients locaux.
+	I.2. 	Ressources nécessaires 
+Prérequis côté utilisateur (Client et Technicien) Avant toute utilisation de la plateforme, l
+utilisateur doit disposer de :
+Une connexion Internet stable (3G, 4G ou Wi-Fi).
+Une adresse email valide et un numéro de téléphone (pour la création du compte, la sécurisation et les notifications).
+Un compte Mobile Money (MTN ou Orange) actif pour pouvoir effectuer (clients) ou recevoir (techniciens) des paiements via l'intégration CamerPay.
+Accès à la plateforme
+Pour l'application Mobile : Télécharger et installer l'application officielle TechLink (via le fichier d'installation APK).
+Au lancement, l
+écran d
+accueil s
+affiche en proposant de Se connecter ou de Créer un compte (en choisissant le statut "Client" ou "Technicien").
+Sécurité et confidentialité
+Ne jamais partager ses identifiants de connexion ni ses codes de confirmation (OTP) lors des paiements.
+Déconnexion recommandée après chaque utilisation sur un appareil partagé ou public.
+Toutes les données (profils, transactions, historiques) sont stockées et protégées sur un serveur Cloud sécurisé (base de données Supabase, avec chiffrement des mots de passe, politiques RLS strictes et certificats SSL activés pour les communications).
+
+
+
+GUIDE D
+UTILISATION
+L'application TechLink est un outil numérique pensé pour simplifier la vie des ménages face aux pannes et besoins de réparation. Elle met en relation les particuliers avec des techniciens qualifiés, permettant de trouver rapidement une aide adaptée à chaque situation. En plus d
+accélérer la recherche de solutions, elle favorise une communication fluide entre utilisateurs, prestataires et services concernés. Ce guide vous accompagne pas à pas pour tirer pleinement profit de la plateforme.
+1. Accès à la plateforme et Connexion
+Ouvrir l'application mobile TechLink sur votre smartphone.
+L'application s'ouvre directement sur l'écran de connexion (Login).
+Connexion : Si vous avez déjà un compte, entrez simplement votre identifiant (e-mail ou téléphone) et votre mot de passe, puis validez.
+
+
+
+Redirection en fonction du rôle
+Une fois la connexion réussie, le système vous redirige vers une interface adaptée à votre rôle :
+Interface Client :
+
+
+
+Interface Technicien :
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Signaler une panne
+Une fois sur sa page principale, le client a la possibilité de signaler une panne ou d'exprimer un besoin spécifique.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Recherche automatique de techniciens
+Après le signalement, le système fait une recherche automatique (avec l'aide de l'IA de TechLink) pour trouver les techniciens disponibles dont le profil et les compétences correspondent exactement à la panne.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Contact et dépannage Le client peut alors consulter les détails du technicien, le contacter, accepter son devis et se faire dépanner en toute tranquillité.
+
+Figure 
+ SEQ Figure \* ARABIC 
+:page de localisation du client
+
+
+
+
+
+
+
+
+
+
+
+CONCLUSION GÉNÉRALE
+L'aboutissement de ce projet a été marqué par la conception et la mise en place d'une plateforme intelligente d
+assistance domestique. Celle-ci est destinée à résoudre les dysfonctionnements majeurs du secteur, notamment l'opacité tarifaire, l'imprévisibilité des délais et la difficulté à identifier des professionnels fiables. Afin de répondre à ces exigences, le déroulement de notre travail a suivi une démarche méthodologique rigoureuse, articulée autour de plusieurs phases clés. L'examen initial des pratiques existantes a d'abord permis d'établir avec précision les insuffisances du marché. Ensuite, l'élaboration du cahier des charges s'est avérée indispensable pour définir les acteurs impliqués ainsi que l'ensemble des fonctionnalités requises par la solution. L'analyse du système a par la suite été menée en employant le processus 2TUP couplé au langage UML, offrant ainsi une modélisation claire et technique des interactions entre les différentes composantes. Dans le prolongement de cette analyse, la conception détaillée a permis de structurer les données et d'isoler les modules fondamentaux de la plateforme. Enfin, la réalisation du prototype a exigé la sélection et l'intégration d'outils et de langages informatiques spécifiques. La conduite de ce travail a considérablement enrichi nos compétences techniques et analytiques. La solution développée ambitionne de rationaliser le marché du dépannage domestique en y garantissant la fiabilité et la rapidité des interventions. Par ailleurs, plusieurs axes d'amélioration sont d'ores et déjà planifiés pour les itérations futures, avec une attention particulière portée sur le renforcement de la sécurité et l'optimisation des performances globales du système
+BIBLIOGRAPHIE
+
+M. MEKWONTCHOU, Support de cours administration des Bases de données, Institut africain d
+Informatique 
+ Centre d
+Excellence Technologique Paul BIYA, (Non 
+M. ONDOUA, Support de cours implémentation des bases de données, Institut africain d
+Informatique 
+ Centre d
+Excellence Technologique Paul BIYA, (Non Publié) ;
+M. NNOMO, Support de cours Rédaction scientifique, Institut africain d
+Informatique Centre d
+Excellence Technologique Paul BIYA (Non Publié) ;
+Mme MESSU CYRIANE, Support de cours de IC3 en 1ere année Institut africain d
+Informatique Centre d
+Excellence Technologique Paul BIYA (Non Publié) ;
+M.ZEH, support de cours de UML, Institut africain d
+Informatique 
+ Centre d
+Excellence Technologique Paul BIYA, (Non Publié) ;
+
+
+WEBOGRAPHIE
+
+ 
+ HYPERLINK "https://www.prosygma-cm.com/cameroun-digitalisation-des-entreprises-dapres-le-gicam-81-des-entreprises-camerounaises-disposent-dun-site-internet/" 
+https://www.prosygma-cm.com/cameroun-digitalisation-des-entreprises-dapres-le-gicam-81-des-entreprises-camerounaises-disposent-dun-site-internet/
+ :source gicam (Consulté le 12 juillet 2026)
+
+ HYPERLINK "https://www.investiraucameroun.com/travaux-publics/0609-13185-avec-une-croissance-annuelle-de-7-4-jusqu-en-2028-le-marche-du-btp-au-cameroun-est-parmi-les-plus-dynamiques-d-afrique?utm_source=chatgpt.com" 
+https://www.investiraucameroun.com/travaux-publics/0609-13185-avec-une-croissance-annuelle-de-7-4-jusqu-en-2028-le-marche-du-btp-au-cameroun-est-parmi-les-plus-dynamiques-d-afrique?utm_source=chatgpt.com
+ : source sika (Consulté le 15 juillet 2026)
+
+ HYPERLINK "https://deskeco.com/2022/09/26/en-afrique-la-taille-de-leconomie-digitale-se-multipliera-par-six-dici-2050-712-milliards-endeavor" 
+https://deskeco.com/2022/09/26/en-afrique-la-taille-de-leconomie-digitale-se-multipliera-par-six-dici-2050-712-milliards-endeavor
+ : source endeavor (Consulté le 18 juillet 2026)
+
+ HYPERLINK "https://www.freepik.com/" 
+https://www.freepik.com/
+ : utilisé pour le téléchargement des images (Consultations régulières entre juillet et août 2026)
+
+ HYPERLINK "http://www.uml-sysml.org/diagrammes-uml-sysml/diagrammeml/usecasediagramme" 
+http://www.uml-sysml.org/diagrammes-uml-sysml/diagrammeml/usecasediagramme
+ : à partir de ce site, nous avons obtenu des informations concernant les diagrammes de cas d'utilisation (Consulté le 5 août 2026)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TABLE DES MATIÈRES
+
+
+DEDICACE	
+REMERCIEMENTS	
+SOMMAIRE	
+LISTE DES TABLEAUX	
+LISTE DES FIGURES	
+RESUME	
+ABSTRACT	
+LISTE DES SIGLES ET ABREVIATIONS	
+GLOSSAIRE	
+INTRODUCTION GENERALE	
+PARTIE 1 : PHASE D
+INSERTION	
+ HYPERLINK "C:\\Users\\Lenovo\\Desktop\\Rapport de stage niveau 3vvv.doc" \l "_Toc240893167" 
+I.ACCEUIL ET INTEGRATION EN ENTREPRISE	
+ HYPERLINK "C:\\Users\\Lenovo\\Desktop\\Rapport de stage niveau 3vvv.doc" \l "_Toc240893168" 
+II.PRESENTATION DE LA STRUCTURE	
+    INTRODUCTION	
+I.	ACCEUIL ET INTEGRATION ENTREPRISE	
+I.1 ACCUEIL	
+I.2 INTEGRATION	
+II.	PRESENTATION DE LA STRUCTURE	
+II.1.	Historique	
+II.2.	Situation géographique	
+II.3.	Mission	
+II.4.	Activité et réalisations	
+II.5.	Organisation et fonctionnement de la structure	
+a)	RESSOURCES MATERIELLES	
+b)	RESSOURCES LOGICIELLES	
+CONCLUSION	
+PHASE TECHNIQUE	
+DOSSIER I : DOSSIER DE L
+EXISTANT	
+I.	PRESENTATIONT DU PROJET	
+II.	ÉTUDE DE L
+EXISTANT	
+II.1	Description de l
+existant	
+II.1.a.	Les systèmes existants	
+III.	CRITIQUE ET LIMITE DE L
+EXISTANT	
+IV.	PROBLEMATIQUE	
+V.	PROPOSITION DE SOLUTION	
+DOSSIER II : CAHIER DES CHARGES	
+I.	CONTEXTE ET JUSTIFICATION DU PROJET	
+I.1	Contexte	
+I.2	Justification	
+II.	OBJECTIFS DU PROJET	
+II.1	Objectif général	
+II.2	Objectifs spécifiques	
+III.	BENEFICIAIRES ET CIBLES	
+III.1	Cibles	
+III.2	Bénéficiaires	
+IV.	EXPRESSION DES BESOINS	
+IV.1	BESOINS FONCTIONNELS	
+IV.2	BESOINS NON FONCTIONNELS	
+V.	PLANNIFICATION DU PROJET	
+V.1	DEROULEMENT	
+V.2	DIAGRAMME DE GANTT	
+VI.	ESTIMATION DU COUT DU PROJET	
+VI.1	Ressources logicielles	
+VI.1	RESSOURCES MATERIELLES	
+VI.2	RESSOURCES HUMAINES	
+VI.3	ESTIMATION GLOBALE DU PROJET	
+VI.	CONTRAINTE DU PROJET	
+VI.1	Cout	
+VI.2	Qualité	
+VI.3	Delai	
+VII.	LES LIVRABLES	
+DOSSIER III : DOSSIER D
+ANALYSE	
+I.	METHODOLOGIE ET LANGAGE D
+ANALYSE	
+I.1	ETUDE COMPARATIVE UML ET MERISE	
+I.2	ETUDE COMPARATIVE DES PROCESSUS UNIFIES	
+II.	MODELISATION	
+II.1	DIAGRAMME DES CAS D
+UTILISATION	
+II.2	DESCRIPTION TEXTUELLES	
+II.3	DIAGRAMME DE COMMUNICATION	
+II.4	DIAGRAMME DE SEQUENCE	
+II.5	DIAGRAMME D
+ACTIVITE	
+DOSSIER IV : DOSSIER DE CONCEPTION	
+I.	DIAGRAMME DE CLASSE	
+I.1	Diagramme de classe du système	
+I.2	DIAGRAMME D
+ETAT TRANSITION	
+II.1	Diagramme d
+état transition de l
+objet compte	
+II.2	Diagramme d
+état transition de l
+objet notification	
+I.3	DIAGRAMME DE PAQUETAGE	
+DOSSIER V : DOSSIER DE REALISATION	
+I.	CHOIX DES TECHNOLOGIES	
+II.	Architecture physique et logique du système	
+III.	DIAGRAMME DE DEPLOIEMENT	
+III.3	Diagramme de déploiement du projet	
+IV.	DIAGRAMME DE COMPOSANT	
+IV.1	Diagramme de composants logiciels du système	
+DOSSIERS VI : DOSSIER DE REALISATION	
+I.	FONCTIONNALITES	
+II.	TESTS	
+DOSSIERS VII : GUIDE D
+UTILISATION	
+I.	GUIDE D
+INSTALLATION	
+I.1. 	Langues	
+I.2. 	Ressources nécessaires	
+II.	GUIDE D
+UTILISATION	
+CONCLUSION GÉNÉRALE	
+BIBLIOGRAPHIE	
+WEBOGRAPHIE	
+TABLE DES MATIÈRES	
+
+
+
+A 
+LA FAMILLE
+ 	FOSSO
+
+
+
+
+INTRODUCTION
+
+ACCEUIL ET INTEGRATION EN ENTREPRISE
+PRESENTATION DE LA STRUCTURE
+
+CONCLUSION
+
+Figure 
+ SEQ Figure \* ARABIC 
+:organigramme de SANGOTECH Sarl
+
+
+DOSSIER I : DOSSIER DE L
+EXISTANT 
+DOSSIER II : CAHIER DE CHARGE 
+DOSSIER III : DOSSIER D
+ANALYSE
+DOSSIER IV : DOSSIER DE CONCEPTION
+DOSSIER V : DOSSIER DE REALISATION
+DOSSIER VI : TEST DE FONCTIONNALITEES
+DOSSIER VII : GUIDE D
+UTILISATION
+
+
+
+I. 	PRESENTATION DU PROJET
+II. 	ETUDE DE L
+EXISTANT
+III.	 CRITIQUE DE L
+EXISTANT
+IV. 	PROBLEMATIQUE
+V. 	PROPOSITION DE SOLUTION
+
+
+
+
+CONTEXTE ET JUSTIFICATION 
+DU PROJET
+II. 	OBJECTIFS DU PROJET
+III.	 BÉNÉFICIAIRES ET CIBLE
+IV. 	EXPRESSION DES BESOINS
+V. 	PLANIFICATION DU PROJET
+VI. 	ESTIMATION DU COUT DU PROJET
+VII. 	CONTRAINT DU PROJET
+VIII. 	LES LIVRABLES
+
+
+METHODOLOGIE
+I.1	ETUDE COMPARATIVE UML ET MERISE
+I.2	ETUDE COMPARATIVE DES PROCESSUS UNIFIES
+MODELISATION
+II.1	DIAGRAMME DES CAS D
+UTILISATION
+II.2	DESCRIPTIONS TEXTUELLES
+II.3	DIAGRAMME DE COMMUNICATION
+II.4	DIAGRAMME DE SEQUENCE
+II.5	DIAGRAMME D
+ACTIVITE
+
+
+Figure 
+ SEQ Figure \* ARABIC 
+:processus 2TUP
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme du cas d'utilisation de gérer ses missions
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme du cas d'utilisation gerer les utilisateurs
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme de séquence du cas s
+authentifier
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme d'activité du cas s
+authentifier
+
+Figure 
+ SEQ Figure \* ARABIC 
+:diagramme d'activité du cas créer mission

@@ -1,0 +1,43 @@
+graph LR
+    %% Styles
+    classDef niveau fill:#e8f4f8,stroke:#3498db,stroke-width:3px,stroke-dasharray: 5 5,color:#2c3e50,font-weight:bold
+    classDef box fill:#ffffff,stroke:#2c3e50,stroke-width:2px,color:#000000,font-weight:bold,rx:5,ry:5
+    classDef db fill:#ffffff,stroke:#2c3e50,stroke-width:2px,shape:cylinder,color:#000000,font-weight:bold
+    classDef edgeLabel fill:#ffffdd,stroke:#f1c40f,stroke-width:1px,color:#000000
+
+    subgraph TIER1 [NIVEAU 1 : CLIENT]
+        direction TB
+        APP[📱 App Mobile Flutter<br/>Client, Technicien & Admin]:::box
+    end
+
+    subgraph TIER2 [NIVEAU 2 : SERVEUR D'APPLICATION]
+        direction TB
+        NODE[Environnement<br/>Node.js]:::box
+        EXP[Framework<br/>Express.js]:::box
+        NODE --- EXP
+    end
+
+    subgraph TIER3 [NIVEAU 3 : SGBD]
+        direction TB
+        SUPA[(Base de données<br/>Supabase / PostgreSQL)]:::db
+    end
+
+    subgraph TIER4 [NIVEAU 4 : API]
+        direction TB
+        PAY[API de Paiement<br/>CamerPay]:::box
+        IA[Modèle NLP<br/>Groq / Gemini API]:::box
+    end
+
+    %% Connections N1 <-> N2
+    TIER1 -- "REQUETES HTTPS" --> TIER2
+    TIER2 -- "REPONSES HTTPS" --> TIER1
+
+    %% Connections N2 <-> N3
+    TIER2 -- "REQUETES SQL" --> TIER3
+    TIER3 -- "REPONSES BD" --> TIER2
+
+    %% Connections N2 <-> N4
+    TIER2 -- "REQUETES" --> TIER4
+    TIER4 -- "REPONSES" --> TIER2
+
+    class TIER1,TIER2,TIER3,TIER4 niveau

@@ -1,0 +1,33 @@
+{
+  "@@locale": "fr",
+  "appTitle": "TechLink",
+  "hello": "Bonjour",
+  "searchHint": "Que recherchez-vous aujourd'hui ?",
+  "categoriesTitle": "Catégories",
+  "popularServicesTitle": "Services Populaires",
+  "missionStatus": "Statut de la mission",
+  "findExpert": "Trouvez le meilleur expert",
+  "mapDescription": "Visualisez les techniciens disponibles autour de vous sur la carte.",
+  "openMap": "Ouvrir la carte",
+  "newQuoteAlert": "📋 Nouveau devis reçu ! Consultez et acceptez ci-dessous.",
+  "yourTechnician": "Votre technicien",
+  "yourProblem": "Votre problème",
+  "reportProblem": "Signaler un problème",
+  "quoteAccepted": "Devis accepté ✓",
+  "quoteReceived": "📋 Devis reçu — Votre avis",
+  "totalToPay": "Total à payer",
+  "reject": "Refuser",
+  "acceptQuote": "Accepter le devis",
+  "payNow": "💳 Payer maintenant (MTN / Orange)",
+  "rateTechnician": "Évaluez {name}",
+  "@rateTechnician": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "howWasIt": "Comment s'est passée l'intervention ?",
+  "leaveComment": "Laissez un commentaire (facultatif)...",
+  "sendReview": "Envoyer l'avis"
+}

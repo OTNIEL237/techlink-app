@@ -1,0 +1,229 @@
+classDiagram
+    direction TB
+
+    %% Utilisateurs
+    class Utilisateur {
+        <<abstract>>
+        -telephone: Chaine
+        -nom: Chaine
+        -role: Chaine
+        -photoProfilUrl: Chaine
+        -estBanni: Booleen
+        +seConnecter() Booleen
+        +mettreAJourProfil() void
+        +seDeconnecter() void
+    }
+
+    class Client {
+        +creerMission(categorie, desc) Mission
+        +accepterDevis(devis) void
+        +evaluerTechnicien(tech, note) Evaluation
+    }
+
+    class Administrateur {
+        +resoudreLitige(litige, action) void
+        +bannirUtilisateur(user) void
+        +envoyerMessageGroupe(msg) void
+    }
+
+    class Technicien {
+        -biographie: Chaine
+        -anneesExperience: Entier
+        -specialites: Liste~Chaine~
+        -statut: Chaine
+        -soldePortefeuille: Reel
+        -moyenneAvis: Reel
+        -totalMissions: Entier
+        -typeAbonnement: Chaine
+        +soumettreDevis(mission, montant) Devis
+        +mettreAJourPosition(lat, lng) void
+        +retirerFonds(montant) void
+    }
+
+    Utilisateur <|-- Client
+    Utilisateur <|-- Administrateur
+    Utilisateur <|-- Technicien
+
+    %% Classes Métier
+    class Mission {
+        -descriptionProbleme: Chaine
+        -statut: Chaine
+        -niveauUrgence: Chaine
+        -adresseClient: Chaine
+        -latitudeClient: Reel
+        -longitudeClient: Reel
+        -datePlanifiee: Date
+        +marquerCommeTerminee() void
+        +annulerMission() void
+        +assignerTechnicien(tech) void
+    }
+
+    class Categorie {
+        -nom: Chaine
+        -code: Chaine
+        -iconeUrl: Chaine
+        -estActive: Booleen
+        +obtenirMissions() Liste~Mission~
+    }
+
+    class DemandeMission {
+        -statut: Chaine
+        -dateExpiration: Date
+        +accepter() void
+        +refuser() void
+        +verifierExpiration() Booleen
+    }
+
+    class Devis {
+        -lignesDetails: Chaine
+        -sousTotal: Reel
+        -tauxCommission: Reel
+        -montantCommission: Reel
+        -netTechnicien: Reel
+        -statut: Chaine
+        -pdfUrl: Chaine
+        +genererPdf() Chaine
+        +marquerCommeAccepte() void
+    }
+
+    class Paiement {
+        -montant: Reel
+        -montantCommission: Reel
+        -montantTechnicien: Reel
+        -methodePaiement: Chaine
+        -telephonePayeur: Chaine
+        -referenceOperateur: Chaine
+        -statut: Chaine
+        -statutVersementTechnicien: Chaine
+        +traiterPaiement() Booleen
+        +rembourser() void
+    }
+
+    class Evaluation {
+        -note: Entier
+        -commentaire: Chaine
+        -dateCreation: Date
+        +mettreAJourNote() void
+    }
+
+    class Litige {
+        -motif: Chaine
+        -description: Chaine
+        -statut: Chaine
+        -notesResolution: Chaine
+        +demarrerEnquete() void
+        +cloturerLitige(notes) void
+    }
+
+    class Message {
+        -contenu: Chaine
+        -typeMessage: Chaine
+        -imagePieceJointeUrl: Chaine
+        -estLu: Booleen
+        -dateCreation: Date
+        +marquerCommeLu() void
+    }
+
+    %% Classes d'Administration / Technicien
+    class AbonnementTechnicien {
+        -typeAbonnement: Chaine
+        -montantPaye: Reel
+        -dateDebut: Date
+        -dateFin: Date
+        -statut: Chaine
+        +renouveler() Booleen
+        +annuler() void
+    }
+
+    class DocumentTechnicien {
+        -typeDocument: Chaine
+        -fichierUrl: Chaine
+        -nomFichier: Chaine
+        -estVerifie: Booleen
+        +verifierDocument(admin) void
+    }
+
+    class TransactionPortefeuille {
+        -typeTransaction: Chaine
+        -montant: Reel
+        -soldeApres: Reel
+        +traiterTransaction() void
+    }
+    
+    class TraceReversement {
+        -montant: Reel
+        -methodePaiement: Chaine
+        -statut: Chaine
+    }
+
+    %% Communication et système
+    class Appel {
+        -statut: Chaine
+    }
+
+    class Notification {
+        -titre: Chaine
+        -corps: Chaine
+        -type: Chaine
+    }
+
+    class JournalAdministrateur {
+        -action: Chaine
+    }
+
+    class AnnonceGlobale {
+        -titre: Chaine
+        -message: Chaine
+    }
+
+    class MessageSupport {
+        -contenu: Chaine
+        -estLu: Booleen
+    }
+
+    %% Relations
+    Client "1" -- "0..*" Mission : demander
+    Categorie "1" -- "0..*" Mission : regrouper
+    Mission "1" -- "0..*" DemandeMission : generer
+    Technicien "1" -- "0..*" DemandeMission : recevoir
+    Technicien "1" -- "0..*" Mission : executer
+
+    Mission "1" -- "0..*" Devis : susciter
+    Technicien "1" -- "0..*" Devis : proposer
+    
+    Mission "1" -- "0..*" Paiement : necessiter
+    Devis "1" -- "0..1" Paiement : declencher
+    Client "1" -- "0..*" Paiement : effectuer
+
+    Technicien "1" -- "0..*" TransactionPortefeuille : posseder
+    Mission "0..1" -- "0..*" TransactionPortefeuille : justifier
+    Technicien "1" -- "0..*" TraceReversement : consulter
+
+    Mission "1" -- "0..1" Evaluation : obtenir
+    Client "1" -- "0..*" Evaluation : donner
+    Technicien "1" -- "0..*" Evaluation : recevoir
+
+    Mission "1" -- "0..*" Litige : impliquer
+    Client "1" -- "0..*" Litige : ouvrir
+    Technicien "1" -- "0..*" Litige : ouvrir
+    Administrateur "1" -- "0..*" Litige : resoudre
+
+    Mission "1" -- "0..*" Message : contenir
+    Utilisateur "1" -- "0..*" Message : envoyer
+    
+    Utilisateur "1" -- "0..*" Appel : initier
+    Utilisateur "1" -- "0..*" Appel : recevoir
+    
+    Utilisateur "1" -- "0..*" Notification : recevoir
+
+    Technicien "1" -- "0..*" DocumentTechnicien : fournir
+    Administrateur "1" -- "0..*" DocumentTechnicien : verifier
+    
+    Technicien "1" -- "1..*" AbonnementTechnicien : souscrire_a
+
+    Administrateur "1" -- "0..*" JournalAdministrateur : tracer
+    Administrateur "1" -- "0..*" AnnonceGlobale : diffuser
+    AnnonceGlobale "0..*" -- "0..*" Utilisateur : cibler
+    
+    Administrateur "1" -- "0..*" MessageSupport : envoyer
+    Utilisateur "1" -- "0..*" MessageSupport : recevoir

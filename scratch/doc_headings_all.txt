@@ -1,0 +1,340 @@
+﻿2: DEDICACE
+7: REMERCIEMENTS
+38: RESUME
+45: ABSTRACT
+66: SOMMAIRE
+69: DEDICACE
+70: REMERCIEMENTS
+71: SOMMAIRE
+72: LISTE DES TABLEAUX
+73: LISTE DES FIGURES
+74: RESUME
+75: ABSTRACT
+76: LISTE DES SIGLES ET ABREVIATIONS
+77: GLOSSAIRE
+78: INTRODUCTION GENERALE
+79: PARTIE 1 : PHASE D
+81: PHASE TECHNIQUE
+82: DOSSIER I : DOSSIER DE L
+84: DOSSIER II : CAHIER DES CHARGES
+85: DOSSIER III : DOSSIER D
+87: DOSSIER IV : DOSSIER DE CONCEPTION
+88: DOSSIER V : DOSSIER DE REALISATION
+89: DOSSIERS VI : DOSSIER DE REALISATION
+90: DOSSIERS VII : GUIDE D
+92: CONCLUSION GÉNÉRALE
+93: BIBLIOGRAPHIE
+94: WEBOGRAPHIE
+95: TABLE DES MATIÈRES
+96: LISTE DES TABLEAUX
+100: Tableau 1:ressources matérielles De SANGOTECH Sarl
+101: Tableau 2:présentation des systèmes existants
+102: Tableau 3:critique et limite de l'existant
+103: Tableau 4:ressources logicielles du projet (source : mercuriale des prix 2026)
+104: Tableau 5:ressources matérielles du projet (source : mercuriale des prix 2026)
+105: Tableau 6:ressources humaines du projet (source : mercuriale des prix 2026)
+106: Tableau 7:estimation globale du cout du projet (source : mercuriale des prix 2026)
+107: Tableau 8:comparaison entre merise et uml
+108: Tableau 9: comparaison processus unifiés
+109: Tableau 10:formalisme diagramme de cas d'utilisation
+110: Tableau 11:types de relation du diagramme de cas d'utilisation
+111: Tableau 12:formalisme description textuelle
+112: Tableau 13: description textuelle de s'authentifier
+113: Tableau 14:description textuelle du cas créer mission
+114: Tableau 15:description textuelle du cas envoyer le devis
+115: Tableau 16:formalisme diagramme de communication
+116: Tableau 17:formalisme diagramme de séquence
+117: Tableau 18:formalisme diagramme d'activité
+118: Tableau 19:formalisme diagramme de classe
+119: Tableau 20:formalisme diagramme d'état transition
+120: Tableau 21:formalisme diagramme de paquetage
+121: Tableau 22:technologie choisis
+122: Tableau 23:formalisme diagramme de paqueta
+123: Tableau 24: formalisme diagramme de composant
+124: LISTE DES FIGURES
+128: Figure 1:diagramme de Gantt
+129: Figure 2:processus 2TUP
+130: Figure 3:diagramme de cas d'utilisation global du système
+131: Figure 4:digramme du cas  d'utilisation créer mission
+132: Figure 5:diagramme du cas d'utilisation executer la mission
+133: Figure 6:diagramme du cas d'utilisation gerer les utilisateurs
+134: Figure 7:diagramme de communication du cas s'authentifier
+135: Figure 8:diagramme de communication du cas créer mission
+136: Figure 9:diagramme de communication du cas payer devis
+137: Figure 10:exemple de diagramme de séquence
+138: Figure 11:diagramme de séquence du cas s
+140: Figure 12:diagramme de séquence du cas créer mission
+141: Figure 13 :diagramme de séquence du cas payer devis
+142: Figure 14:diagramme d'activité du cas s
+144: Figure 15:diagramme d'activité du cas créer mission
+145: Figure 16:diagramme d'activité du cas payer devis
+146: Figure 17:diagramme de classe de notre système
+147: Figure 18:diagramme d'état transition créer un compte
+148: Figure 19:diagramme état transition de l
+150: Figure 20:diagramme de paquetage
+151: Figure 21 :exemple diagramme de déploiement
+152: Figure 22:diagramme de déploiement
+153: Figure 23: exemple diagramme de composant
+154: Figure 24:diagramme de composant
+155: Figure 25:test unitaire de  Valider le format d'un e-mail
+156: Figure 26:test intégration de camerpay
+157: Figure 27:page de login
+158: Figure 28: page du client
+159: Figure 29: page du technicien
+160: Figure 30: page de  Signalement de la panne
+161: Figure 31: page de recherche automatique de techniciens
+162: Figure 32:page de localisation du client
+163: LISTE DES SIGLES ET ABREVIATIONS
+196: GLOSSAIRE
+220: INTRODUCTION GENERALE
+246: PARTIE 1 : PHASE D
+251: RESUME
+258: INTRODUCTION
+288: I.1 ACCUEIL
+295: I.2 INTEGRATION
+427: CONCLUSION
+460: PHASE TECHNIQUE
+463: RESUME
+477: DOSSIER I : DOSSIER DE L
+482: RESUME
+613: DOSSIER II : CAHIER DES CHARGES
+616: RESUME
+727: Liste des techniciens "En attente", "Approuvés" et "Rejetés".
+894: DOSSIER III : DOSSIER D
+898: RESUME
+1232: 1. L'utilisateur clique sur l'icône de l'application TechLink.
+1233: 2. Le système affiche la page de connexion.
+1235: 4. Le système vérifie en local le format (type) des données saisies.
+1237: 6. Le SGBD renvoie une réponse au système.
+1240: 4.a. Format de données non conforme : Si l'utilisateur saisit mal l
+1245: 7.b. utilisateur bloquer : le SGBD envoie le résultat au système et l
+1271: 1. Le client clique sur
+1306: 1. Le technicien clique sur « Envoyer un devis ».
+1307: 2. Le système affiche le formulaire de devis.
+1308: 3. Le technicien saisit le montant et la description du devis et clique sur « Envoyer ».
+1309: 4. Le système vérifie le type de champs.
+1310: 5. Le système envoie les détails du devis via une requête API sécurisée.
+1311: 6. L'API effectue le traitement de la notification push.
+1312: 7. L'API renvoie le statut d'envoi au système.
+1510: DOSSIER IV : DOSSIER DE CONCEPTION
+1512: RESUME
+1654: DOSSIER V : DOSSIER DE REALISATION
+1657: RESUME
+1704: 1. Architecture du Frontend (Application Mobile Flutter : MVVM)
+1710: 2. Architecture du Backend (Serveur Node.js/Express : MVC)
+1786: DOSSIERS VI : DOSSIER DE REALISATION
+1789: RESUME
+1877: DOSSIERS VII : GUIDE D
+1881: RESUME
+1896: I.1. 	Langues
+1898: I.2. 	Ressources nécessaires
+1921: 1. Accès à la plateforme et Connexion
+2025: CONCLUSION GÉNÉRALE
+2028: BIBLIOGRAPHIE
+2050: WEBOGRAPHIE
+2086: TABLE DES MATIÈRES
+2089: DEDICACE
+2090: REMERCIEMENTS
+2091: SOMMAIRE
+2092: LISTE DES TABLEAUX
+2093: LISTE DES FIGURES
+2094: RESUME
+2095: ABSTRACT
+2096: LISTE DES SIGLES ET ABREVIATIONS
+2097: GLOSSAIRE
+2098: INTRODUCTION GENERALE
+2099: PARTIE 1 : PHASE D
+2102: I.ACCEUIL ET INTEGRATION EN ENTREPRISE
+2104: II.PRESENTATION DE LA STRUCTURE
+2105: INTRODUCTION
+2106: I.	ACCEUIL ET INTEGRATION ENTREPRISE
+2107: I.1 ACCUEIL
+2108: I.2 INTEGRATION
+2109: II.	PRESENTATION DE LA STRUCTURE
+2110: II.1.	Historique
+2111: II.2.	Situation géographique
+2112: II.3.	Mission
+2113: II.4.	Activité et réalisations
+2114: II.5.	Organisation et fonctionnement de la structure
+2117: CONCLUSION
+2118: PHASE TECHNIQUE
+2119: DOSSIER I : DOSSIER DE L
+2121: I.	PRESENTATIONT DU PROJET
+2122: II.	ÉTUDE DE L
+2124: II.1	Description de l
+2126: II.1.a.	Les systèmes existants
+2127: III.	CRITIQUE ET LIMITE DE L
+2129: IV.	PROBLEMATIQUE
+2130: V.	PROPOSITION DE SOLUTION
+2131: DOSSIER II : CAHIER DES CHARGES
+2132: I.	CONTEXTE ET JUSTIFICATION DU PROJET
+2133: I.1	Contexte
+2134: I.2	Justification
+2135: II.	OBJECTIFS DU PROJET
+2136: II.1	Objectif général
+2137: II.2	Objectifs spécifiques
+2138: III.	BENEFICIAIRES ET CIBLES
+2139: III.1	Cibles
+2140: III.2	Bénéficiaires
+2141: IV.	EXPRESSION DES BESOINS
+2142: IV.1	BESOINS FONCTIONNELS
+2143: IV.2	BESOINS NON FONCTIONNELS
+2144: V.	PLANNIFICATION DU PROJET
+2145: V.1	DEROULEMENT
+2146: V.2	DIAGRAMME DE GANTT
+2147: VI.	ESTIMATION DU COUT DU PROJET
+2148: VI.1	Ressources logicielles
+2149: VI.1	RESSOURCES MATERIELLES
+2150: VI.2	RESSOURCES HUMAINES
+2151: VI.3	ESTIMATION GLOBALE DU PROJET
+2152: VI.	CONTRAINTE DU PROJET
+2153: VI.1	Cout
+2154: VI.2	Qualité
+2155: VI.3	Delai
+2156: VII.	LES LIVRABLES
+2157: DOSSIER III : DOSSIER D
+2159: I.	METHODOLOGIE ET LANGAGE D
+2161: I.1	ETUDE COMPARATIVE UML ET MERISE
+2162: I.2	ETUDE COMPARATIVE DES PROCESSUS UNIFIES
+2163: II.	MODELISATION
+2164: II.1	DIAGRAMME DES CAS D
+2166: II.2	DESCRIPTION TEXTUELLES
+2167: II.3	DIAGRAMME DE COMMUNICATION
+2168: II.4	DIAGRAMME DE SEQUENCE
+2169: II.5	DIAGRAMME D
+2171: DOSSIER IV : DOSSIER DE CONCEPTION
+2172: I.	DIAGRAMME DE CLASSE
+2173: I.1	Diagramme de classe du système
+2174: I.2	DIAGRAMME D
+2176: II.1	Diagramme d
+2179: II.2	Diagramme d
+2182: I.3	DIAGRAMME DE PAQUETAGE
+2183: DOSSIER V : DOSSIER DE REALISATION
+2184: I.	CHOIX DES TECHNOLOGIES
+2185: II.	Architecture physique et logique du système
+2186: III.	DIAGRAMME DE DEPLOIEMENT
+2187: III.3	Diagramme de déploiement du projet
+2188: IV.	DIAGRAMME DE COMPOSANT
+2189: IV.1	Diagramme de composants logiciels du système
+2190: DOSSIERS VI : DOSSIER DE REALISATION
+2191: I.	FONCTIONNALITES
+2192: II.	TESTS
+2193: DOSSIERS VII : GUIDE D
+2195: I.	GUIDE D
+2197: I.1. 	Langues
+2198: I.2. 	Ressources nécessaires
+2199: II.	GUIDE D
+2201: CONCLUSION GÉNÉRALE
+2202: BIBLIOGRAPHIE
+2203: WEBOGRAPHIE
+2204: TABLE DES MATIÈRES
+2215: INTRODUCTION
+2220: CONCLUSION
+2227: DOSSIER I : DOSSIER DE L
+2229: DOSSIER II : CAHIER DE CHARGE
+2230: DOSSIER III : DOSSIER D
+2232: DOSSIER IV : DOSSIER DE CONCEPTION
+2233: DOSSIER V : DOSSIER DE REALISATION
+2234: DOSSIER VI : TEST DE FONCTIONNALITEES
+2235: DOSSIER VII : GUIDE D
+2240: I. 	PRESENTATION DU PROJET
+2241: II. 	ETUDE DE L
+2243: III.	 CRITIQUE DE L
+2245: IV. 	PROBLEMATIQUE
+2246: V. 	PROPOSITION DE SOLUTION
+2253: II. 	OBJECTIFS DU PROJET
+2254: III.	 BÉNÉFICIAIRES ET CIBLE
+2255: IV. 	EXPRESSION DES BESOINS
+2256: V. 	PLANIFICATION DU PROJET
+2257: VI. 	ESTIMATION DU COUT DU PROJET
+2258: VII. 	CONTRAINT DU PROJET
+2259: VIII. 	LES LIVRABLES
+2263: I.1	ETUDE COMPARATIVE UML ET MERISE
+2264: I.2	ETUDE COMPARATIVE DES PROCESSUS UNIFIES
+2266: II.1	DIAGRAMME DES CAS D
+2268: II.2	DESCRIPTIONS TEXTUELLES
+2269: II.3	DIAGRAMME DE COMMUNICATION
+2270: II.4	DIAGRAMME DE SEQUENCE
+2271: II.5	DIAGRAMME D
+5270: 1.v»ÛírÉ%
+5525: 6.tµ5Ýñ¨ó
+6610: X	¥e%¬hj¤²sgìºF|Ó Ç6}©K&èÓµ
+13396: v ÈÖlä,ñgæò
+14142: X ðªËöÿ
+15806: i Dù·üïXÿ
+16036: X.hOÄr
+16978: | ýåhÊ
+19365: v ÇØ+éQ©
+19464: V ñÀJ$²s¥ÕH¢BV*
+19473: v tªfó(2}ÿ
+19623: x éèi
+20100: | mõÏ
+20575: v õ{ë
+20825: 2.ÌÅ"R2fVC
+23883: i	ÖC¶
+25263: i ^øv»¢fDîÂ·ù´
+28176: x.ç[ñ
+28337: |.ÐÓHðæ
+31344: |	øMá
+37807: V ysxÓA¶
+41126: I dr|
+43975: I	3¿Ü,
+45294: i ýÎ»îÊßô
+45428: x öÛo¿|Ü
+45952: 7.Þ¸qáúõ
+46781: 4.ÞîB½ð
+47835: | ITÑìÇ
+54760: I	p	ÚRr65
+55197: X.dàt`("C3À
+55569: V Ô¡pl8
+55665: X.{ßq¡UÁ
+57814: i.è«Lì#î]À7q?
+58433: 2.þ}²Æ%úBüÈ8Lj¿ûy©ü>ôo
+58872: XX.Â,
+60929: V ÑXùaE¨º	¡ë
+60931: V ÑXùaEÈ
+62973: v.Øóß
+66489: V.PMX©ÑÞ4[Â
+78013: v Wñh~
+80052: x DóäT
+81699: i.ût×"e}TÐàöpÄÎ|´Òðñå>dm
+85385: I ¶Þk&x]ïê
+91367: | ?Xòª}¯/weÜI"/,qõE
+93047: X.K+ñî_
+93123: x ó_%þÂ?ðD¯Ù
+95360: 1.EÑbÄ
+95414: 3.H£%ifaá²àØ
+96369: X T°TEl	P
+97542: x.î
+99569: V.ëÆ^¡é
+102023: v.X¶.CÛ;î~ÐÖ·pù·nõw
+102773: 7.qÌRÁ:üú
+108256: i...øûû
+108712: x ÚE0ÿÕ
+111468: |	òrÂª
+111818: x {0*RÙôô<Óã,dÎÔG
+111934: x.µ
+112470: i ÖÈÆYE<
+113595: 6.Ë°_¾K[ìyÞÛózÕØkg
+113774: 4.ÝºuãÏ?ÿÄ`¨îoÇu×
+115307: v	h*ðý#ý
+115456: x ÕÌÐDRo
+116997: v ùèss
+118322: 6.ûáUÛØW¦Cæ
+119710: v.YFL
+122832: v ä·DR
+123723: I ¿FÙ
+124515: 6.aÑü¹ÁÀØ$¦Ý?
+124944: V.bÆ÷S±
+129594: i.¬bØ
+130306: V	ÏóXZ;N}q
+130637: vi.Ã¦¨:ºU"CÆu
+130814: i.S©
+138751: i Zß"
+140125: |.Kmbj4B
+140270: x.õÓG
+140629: x.½Ö*ýv
+141548: X òÿ±
+148809: v	DqD»êekÒ
+149655: I Ü"B¥ÁàeÚ*µÛ»ë8
+153009: Table des illustrations

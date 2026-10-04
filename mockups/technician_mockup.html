@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechLink – Interface Technicien (Premium Purple Theme)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7C3AED;
+      --primary-dark: #6D28D9;
+      --primary-light: #F5F3FF;
+      --primary-glow: rgba(124, 93, 237, 0.15);
+      --tech-accent: #06B6D4;
+      --tech-accent-light: #ECFEFF;
+      --tech-accent-dark: #0891B2;
+      --success: #10B981;
+      --success-light: #ECFDF5;
+      --warning: #F59E0B;
+      --warning-light: #FFFBEB;
+      --error: #EF4444;
+      --error-light: #FEF2F2;
+      --bg: #FAF9FE;
+      --surface: #FFFFFF;
+      --text: #1E1B4B;
+      --text-gray: #6B7280;
+      --text-muted: #9CA3AF;
+      --border: #F3E8FF;
+      --border-strong: #E9D5FF;
+      --shadow-sm: 0 1px 3px rgba(124, 93, 237, 0.05), 0 4px 12px rgba(124, 93, 237, 0.03);
+      --shadow-lg: 0 10px 25px -5px rgba(124, 93, 237, 0.1), 0 8px 10px -6px rgba(124, 93, 237, 0.05);
+      --r: 20px;
+      --r-sm: 14px;
+      --r-xs: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #F5F3FF 0%, #DDD6FE 50%, #C7D2FE 100%);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 50px 20px;
+      gap: 40px;
+      min-height: 100vh;
+    }
+
+    .phone-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .phone {
+      width: 375px;
+      height: 812px;
+      background: var(--bg);
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(79, 70, 229, 0.15), 0 0 0 12px #ffffff, 0 0 0 13px rgba(79, 70, 229, 0.1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Notch */
+    .phone::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 28px;
+      background: #000000;
+      border-radius: 0 0 16px 16px;
+      z-index: 100;
+    }
+
+    .status-bar {
+      height: 44px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 24px 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .status-bar.light {
+      color: white;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    
+    .content::-webkit-scrollbar {
+      display: none;
+    }
+
+    .bottom-nav {
+      display: flex;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 8px 0 28px;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 0;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-item span:last-child {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .nav-item.active span:last-child {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .nav-item.active .material-icons-round {
+      color: var(--primary);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 24px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 0 0 4px 4px;
+    }
+
+    .label {
+      text-align: center;
+      margin-top: 16px;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 6px 16px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    /* ── Shared components ── */
+    .avatar-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .avatar-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border-strong);
+    }
+
+    .avatar-img.lg {
+      width: 88px;
+      height: 88px;
+      border: 3px solid var(--primary);
+    }
+
+    .avatar-img.sm {
+      width: 40px;
+      height: 40px;
+    }
+
+    .avatar-img.xs {
+      width: 32px;
+      height: 32px;
+    }
+
+    .section-h {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 20px 12px;
+    }
+
+    .section-h h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.green { background: var(--success-light); color: var(--success); }
+    .badge.orange { background: #FFF3E0; color: #E65100; }
+    .badge.yellow { background: var(--warning-light); color: var(--warning); }
+    .badge.red { background: var(--error-light); color: var(--error); }
+    .badge.purple { background: var(--primary-light); color: var(--primary); }
+    .badge.cyan { background: var(--tech-accent-light); color: var(--tech-accent-dark); }
+
+    .card {
+      margin: 0 20px 12px;
+      padding: 16px;
+      background: var(--surface);
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: var(--r-sm);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px var(--primary-glow);
+    }
+
+    .btn-outline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade { animation: fadeUp 0.4s ease-out forwards; }
+    .d1 { animation-delay: .08s; opacity: 0; }
+    .d2 { animation-delay: .16s; opacity: 0; }
+    .d3 { animation-delay: .24s; opacity: 0; }
+    .d4 { animation-delay: .32s; opacity: 0; }
+
+    /* ── Tech Header ── */
+    .tech-header-bg {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, #4C1D95 100%);
+      padding: 12px 24px 28px;
+      border-radius: 0 0 28px 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(124, 93, 237, 0.2);
+    }
+
+    .tech-header-bg::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -30px;
+      width: 160px;
+      height: 160px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+
+    .tech-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .tech-header-top h3 {
+      font-size: 13px;
+      color: rgba(255,255,255,0.8);
+      font-weight: 600;
+    }
+
+    .tech-header-top h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      margin-top: 2px;
+    }
+
+    /* Toggle availability card */
+    .toggle-card {
+      margin: -16px 20px 0;
+      padding: 18px 20px;
+      background: var(--surface);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 8px 24px rgba(124, 93, 237, 0.08);
+      position: relative;
+      z-index: 10;
+      border: 1px solid var(--border);
+    }
+
+    .toggle-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-icon.online {
+      background: linear-gradient(135deg, var(--success), #059669);
+    }
+
+    .toggle-info {
+      flex: 1;
+    }
+
+    .toggle-info h4 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .toggle-info p {
+      font-size: 12px;
+      color: var(--text-gray);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    /* Custom Switch button */
+    .switch {
+      width: 50px;
+      height: 28px;
+      background: var(--success);
+      border-radius: 14px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .switch::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      right: 3px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 24px 20px 0;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 16px 10px;
+      text-align: center;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+    }
+
+    .stat-card .stat-value {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .stat-card .stat-label {
+      font-size: 11px;
+      color: var(--text-gray);
+      margin-top: 3px;
+      font-weight: 600;
+    }
+
+    /* Active Mission Cards */
+    .active-mission {
+      margin: 0 20px 12px;
+      padding: 18px;
+      background: var(--surface);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .active-mission::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+    }
+
+    .active-mission.urgent::before { background: var(--primary); }
+    .active-mission.progress::before { background: var(--tech-accent); }
+    .active-mission.quote::before { background: var(--success); }
+
+    .active-mission:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .active-mission-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .active-mission-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .active-mission-top .info {
+      flex: 1;
+    }
+
+    .active-mission-top .info h4 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .active-mission-top .info p {
+      font-size: 12px;
+      color: var(--text-gray);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .status-badge {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-badge.accepted { background: var(--primary-light); color: var(--primary); }
+    .status-badge.enroute { background: var(--warning-light); color: var(--warning); }
+    .status-badge.in-progress { background: var(--tech-accent-light); color: var(--tech-accent-dark); }
+    .status-badge.quote-sent { background: var(--success-light); color: var(--success); }
+
+    .mission-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .action-btn.primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .action-btn.primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .action-btn.secondary {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Timeline ── */
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin: 16px 20px 24px;
+      padding: 0 10px;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 10px;
+      right: 10px;
+      height: 3px;
+      background: var(--border);
+      z-index: 1;
+    }
+
+    .timeline-progress {
+      position: absolute;
+      top: 12px;
+      left: 10px;
+      width: 40%;
+      height: 3px;
+      background: var(--primary);
+      z-index: 2;
+    }
+
+    .timeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 3;
+    }
+
+    .t-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: all 0.3s;
+    }
+
+    .timeline-step.active .t-dot {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 0 10px rgba(124,93,237,0.3);
+    }
+
+    .timeline-step.completed .t-dot {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+
+    .t-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-gray);
+      margin-top: 6px;
+    }
+
+    .timeline-step.active .t-label {
+      color: var(--primary);
+    }
+
+    /* ── Earnings ── */
+    .earnings-hero {
+      margin: 0 20px;
+      padding: 28px 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 60%, #4C1D95 100%);
+      border-radius: 22px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(124, 93, 237, 0.2);
+    }
+
+    .earnings-hero::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 120px;
+      height: 120px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+
+    .earnings-hero .label-hero {
+      font-size: 13px;
+      opacity: 0.8;
+      font-weight: 600;
+    }
+
+    .earnings-hero .amount {
+      font-size: 34px;
+      font-weight: 800;
+      margin-top: 4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .earnings-hero .amount small {
+      font-size: 16px;
+      font-weight: 700;
+      opacity: 0.8;
+    }
+
+    .earnings-cards {
+      display: flex;
+      gap: 10px;
+      padding: 18px 20px 0;
+    }
+
+    .earning-card {
+      flex: 1;
+      padding: 16px 14px;
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .earning-card .ec-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .earning-card .ec-value {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .earning-card .ec-label {
+      font-size: 11px;
+      color: var(--text-gray);
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    /* Transactions */
+    .payment-item {
+      margin: 0 20px 8px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .payment-method {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .payment-method.mtn {
+      background: #FFF8E1;
+      color: #E65100;
+    }
+
+    .payment-method.orange {
+      background: #FFF3E0;
+      color: #BF360C;
+    }
+
+    .payment-info {
+      flex: 1;
+    }
+
+    .payment-info h5 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .payment-info p {
+      font-size: 11px;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .payment-amount {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    /* ── Profile Tech ── */
+    .profile-tech-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 60%, #4C1D95 100%);
+      padding: 24px 20px 44px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(124,93,237,0.15);
+    }
+
+    .profile-tech-header::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 180px;
+      height: 180px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+
+    .profile-tech-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.5);
+      object-fit: cover;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-tech-header h2 {
+      color: white;
+      font-size: 22px;
+      font-weight: 800;
+      margin-top: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-tech-header .role {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: white;
+      font-weight: 700;
+      margin-top: 6px;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .profile-tech-stats {
+      display: flex;
+      gap: 8px;
+      padding: 0 20px;
+      margin-top: -24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .pts-card {
+      flex: 1;
+      background: var(--surface);
+      padding: 14px 6px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(124, 93, 237, 0.08);
+      border: 1px solid var(--border);
+    }
+
+    .pts-card .value {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .pts-card .label {
+      font-size: 10px;
+      color: var(--text-gray);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .profile-section {
+      padding: 0 20px;
+    }
+
+    .profile-section h4 {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      margin-top: 20px;
+    }
+
+    .profile-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .profile-menu-item:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .profile-menu-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-menu-item .info {
+      flex: 1;
+    }
+
+    .profile-menu-item .info h5 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .profile-menu-item .info p {
+      font-size: 11px;
+      color: var(--text-gray);
+      margin-top: 2px;
+    }
+
+    .logout-btn {
+      margin: 20px 20px;
+      padding: 14px;
+      background: var(--error-light);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--r-sm);
+      text-align: center;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--error);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Form Fields for Quote Builder */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-gray);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .quote-summary {
+      background: var(--primary-light);
+      border: 1px dashed var(--border-strong);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 16px;
+    }
+
+    .quote-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-gray);
+    }
+
+    .quote-row.total {
+      margin-bottom: 0;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-strong);
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--primary-dark);
+    }
+
+    /* Outgoing Call Screen (Centered) */
+    .call-screen {
+      background: #0F172A;
+      color: white;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 80px 24px 60px;
+    }
+
+    .call-avatar-container {
+      position: relative;
+      margin-top: 40px;
+    }
+
+    .call-avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary);
+    }
+
+    .call-pulse {
+      position: absolute;
+      top: -10px; left: -10px; right: -10px; bottom: -10px;
+      border: 2px dashed rgba(124, 93, 237, 0.4);
+      border-radius: 50%;
+      animation: spin 8s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .call-info {
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    .call-name {
+      font-size: 26px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .call-status {
+      font-size: 14px;
+      color: #94A3B8;
+      margin-top: 6px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .call-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+    }
+
+    .call-icon-row {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .call-btn-circle {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .call-btn-circle:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .call-hangup {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--error);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+      transition: all 0.2s;
+    }
+
+    .call-hangup:hover {
+      transform: scale(1.05);
+      background: #DC2626;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ═══ ÉCRAN 1 : ACCUEIL TECHNICIEN ═══ -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div class="phone-container">
+    <div class="phone">
+      <div class="status-bar light" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); position: relative; z-index: 1;">
+        <span>19:41</span>
+        <span>📶 🔋</span>
+      </div>
+      <div class="screen-content content">
+        <!-- Header with gradient background -->
+        <div class="tech-header-bg fade">
+          <div class="tech-header-top">
+            <div>
+              <h3>Bonjour 👷</h3>
+              <h1>James Kamga</h1>
+            </div>
+            <img src="https://images.unsplash.com/photo-1621574539437-4b7cb63120b8?w=100&h=100&fit=crop&crop=face" class="avatar-img" alt="James">
+          </div>
+        </div>
+
+        <!-- Toggle Availability -->
+        <div class="toggle-card fade d1">
+          <div class="toggle-icon online">
+            <span class="material-icons-round" style="color: white; font-size: 24px;">wifi_tethering</span>
+          </div>
+          <div class="toggle-info">
+            <h4>Vous êtes en ligne</h4>
+            <p>Disponible pour les missions</p>
+          </div>
+          <div class="switch"></div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid fade d2">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: var(--primary-light);">
+              <span class="material-icons-round" style="color: var(--primary); font-size: 22px;">assignment_turned_in</span>
+            </div>
+            <div class="stat-value">47</div>
+            <div class="stat-label">Missions</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #FFFBEB;">
+              <span class="material-icons-round" style="color: var(--warning); font-size: 22px;">star</span>
+            </div>
+            <div class="stat-value">4.9</div>
+            <div class="stat-label">Note</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: var(--tech-accent-light);">
+              <span class="material-icons-round" style="color: var(--tech-accent-dark); font-size: 22px;">account_balance_wallet</span>
+            </div>
+            <div class="stat-value" style="font-size: 15px;">285k F</div>
+            <div class="stat-label">Gains</div>
+          </div>
+        </div>
+
+        <!-- Active Missions -->
+        <div class="section-h fade d3">
+          <h3>Missions en cours</h3>
+          <span class="badge purple">3 actives</span>
+        </div>
+
+        <!-- Mission 1 - Urgent / Accepted -->
+        <div class="active-mission urgent fade d3">
+          <div class="active-mission-top">
+            <div class="active-mission-icon" style="background: var(--primary-light);">
+              <span class="material-icons-round" style="color: var(--primary);">bolt</span>
+            </div>
+            <div class="info">
+              <h4>Électricité</h4>
+              <p>Client: Marie N. • Akwa, Douala</p>
+            </div>
+            <div class="status-badge accepted">Acceptée</div>
+          </div>
+          <div style="font-size: 12px; color: var(--text-gray); line-height: 1.5; margin-bottom: 12px; font-weight: 500;">
+            Court-circuit tableau électrique dans la cuisine, les plombs sautent régulièrement.
+          </div>
+          <div class="mission-actions">
+            <button class="action-btn primary">
+              <span class="material-icons-round" style="font-size: 18px;">navigation</span>
+              En route
+            </button>
+            <button class="action-btn secondary">
+              <span class="material-icons-round" style="font-size: 18px;">chat</span>
+              Message
+            </button>
+          </div>
+        </div>
+
+        <!-- Mission 2 - In Progress -->
+        <div class="active-mission progress fade d4">
+          <div class="active-mission-top">
+            <div class="active-mission-icon" style="background: var(--tech-accent-light);">
+              <span class="material-icons-round" style="color: var(--tech-accent-dark);">water_drop</span>
+            </div>
+            <div class="info">
+              <h4>Plomberie</h4>
+              <p>Client: yoyo • Bonapriso</p>
+            </div>
+            <div class="status-badge in-progress">En cours</div>
+          </div>
+          <div style="font-size: 12px; color: var(--text-gray); line-height: 1.5; margin-bottom: 12px; font-weight: 500;">
+            Fuite d'eau active localisée sous le lavabo de la cuisine.
+          </div>
+          <div class="mission-actions">
+            <button class="action-btn primary" style="background: var(--success); color: white;">
+              <span class="material-icons-round" style="font-size: 18px;">receipt_long</span>
+              Établir devis
+            </button>
+            <button class="action-btn secondary">
+              <span class="material-icons-round" style="font-size: 18px;">phone</span>
+              Appeler
+            </button>
+          </div>
+        </div>
+
+        <div style="height: 20px;"></div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item active">
+          <span class="material-icons-round" style="font-size: 24px;">home</span>
+          <span>Accueil</span>
+        </div>
+        <div class="nav-item">
+          <span class="material-icons-round" style="color: var(--text-muted); font-size: 24px;">account_balance_wallet</span>
+          <span>Gains</span>
+        </div>
+        <div class="nav-item">
+          <span class="material-icons-round" style="color: var(--text-muted); font-size: 24px;">chat_bubble_outline</span>
+          <span>Messages</span>
+        </div>
+        <div class="nav-item">
+          <span class="material-icons-round" style="color: var(--text-muted); font-size: 24px;">person_outline</span>
+          <span>Profil</span>
+        </div>
+      </div>
+    </div>
+    <div class="label">ACCUEIL TECHNICIEN</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ═══ ÉCRAN 2 : DÉTAILS DE LA MISSION (DEMANDE) ═══ -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div class="phone-container">
+    <div class="phone">
+      <div class="status-bar">
+        <span>19:42</span>
+        <span>📶 🔋</span>
+      </div>
+      <div class="screen-content content">
+        <!-- App bar -->
+        <div style="display:flex; align-items:center; padding:12px 16px 12px; gap:12px;">
+          <span class="material-icons-round" style="color:var(--text); font-size:24px;">arrow_back</span>
+          <h2 style="flex:1; font-size:17px; font-weight:800; text-align:center;">Détails Mission</h2>
+          <span class="material-icons-round" style="color:var(--primary); font-size:22px;">chat</span>
+        </div>
+
+        <!-- Timeline widget -->
+        <div class="timeline fade">
+          <div class="timeline-progress"></div>
+          <div class="timeline-step completed">
+            <div class="t-dot"><span class="material-icons-round" style="font-size:14px;">check</span></div>
+            <div class="t-label">Acceptée</div>
+          </div>
+          <div class="timeline-step completed">
+            <div class="t-dot"><span class="material-icons-round" style="font-size:14px;">check</span></div>
+            <div class="t-label">En route</div>
+          </div>
+          <div class="timeline-step active">
+            <div class="t-dot">3</div>
+            <div class="t-label">En cours</div>
+          </div>
+          <div class="timeline-step">
+            <div class="t-dot">4</div>
+            <div class="t-label">Devis</div>
+          </div>
+        </div>
+
+        <!-- Client Info Card -->
+        <div class="card fade d1">
+          <div style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">Client</div>
+          <div style="display:flex; align-items:center; gap:14px;">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face" class="avatar-img" alt="yoyo">
+            <div style="flex:1;">
+              <h4 style="font-size:15px; font-weight:800;">yoyo</h4>
+              <p style="font-size:12px; color:var(--text-gray); font-weight:600; margin-top:2px;">+237 6 78 44 75 54</p>
+            </div>
+            <div style="width:40px; height:40px; border-radius:50%; background:var(--success-light); display:flex; align-items:center; justify-content:center; cursor:pointer;">
+              <span class="material-icons-round" style="color:var(--success); font-size:20px;">phone</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Signal Problem -->
+        <div class="card fade d2" style="border-left:4px solid var(--primary);">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+            <div style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Problème signalé</div>
+            <span class="badge yellow">Urgence Normale</span>
+          </div>
+          <p style="font-size:13px; line-height:1.6; color:var(--text-gray); font-weight:500;">
+            "Mon verre d'eau s'est renversé sur ma prise de courant et il y a des étincelles avec un grésillement permanent."
+          </p>
+        </div>
+
+        <!-- AI Solution Proposed -->
+        <div class="card fade d3" style="border-left:4px solid var(--success);">
+          <div style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Consignes de sécurité IA</div>
+          <p style="font-size:12px; line-height:1.6; color:var(--text-gray); font-weight:500;">
+            1. Coupez IMMÉDIATEMENT le disjoncteur général.<br>
+            2. Ne pas toucher la prise humide ni brancher d'appareil.<br>
+            3. Éloignez les personnes de la zone humide concernée.<br>
+            4. Attendez l'intervention sans rétablir le courant.
+          </p>
+        </div>
+
+        <!-- CTA button -->
+        <div style="padding:10px 20px 20px;" class="fade d4">
+          <button class="btn-primary">
+            <span class="material-icons-round" style="font-size:20px;">add_task</span>
+            Créer et envoyer le devis
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="label">DEMANDE / DÉTAILS MISSION</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ═══ ÉCRAN 3 : CRÉER UN DEVIS (QUOTE BUILDER) ═══ -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div class="phone-container">
+    <div class="phone">
+      <div class="status-bar">
+        <span>19:42</span>
+        <span>📶 🔋</span>
+      </div>
+      <div class="screen-content content">
+        <!-- App Bar -->
+        <div style="display:flex; align-items:center; padding:12px 16px 12px; gap:12px;">
+          <span class="material-icons-round" style="color:var(--text); font-size:24px;">arrow_back</span>
+          <h2 style="flex:1; font-size:17px; font-weight:800; text-align:center;">Créer le devis</h2>
+          <div style="width:24px;"></div>
+        </div>
+
+        <!-- Banner Info -->
+        <div style="margin: 0 20px 16px; padding: 12px 16px; background: var(--primary-light); border:1px solid var(--border-strong); border-radius:12px;" class="fade">
+          <div style="font-size:13px; font-weight:800; color:var(--primary-dark);">Devis pour le client : yoyo</div>
+          <div style="font-size:11px; color:var(--text-gray); font-weight:600; margin-top:2px;">Type d'intervention : Électricité</div>
+        </div>
+
+        <!-- Quote lines -->
+        <div class="section-h fade d1" style="padding-top:4px;">
+          <h3>Lignes du devis</h3>
+          <span style="font-size:12px; font-weight:800; color:var(--primary); cursor:pointer; display:flex; align-items:center; gap:3px;">
+            <span class="material-icons-round" style="font-size:16px;">add</span> Ajouter
+          </span>
+        </div>
+
+        <!-- Line 1 Form -->
+        <div class="card fade d1" style="padding: 16px 14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <span style="font-size:13px; font-weight:800; color:var(--text);">Ligne 1</span>
+            <span class="material-icons-round" style="color:var(--error); font-size:20px; cursor:pointer;">delete_outline</span>
+          </div>
+
+          <div class="form-group">
+            <label>Type de prestation</label>
+            <div style="position:relative;">
+              <select class="form-input" style="appearance: none; padding-right:30px;">
+                <option>Main d'œuvre technique</option>
+                <option>Fourniture de matériel</option>
+                <option>Frais de déplacement</option>
+              </select>
+              <span class="material-icons-round" style="position:absolute; right:10px; top:10px; color:var(--text-gray); font-size:20px; pointer-events:none;">expand_more</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Description des travaux</label>
+            <input type="text" class="form-input" value="Remplacement prise murale + diagnostic court-circuit">
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <div class="form-group" style="flex:1;">
+              <label>Quantité</label>
+              <input type="number" class="form-input" value="1">
+            </div>
+            <div class="form-group" style="flex:2;">
+              <label>Prix unitaire (FCFA)</label>
+              <input type="number" class="form-input" value="15000">
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculations -->
+        <div class="card fade d2" style="margin-top:4px; padding:14px 16px;">
+          <div style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Récapitulatif financier</div>
+          <div class="quote-summary">
+            <div class="quote-row">
+              <span>Sous-total HT</span>
+              <span>15 000 FCFA</span>
+            </div>
+            <div class="quote-row">
+              <span>Frais de service TechLink (10%)</span>
+              <span>- 1 500 FCFA</span>
+            </div>
+            <div class="quote-row" style="color: var(--success); font-weight:700;">
+              <span>Votre net à recevoir</span>
+              <span>13 500 FCFA</span>
+            </div>
+            <div class="quote-row total">
+              <span>Total facturé au client</span>
+              <span>15 000 FCFA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Send CTA -->
+        <div style="padding:10px 20px 20px;" class="fade d3">
+          <button class="btn-primary" style="background: linear-gradient(135deg, var(--success), #059669); box-shadow:0 4px 12px rgba(16,185,129,0.2);">
+            <span class="material-icons-round" style="font-size:20px;">send</span>
+            Envoyer le devis au client
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="label">CRÉER LE DEVIS</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ═══ ÉCRAN 4 : MES GAINS ═══ -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div class="phone-container">
+    <div class="phone">
+      <div class="status-bar">
+        <span>19:42</span>
+        <span>📶 🔋</span>
+      </div>
+      <div class="screen-content content">
+        <div style="padding: 12px 20px 16px;">
+          <h1 style="font-size: 24px; font-weight: 800; color: var(--text);">Mes gains</h1>
+          <p style="font-size: 12px; color: var(--text-gray); margin-top: 3px; font-weight: 500;">Suivi de votre chiffre d'affaires</p>
+        </div>
+
+        <!-- Earnings Hero -->
+        <div class="earnings-hero fade">
+          <div class="label-hero">Balance disponible</div>
+          <div class="amount">285 400 <small>FCFA</small></div>
+          <div style="display: flex; gap: 8px; margin-top: 18px;">
+            <button style="flex: 1; padding: 10px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; color: white; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+              <span class="material-icons-round" style="font-size: 16px;">payments</span>
+              Demander transfert
+            </button>
+            <button style="flex: 1; padding: 10px; background: white; border: none; border-radius: 10px; color: var(--primary-dark); font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+              <span class="material-icons-round" style="font-size: 16px;">insert_chart</span>
+              Rapports
+            </button>
+          </div>
+        </div>
+
+        <!-- Earning Cards -->
+        <div class="earnings-cards fade d1">
+          <div class="earning-card" style="border-left:3px solid var(--success);">
+            <div class="ec-icon" style="background: var(--success-light);">
+              <span class="material-icons-round" style="color: var(--success); font-size: 20px;">trending_up</span>
+            </div>
+            <div class="ec-value" style="color: var(--success);">45 000 F</div>
+            <div class="ec-label">Ce mois-ci</div>
+          </div>
+          <div class="earning-card" style="border-left:3px solid var(--warning);">
+            <div class="ec-icon" style="background: var(--warning-light);">
+              <span class="material-icons-round" style="color: var(--warning); font-size: 20px;">pending_actions</span>
+            </div>
+            <div class="ec-value" style="color: var(--warning);">15 000 F</div>
+            <div class="ec-label">En cours</div>
+          </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="section-h fade d2">
+          <h3>Paiements reçus</h3>
+          <a href="#" style="font-size:12px; font-weight:700; color:var(--primary); text-decoration:none;">Historique complet</a>
+        </div>
+
+        <div class="payment-item fade d2">
+          <div class="payment-method mtn">MTN</div>
+          <div class="payment-info">
+            <h5>Prestation Électricité</h5>
+            <p style="color: var(--success);">Transféré avec succès</p>
+          </div>
+          <div class="payment-amount" style="color: var(--success);">+ 15 000 F</div>
+        </div>
+
+        <div class="payment-item fade d3">
+          <div class="payment-method orange">ORG</div>
+          <div class="payment-info">
+            <h5>Dépannage Plomberie</h5>
+            <p style="color: var(--warning);">En attente de traitement</p>
+          </div>
+          <div class="payment-amount" style="color: var(--warning);">+ 25 000 F</div>
+        </div>
+
+        <div class="payment-item fade d3">
+          <div class="payment-method mtn">MTN</div>
+          <div class="payment-info">
+            <h5>Entretien Climatisation</h5>
+            <p style="color: var(--success);">Transféré avec succès</p>
+          </div>
+          <div class="payment-amount" style="color: var(--success);">+ 35 000 F</div>
+        </div>
+
+        <div style="height: 20px;"></div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <span class="material-icons-round" style="color: var(--text-muted); font-size: 24px;">home</span>
+          <span>Accueil</span>
+        </div>
+        <div class="nav-item active">
+          <span class="material-icons-round" style="font-size: 24px;">account_balance_wallet</span>
+          <span>Gains</span>
+        </div>
+        <div class="nav-item">
+          <span class="material-icons-round" style="color: var(--text-muted); font-size: 24px;">chat_bubble_outline</span>
+          <span>Messages</span>
+        </div>
+        <div class="nav-item">
+          <span class="material-icons-round" style="color: var(--text-muted); font-size: 24px;">person_outline</span>
+          <span>Profil</span>
+        </div>
+      </div>
+    </div>
+    <div class="label">GAINS TECHNICIEN</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ═══ ÉCRAN 5 : PROFIL TECHNICIEN ═══ -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div class="phone-container">
+    <div class="phone">
+      <div class="status-bar light" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); position: relative; z-index: 1;">
+        <span>19:42</span>
+        <span>📶 🔋</span>
+      </div>
+      <div class="screen-content content">
+        <!-- Profile Header -->
+        <div class="profile-tech-header fade">
+          <img src="https://images.unsplash.com/photo-1621574539437-4b7cb63120b8?w=200&h=200&fit=crop&crop=face" class="profile-tech-avatar" alt="James">
+          <h2>James Kamga</h2>
+          <div class="role">🔧 Dépanneur Certifié</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="profile-tech-stats fade d1">
+          <div class="pts-card">
+            <div class="value">47</div>
+            <div class="label">Missions</div>
+          </div>
+          <div class="pts-card">
+            <div class="value">4.9</div>
+            <div class="label">Avis client</div>
+          </div>
+          <div class="pts-card">
+            <div class="value" style="font-size: 13px;">285 400 F</div>
+            <div class="label">Solde total</div>
+          </div>
+          <div class="pts-card">
+            <div class="value">2 ans</div>
+            <div class="label">Activité</div>
+          </div>
+        </div>
+
+        <div class="profile-section fade d2">
+          <h4>Coordonnées professionnelles</h4>
+          
+          <div class="profile-menu-item">
+            <div class="profile-menu-icon" style="background: var(--primary-light);">
+              <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">phone</span>
+            </div>
+            <div class="info">
+              <h5>Téléphone</h5>
+              <p>+237 6 77 89 01 23</p>
+            </div>
+            <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">chevron_right</span>
+          </div>
+
+          <div class="profile-menu-item">
+            <div class="profile-menu-icon" style="background: var(--primary-light);">
+              <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">email</span>
+            </div>
+            <div class="info">
+              <h5>Email professionnel</h5>
+              <p>james.kamga@techlink.com</p>
+            </div>
+            <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">chevron_right</span>
+          </div>
+
+          <div class="profile-menu-item">
+            <div class="profile-menu-icon" style="background: var(--primary-light);">
+              <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">construction</span>
+            </div>
+            <div class="info">
+              <h5>Spécialités déclarées</h5>
+              <p>Électricité, Plomberie</p>
+            </div>
+            <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">chevron_right</span>
+          </div>
+        </div>
+
+        <div class="profile-section fade d3">
+          <h4>Paramètres administratifs</h4>
+
+          <div class="profile-menu-item">
+            <div class="profile-menu-icon" style="background: var(--primary-light);">
+              <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">history</span>
+            </div>
+            <div class="info">
+              <h5>Historique d'appels</h5>
+              <p>Liste des appels passés</p>
+            </div>
+            <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">chevron_right</span>
+          </div>
+
+          <div class="profile-menu-item">
+            <div class="profile-menu-icon" style="background: var(--primary-light);">
+              <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">verified</span>
+            </div>
+            <div class="info">
+              <h5>Abonnement annuel</h5>
+              <p>Plan Pro • Actif</p>
+            </div>
+            <span class="material-icons-round" style="color: var(--primary); font-size: 20px;">chevron_right</span>
+          </div>
+        </div>
+
+        <div class="logout-btn fade d4">
+          <span class="material-icons-round" style="font-size: 20px;">logout</span>
+          Se déconnecter
+        </div>
+
+        <div style="height: 20px;"></div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <span class="material-icons-round" style="color: var(--text-muted); font-size: 24px;">home</span>
+          <span>Accueil</span>
+        </div>
+        <div class="nav-item">
+          <span class="material-icons-round" style="color: var(--text-muted); font-size: 24px;">account_balance_wallet</span>
+          <span>Gains</span>
+        </div>
+        <div class="nav-item">
+          <span class="material-icons-round" style="color: var(--text-muted); font-size: 24px;">chat_bubble_outline</span>
+          <span>Messages</span>
+        </div>
+        <div class="nav-item active">
+          <span class="material-icons-round" style="font-size: 24px;">person</span>
+          <span>Profil</span>
+        </div>
+      </div>
+    </div>
+    <div class="label">PROFIL TECHNICIEN</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ═══ ÉCRAN 6 : OUTGOING CALL INTERFACE (CENTERED) ═══ -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div class="phone-container">
+    <div class="phone">
+      <div class="status-bar light" style="background: #0F172A;">
+        <span>19:42</span>
+        <span>📶 🔋</span>
+      </div>
+      <div class="call-screen">
+        <div></div>
+        
+        <!-- Receiver info centered -->
+        <div style="display:flex; flex-direction:column; align-items:center;">
+          <div class="call-avatar-container">
+            <div class="call-pulse"></div>
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face" class="call-avatar" alt="yoyo">
+          </div>
+          <div class="call-info">
+            <div class="call-name">yoyo</div>
+            <div class="call-status">Appel sortant en cours...</div>
+          </div>
+        </div>
+        
+        <!-- Centered call control buttons -->
+        <div class="call-actions">
+          <div class="call-icon-row">
+            <div class="call-btn-circle"><span class="material-icons-round">volume_up</span></div>
+            <div class="call-btn-circle"><span class="material-icons-round">mic_off</span></div>
+            <div class="call-btn-circle"><span class="material-icons-round">videocam</span></div>
+          </div>
+          <!-- Center end call -->
+          <div class="call-hangup">
+            <span class="material-icons-round" style="font-size:32px; transform: rotate(135deg);">phone</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="label">INTERFACE D'APPEL</div>
+  </div>
+
+</body>
+</html>

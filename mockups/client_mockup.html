@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechLink – Interfaces Client (Premium Purple Theme)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7C3AED;
+      --primary-dark: #6D28D9;
+      --primary-light: #F5F3FF;
+      --primary-glow: rgba(124, 93, 237, 0.15);
+      --accent: #A78BFA;
+      --accent-light: #F5F3FF;
+      --success: #10B981;
+      --success-light: #ECFDF5;
+      --warning: #F59E0B;
+      --warning-light: #FFFBEB;
+      --error: #EF4444;
+      --error-light: #FEF2F2;
+      --bg: #FAF9FE;
+      --surface: #FFFFFF;
+      --text: #1E1B4B;
+      --text-secondary: #4F46E5;
+      --text-gray: #6B7280;
+      --text-muted: #9CA3AF;
+      --border: #F3E8FF;
+      --border-strong: #E9D5FF;
+      --shadow-sm: 0 1px 3px rgba(124, 93, 237, 0.05), 0 4px 12px rgba(124, 93, 237, 0.03);
+      --shadow-lg: 0 10px 25px -5px rgba(124, 93, 237, 0.1), 0 8px 10px -6px rgba(124, 93, 237, 0.05);
+      --r: 20px;
+      --r-sm: 14px;
+      --r-xs: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #F5F3FF 0%, #DDD6FE 50%, #C7D2FE 100%);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 50px 20px;
+      gap: 40px;
+      min-height: 100vh;
+    }
+
+    .phone-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .phone {
+      width: 375px;
+      height: 812px;
+      background: var(--bg);
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(79, 70, 229, 0.15), 0 0 0 12px #ffffff, 0 0 0 13px rgba(79, 70, 229, 0.1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Notch */
+    .phone::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 28px;
+      background: #000000;
+      border-radius: 0 0 16px 16px;
+      z-index: 100;
+    }
+
+    .status-bar {
+      height: 44px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 24px 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .status-bar.light {
+      color: white;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    
+    .content::-webkit-scrollbar {
+      display: none;
+    }
+
+    .bottom-nav {
+      display: flex;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 8px 0 28px;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 0;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-item span:last-child {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .nav-item.active span:last-child {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .nav-item.active .material-icons-round {
+      color: var(--primary);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 24px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 0 0 4px 4px;
+    }
+
+    .label {
+      text-align: center;
+      margin-top: 16px;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 6px 16px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    /* ── Component Styles ── */
+    .avatar-container {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .avatar-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border-strong);
+    }
+
+    .avatar-img.lg {
+      width: 88px;
+      height: 88px;
+      border: 3px solid var(--primary);
+    }
+
+    .avatar-img.sm {
+      width: 40px;
+      height: 40px;
+    }
+
+    .avatar-img.xs {
+      width: 32px;
+      height: 32px;
+    }
+
+    .section-h {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 20px 12px;
+    }
+
+    .section-h h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .section-h a {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.green { background: var(--success-light); color: var(--success); }
+    .badge.orange { background: #FFF3E0; color: #E65100; }
+    .badge.yellow { background: var(--warning-light); color: var(--warning); }
+    .badge.red { background: var(--error-light); color: var(--error); }
+    .badge.purple { background: var(--primary-light); color: var(--primary); }
+
+    .card {
+      margin: 0 20px 12px;
+      padding: 16px;
+      background: var(--surface);
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: var(--r-sm);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px var(--primary-glow);
+    }
+
+    .btn-outline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade { animation: fadeUp 0.4s ease-out forwards; }
+    .d1 { animation-delay: .08s; opacity: 0; }
+    .d2 { animation-delay: .16s; opacity: 0; }
+    .d3 { animation-delay: .24s; opacity: 0; }
+    .d4 { animation-delay: .32s; opacity: 0; }
+
+    /* ── Page Home ── */
+    .hero {
+      margin: 16px 20px 0;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--primary) 0%, #5B21B6 100%);
+      border-radius: 20px;
+      color: white;
+      box-shadow: 0 8px 25px rgba(124, 93, 237, 0.25);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 130px;
+      height: 130px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 50%;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      right: 30px;
+      width: 70px;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+    }
+
+    .hero .tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .hero h2 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+      line-height: 1.3;
+    }
+
+    .hero p {
+      font-size: 12px;
+      opacity: .85;
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 14px;
+    }
+
+    .hero-btn {
+      background: white;
+      color: var(--primary-dark);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s;
+    }
+
+    .hero-btn:hover {
+      transform: scale(1.03);
+    }
+
+    .cat-scroll {
+      display: flex;
+      gap: 10px;
+      padding: 0 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .cat-scroll::-webkit-scrollbar { display: none; }
+
+    .cat-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 75px;
+      padding: 14px 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .cat-chip:hover, .cat-chip.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .cat-chip .ic {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .cat-chip.active .ic {
+      background: var(--primary);
+    }
+
+    .cat-chip.active .ic .material-icons-round {
+      color: white !important;
+    }
+
+    .cat-chip span {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Search */
+    .search {
+      margin: 16px 20px 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search span {
+      color: var(--text-gray);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Mission card list */
+    .mission-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mission-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mission-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .mission-info p {
+      font-size: 12px;
+      color: var(--text-gray);
+      margin-top: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Filters tab */
+    .filters {
+      display: flex;
+      gap: 8px;
+      padding: 0 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .filters::-webkit-scrollbar { display: none; }
+
+    .ftab {
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      background: var(--surface);
+      color: var(--text-gray);
+      border: 1px solid var(--border);
+    }
+
+    .ftab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Profile stats */
+    .prof-header {
+      text-align: center;
+      padding: 24px 20px 10px;
+      background: linear-gradient(to bottom, var(--primary-light) 0%, rgba(245, 243, 255, 0) 100%);
+    }
+
+    .prof-stats {
+      display: flex;
+      gap: 10px;
+      padding: 16px 20px;
+    }
+
+    .pstat {
+      flex: 1;
+      text-align: center;
+      padding: 14px 8px;
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pstat .v {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .pstat .l {
+      font-size: 11px;
+      color: var(--text-gray);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border);
+      margin: 0 20px 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .menu-item:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .menu-item .info {
+      flex: 1;
+    }
+
+    .menu-item .info h5 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .menu-item .info p {
+      font-size: 11px;
+      color: var(--text-gray);
+      margin-top: 2px;
+    }
+
+    /* Microphone button */
+    .mic-btn {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(124, 93, 237, 0.3);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .mic-btn::before {
+      content: '';
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 1.5px solid var(--primary);
+      animation: pulse 1.8s infinite;
+      opacity: 0.5;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+
+    /* AI chips */
+    .chip-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .info-chip {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-chip .ic2 {
+      font-size: 20px;
+    }
+
+    .info-chip .lbl {
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+
+    .info-chip .val {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    /* Tech list cards */
+    .tech-card {
+      margin: 0 20px 10px;
+      padding: 16px;
+      background: var(--surface);
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tech-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-1px);
+    }
+
+    .tech-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .tech-stats span {
+      font-size: 11px;
+      color: var(--text-gray);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+    }
+
+    .spec-tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
+    .section-title {
+      padding: 0 20px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    /* Call Interface Styles */
+    .call-screen {
+      background: #0F172A;
+      color: white;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 80px 24px 60px;
+    }
+
+    .call-avatar-container {
+      position: relative;
+      margin-top: 40px;
+    }
+
+    .call-avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary);
+    }
+
+    .call-pulse {
+      position: absolute;
+      top: -10px; left: -10px; right: -10px; bottom: -10px;
+      border: 2px dashed rgba(124, 93, 237, 0.4);
+      border-radius: 50%;
+      animation: spin 8s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .call-info {
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    .call-name {
+      font-size: 26px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .call-status {
+      font-size: 14px;
+      color: #94A3B8;
+      margin-top: 6px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .call-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+    }
+
+    .call-icon-row {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .call-btn-circle {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .call-btn-circle:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .call-hangup {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--error);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+      transition: all 0.2s;
+    }
+
+    .call-hangup:hover {
+      transform: scale(1.05);
+      background: #DC2626;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════ -->
+<!-- ÉCRAN 1: ACCUEIL CLIENT -->
+<!-- ══════════════════════════════════ -->
+<div class="phone-container">
+<div class="phone">
+  <div class="status-bar"><span>21:07</span><span>📶 🔋</span></div>
+  <div class="content">
+    <!-- Header -->
+    <div style="padding:10px 20px 0; display:flex; align-items:center; justify-content:space-between;" class="fade">
+      <div>
+        <div style="font-size:13px; color:var(--text-gray); font-weight:600;">Bonsoir 👋</div>
+        <div style="font-size:22px; font-weight:800; color:var(--text); margin-top:2px;">Aristide</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px;height:40px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;">
+          <span class="material-icons-round" style="color:var(--primary);font-size:22px;">notifications_none</span>
+          <div style="position:absolute;top:10px;right:10px;width:8px;height:8px;background:var(--error);border-radius:50%;border:2px solid var(--surface);"></div>
+        </div>
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" class="avatar-img" alt="Aristide">
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search fade d1">
+      <span class="material-icons-round" style="color:var(--primary);font-size:22px;">search</span>
+      <span>De quel service avez-vous besoin ?</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero fade d2">
+      <div class="tag">⚡ TechLink IA</div>
+      <h2>Un problème à résoudre ?</h2>
+      <p>Décrivez votre panne en quelques mots, l'IA s'occupe de l'analyse et trouve la solution.</p>
+      <button class="hero-btn">
+        <span class="material-icons-round" style="font-size:18px;">auto_awesome</span>
+        Décrire mon problème
+      </button>
+    </div>
+
+    <!-- Categories -->
+    <div class="section-h fade d3"><h3>Nos services</h3><a href="#">Voir tout</a></div>
+    <div class="cat-scroll fade d3">
+      <div class="cat-chip active">
+        <div class="ic"><span class="material-icons-round" style="color:var(--primary);font-size:22px;">bolt</span></div>
+        <span>Électricité</span>
+      </div>
+      <div class="cat-chip">
+        <div class="ic"><span class="material-icons-round" style="color:var(--primary);font-size:22px;">water_drop</span></div>
+        <span>Plomberie</span>
+      </div>
+      <div class="cat-chip">
+        <div class="ic"><span class="material-icons-round" style="color:var(--primary);font-size:22px;">ac_unit</span></div>
+        <span>Climatisation</span>
+      </div>
+      <div class="cat-chip">
+        <div class="ic"><span class="material-icons-round" style="color:var(--primary);font-size:22px;">computer</span></div>
+        <span>Informatique</span>
+      </div>
+      <div class="cat-chip">
+        <div class="ic"><span class="material-icons-round" style="color:var(--primary);font-size:22px;">format_paint</span></div>
+        <span>Peinture</span>
+      </div>
+    </div>
+
+    <!-- Recent Missions -->
+    <div class="section-h fade d4"><h3>Missions récentes</h3><a href="#">Voir tout</a></div>
+    <div class="card fade d4">
+      <div class="mission-row">
+        <div class="icon-box" style="background:var(--primary-light);"><span class="material-icons-round" style="color:var(--primary);">bolt</span></div>
+        <div class="mission-info">
+          <h4>Électricité</h4>
+          <p>Prise qui ne fonctionne plus dans le salon</p>
+        </div>
+        <div class="badge green">Terminée</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="mission-row">
+        <div class="icon-box" style="background:#FFF9C4;"><span class="material-icons-round" style="color:#FBC02D;">water_drop</span></div>
+        <div class="mission-info">
+          <h4>Plomberie</h4>
+          <p>Fuite d'eau sous le lavabo de la cuisine</p>
+        </div>
+        <div class="badge yellow">En cours</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="mission-row">
+        <div class="icon-box" style="background:var(--primary-light);"><span class="material-icons-round" style="color:var(--primary);">ac_unit</span></div>
+        <div class="mission-info">
+          <h4>Climatisation</h4>
+          <p>Le climatiseur split ne refroidit plus</p>
+        </div>
+        <div class="badge orange">En attente</div>
+      </div>
+    </div>
+    <div style="height:20px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item active"><span class="material-icons-round" style="font-size:22px;">home</span><span>Accueil</span></div>
+    <div class="nav-item"><span class="material-icons-round" style="color:var(--text-muted);font-size:22px;">assignment</span><span>Missions</span></div>
+    <div class="nav-item"><span class="material-icons-round" style="color:var(--text-muted);font-size:22px;">chat_bubble_outline</span><span>Messages</span></div>
+    <div class="nav-item"><span class="material-icons-round" style="color:var(--text-muted);font-size:22px;">person_outline</span><span>Profil</span></div>
+  </div>
+</div>
+<div class="label">ACCUEIL CLIENT</div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- ÉCRAN 2: DÉCRIRE MON PROBLÈME -->
+<!-- ══════════════════════════════════ -->
+<div class="phone-container">
+<div class="phone">
+  <div class="status-bar"><span>21:07</span><span>📶 🔋</span></div>
+  <div class="content">
+    <!-- AppBar -->
+    <div style="display:flex;align-items:center;padding:12px 16px 20px;gap:12px;">
+      <span class="material-icons-round" style="color:var(--text);font-size:24px;cursor:pointer;">arrow_back</span>
+      <h2 style="flex:1;font-size:17px;font-weight:800;text-align:center;color:var(--text);">Décrire mon problème</h2>
+      <div style="width:24px;"></div>
+    </div>
+
+    <div style="padding:0 20px;">
+      <!-- Info banner -->
+      <div style="padding:14px;background:var(--primary-light);border-radius:12px;display:flex;align-items:flex-start;gap:10px;margin-bottom:24px;" class="fade">
+        <span class="material-icons-round" style="color:var(--primary);font-size:22px;">info</span>
+        <span style="font-size:12px;color:var(--primary-dark);font-weight:600;line-height:1.4;">Décrivez verbalement ou écrivez votre problème. Notre IA détectera la panne et proposera des solutions immédiates.</span>
+      </div>
+
+      <!-- Microphone -->
+      <div style="text-align:center;margin-bottom:24px;" class="fade d1">
+        <div class="mic-btn" style="margin:0 auto;">
+          <span class="material-icons-round" style="color:white;font-size:32px;">mic</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-gray);margin-top:16px;">Appuyez pour parler</div>
+      </div>
+
+      <!-- OR separator -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;" class="fade d2">
+        <div style="flex:1;height:1px;background:var(--border-strong);"></div>
+        <span style="font-size:11px;font-weight:800;color:var(--text-muted);letter-spacing:1.5px;">OU ÉCRIRE</span>
+        <div style="flex:1;height:1px;background:var(--border-strong);"></div>
+      </div>
+
+      <!-- Text field -->
+      <div class="fade d2">
+        <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:8px;">Votre description *</div>
+        <div style="background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r-sm);padding:14px;min-height:120px;position:relative;">
+          <div style="color:var(--text-muted);font-size:13px;font-weight:500;line-height:1.4;">Ex: Ma robinetterie fuit sous l'évier de la cuisine et le débit d'eau chaude a diminué...</div>
+          <div style="position:absolute;bottom:10px;right:14px;font-size:11px;color:var(--text-muted);font-weight:600;">0/500</div>
+        </div>
+      </div>
+
+      <!-- Photos -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:24px;margin-bottom:12px;" class="fade d3">
+        <span style="font-size:14px;font-weight:800;color:var(--text);">Photos de l'anomalie</span>
+        <span style="font-size:12px;color:var(--text-gray);font-weight:600;">0/3</span>
+      </div>
+      <div style="display:flex;gap:12px;" class="fade d3">
+        <div style="width:72px;height:72px;border-radius:12px;border:2px dashed var(--border-strong);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:var(--surface);transition:all 0.2s;">
+          <span class="material-icons-round" style="color:var(--primary);font-size:26px;">add_a_photo</span>
+          <span style="font-size:10px;color:var(--primary);font-weight:700;margin-top:4px;">Ajouter</span>
+        </div>
+      </div>
+
+      <!-- Analyze Button -->
+      <button class="btn-primary fade d4" style="margin-top:32px; margin-bottom:24px;">
+        <span class="material-icons-round" style="font-size:20px;">psychology</span>
+        Analyser avec l'IA
+      </button>
+    </div>
+  </div>
+</div>
+<div class="label">DÉCRIRE MON PROBLÈME</div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- ÉCRAN 3: ANALYSE IA -->
+<!-- ══════════════════════════════════ -->
+<div class="phone-container">
+<div class="phone">
+  <div class="status-bar"><span>21:07</span><span>📶 🔋</span></div>
+  <div class="content">
+    <div style="display:flex;align-items:center;padding:12px 16px 16px;gap:12px;">
+      <span class="material-icons-round" style="color:var(--text);font-size:24px;">arrow_back</span>
+      <h2 style="flex:1;font-size:17px;font-weight:800;text-align:center;">Analyse IA</h2>
+      <div style="width:24px;"></div>
+    </div>
+    <div style="padding:0 20px;">
+      <!-- AI Badge -->
+      <div style="text-align:center;margin-bottom:16px;" class="fade">
+        <div style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-light);padding:6px 14px;border-radius:20px;border:1px solid var(--border-strong);">
+          <span class="material-icons-round" style="color:var(--primary);font-size:18px;">psychology</span>
+          <span style="font-size:12px;color:var(--primary);font-weight:800;">Solution identifiée</span>
+        </div>
+      </div>
+      
+      <!-- Listen btn -->
+      <div style="text-align:center;margin-bottom:20px;" class="fade d1">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:20px;background:var(--success-light);border:1px solid rgba(16,185,129,0.3);cursor:pointer;box-shadow:var(--shadow-sm);">
+          <span class="material-icons-round" style="color:var(--success);font-size:18px;">volume_up</span>
+          <span style="font-size:12px;color:var(--success);font-weight:700;">Écouter le résumé vocal</span>
+        </div>
+      </div>
+      
+      <!-- Info chips -->
+      <div class="chip-row fade d2" style="margin-bottom:10px;">
+        <div class="info-chip" style="background:#FFF9C4; border:1px solid rgba(251,192,45,0.3);">
+          <span class="material-icons-round ic2" style="color:#E2B93B;">bolt</span>
+          <div><div class="lbl" style="color:#574A1A;">Urgence</div><div class="val" style="color:#574A1A;">Normal</div></div>
+        </div>
+        <div class="info-chip" style="background:var(--primary-light); border:1px solid var(--border-strong);">
+          <span class="material-icons-round ic2" style="color:var(--primary);">category</span>
+          <div><div class="lbl" style="color:var(--primary-dark);">Domaine</div><div class="val" style="color:var(--primary-dark);">Plomberie</div></div>
+        </div>
+      </div>
+      <div class="info-chip fade d2" style="background:#E0F2FE; border:1px solid #BAE6FD; margin-bottom:16px;">
+        <span class="material-icons-round ic2" style="color:#0284C7;">schedule</span>
+        <div><div class="lbl" style="color:#0369A1;">Durée d'intervention estimée</div><div class="val" style="color:#0369A1;">1h à 2 heures</div></div>
+      </div>
+      
+      <!-- Safety alert -->
+      <div style="padding:14px;background:var(--error-light);border:1px solid rgba(239,68,68,0.25);border-radius:12px;display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;" class="fade d3">
+        <span class="material-icons-round" style="color:var(--error);font-size:22px;">warning</span>
+        <span style="font-size:12px;color:var(--error);line-height:1.45;font-weight:600;"><strong>Mesure de sécurité :</strong> Coupez le robinet d'arrêt principal sous le lavabo immédiatement.</span>
+      </div>
+      
+      <!-- Problem section -->
+      <div class="card fade d3" style="margin:0 0 12px; border-left: 4px solid var(--primary);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:14px;font-weight:800;color:var(--text);">Diagnostic détecté</span>
+        </div>
+        <p style="font-size:13px;line-height:1.6;color:var(--text-gray);font-weight:500;">Fuite d'eau active localisée sous le lavabo de la cuisine, probablement due à l'usure du joint du siphon ou au desserrage du raccord plastique.</p>
+      </div>
+      
+      <!-- Solution section -->
+      <div class="card fade d4" style="margin:0 0 24px; border-left: 4px solid var(--success);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:14px;font-weight:800;color:var(--text);">Mesures de secours temporaires</span>
+        </div>
+        <p style="font-size:12px;line-height:1.6;color:var(--text-gray);font-weight:500;">1. Placer un récipient (bassine) sous le siphon.<br>2. Éviter d'utiliser l'évier en attendant l'artisan.<br>3. Essuyer les flaques d'eau autour pour éviter d'infiltrer le meuble en bois sous évier.</p>
+      </div>
+      
+      <!-- Buttons -->
+      <button class="btn-primary" style="margin-bottom:12px;">
+        <span class="material-icons-round" style="font-size:18px;">location_on</span>
+        Rechercher un plombier à proximité
+      </button>
+      <button class="btn-outline" style="margin-bottom:24px;">
+        <span class="material-icons-round" style="font-size:18px;">edit</span>
+        Ajuster la description
+      </button>
+    </div>
+  </div>
+</div>
+<div class="label">ANALYSE IA</div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- ÉCRAN 4: TROUVER UN TECHNICIEN -->
+<!-- ══════════════════════════════════ -->
+<div class="phone-container">
+<div class="phone">
+  <div class="status-bar"><span>21:07</span><span>📶 🔋</span></div>
+  <div class="content">
+    <div style="display:flex;align-items:center;padding:12px 16px 14px;gap:12px;">
+      <span class="material-icons-round" style="color:var(--text);font-size:24px;">arrow_back</span>
+      <h2 style="flex:1;font-size:17px;font-weight:800;text-align:center;">Trouver un technicien</h2>
+      <span class="material-icons-round" style="color:var(--primary);font-size:22px;cursor:pointer;">refresh</span>
+    </div>
+    
+    <!-- Search -->
+    <div class="search fade" style="margin-bottom:12px; margin-top:0;">
+      <span class="material-icons-round" style="color:var(--primary);font-size:20px;">search</span>
+      <span style="color:var(--text-gray);">Ex: James, Climatisation, Électricité...</span>
+    </div>
+    
+    <!-- GPS banner -->
+    <div style="margin:0 20px 12px;padding:10px 14px;background:var(--success-light);border-radius:12px;border:1px solid rgba(16,185,129,0.15);display:flex;align-items:center;gap:8px;" class="fade d1">
+      <span class="material-icons-round" style="color:var(--success);font-size:16px;">gps_fixed</span>
+      <span style="font-size:11px;color:var(--success);font-weight:700;">Localisation active : plombiers les plus proches</span>
+    </div>
+    
+    <!-- Category filter -->
+    <div style="margin:0 20px 16px;padding:10px 14px;background:var(--primary-light);border-radius:12px;display:flex;align-items:center;gap:8px;border:1px solid var(--border);" class="fade d1">
+      <span class="material-icons-round" style="color:var(--primary);font-size:18px;">filter_list</span>
+      <span style="font-size:12px;color:var(--primary-dark);font-weight:700;">Filtré par : Plomberie • 3 artisans trouvés</span>
+    </div>
+
+    <!-- Section: Nearby -->
+    <div style="padding:0 20px 10px;display:flex;align-items:center;gap:6px;" class="fade d2">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--success);"></div>
+      <span style="font-size:13px;font-weight:800;color:var(--text);">À proximité (moins de 5 km)</span>
+    </div>
+    
+    <!-- Tech card 1 -->
+    <div class="tech-card fade d2">
+      <img src="https://images.unsplash.com/photo-1621574539437-4b7cb63120b8?w=100&h=100&fit=crop&crop=face" class="avatar-img sm" alt="James">
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:14px;font-weight:800;color:var(--text);">James Kamga</span>
+          <div style="padding:2px 6px;background:#FEF3C7;border-radius:6px;border:1px solid rgba(245,158,11,0.25);">
+            <span style="font-size:9px;font-weight:800;color:#D97706;">🥇 Elite Tech</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:4px;margin-top:4px;">
+          <span class="spec-tag">Plomberie</span>
+          <span class="spec-tag">Chauffage</span>
+        </div>
+        <div class="tech-stats">
+          <span><span class="material-icons-round" style="font-size:14px;color:#F59E0B;">star</span> 4.9</span>
+          <span>47 missions</span>
+          <span style="margin-left:auto;color:var(--success);"><span class="material-icons-round" style="font-size:13px;color:var(--success);">location_on</span> 2.3 km</span>
+        </div>
+      </div>
+      <span class="material-icons-round" style="color:var(--primary);font-size:22px;">chevron_right</span>
+    </div>
+
+    <!-- Tech card 2 -->
+    <div class="tech-card fade d3">
+      <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" class="avatar-img sm" alt="Paul">
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--text);">Paul Moukoko</div>
+        <div style="display:flex;gap:4px;margin-top:4px;">
+          <span class="spec-tag">Plomberie</span>
+        </div>
+        <div class="tech-stats">
+          <span><span class="material-icons-round" style="font-size:14px;color:#F59E0B;">star</span> 4.7</span>
+          <span>18 missions</span>
+          <span style="margin-left:auto;color:var(--success);"><span class="material-icons-round" style="font-size:13px;color:var(--success);">location_on</span> 3.8 km</span>
+        </div>
+      </div>
+      <span class="material-icons-round" style="color:var(--primary);font-size:22px;">chevron_right</span>
+    </div>
+
+    <!-- Section: Far -->
+    <div style="padding:16px 20px 10px;display:flex;align-items:center;gap:6px;" class="fade d3">
+      <span style="font-size:13px;font-weight:800;color:var(--text-gray);">Plus éloignés (ou sans position)</span>
+    </div>
+    
+    <div class="tech-card fade d4">
+      <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" class="avatar-img sm" alt="Eric">
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--text);">Eric Tallah</div>
+        <div style="display:flex;gap:4px;margin-top:4px;">
+          <span class="spec-tag">Plomberie</span>
+          <span class="spec-tag">Soudure</span>
+        </div>
+        <div class="tech-stats">
+          <span><span class="material-icons-round" style="font-size:14px;color:#F59E0B;">star</span> 4.5</span>
+          <span>8 missions</span>
+          <span style="margin-left:auto;color:var(--text-muted);"><span class="material-icons-round" style="font-size:13px;">location_off</span> Hors zone</span>
+        </div>
+      </div>
+      <span class="material-icons-round" style="color:var(--primary);font-size:22px;">chevron_right</span>
+    </div>
+    <div style="height:24px;"></div>
+  </div>
+</div>
+<div class="label">TROUVER UN TECHNICIEN</div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- ÉCRAN 5: HISTORIQUE MISSIONS -->
+<!-- ══════════════════════════════════ -->
+<div class="phone-container">
+<div class="phone">
+  <div class="status-bar"><span>21:07</span><span>📶 🔋</span></div>
+  <div class="content">
+    <div style="padding:12px 20px 16px;" class="fade">
+      <h1 style="font-size:22px;font-weight:800;color:var(--text);">Mes interventions</h1>
+      <p style="font-size:12px;color:var(--text-gray);margin-top:3px;font-weight:500;">Historique et suivi de vos demandes</p>
+    </div>
+    
+    <div class="filters fade d1" style="margin-bottom:16px;">
+      <div class="ftab active">Toutes</div>
+      <div class="ftab">En cours</div>
+      <div class="ftab">Terminées</div>
+      <div class="ftab">Annulées</div>
+    </div>
+    
+    <!-- Mission Card 1 -->
+    <div class="card fade d2">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="icon-box" style="background:var(--primary-light);"><span class="material-icons-round" style="color:var(--primary);">bolt</span></div>
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--text);">Électricité</div>
+            <div style="font-size:11px;color:var(--text-gray);font-weight:600;margin-top:1px;">Hier, 14:32</div>
+          </div>
+        </div>
+        <div class="badge green">Terminée</div>
+      </div>
+      <p style="font-size:12px;color:var(--text-gray);line-height:1.5;margin-bottom:12px;font-weight:500;">Prise murale défectueuse changée dans la pièce à vivre principale.</p>
+      
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:12px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <img src="https://images.unsplash.com/photo-1621574539437-4b7cb63120b8?w=40&h=40&fit=crop&crop=face" class="avatar-img xs" alt="">
+          <span style="font-size:12px;color:var(--text);font-weight:700;">James K.</span>
+        </div>
+        <div style="display:flex; gap:12px; font-size:12px; font-weight:700; color:var(--text);">
+          <span>⭐ 4.8</span>
+          <span style="color:var(--primary);">15 000 F CFA</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mission Card 2 -->
+    <div class="card fade d3">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="icon-box" style="background:#FFF9C4;"><span class="material-icons-round" style="color:#FBC02D;">water_drop</span></div>
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--text);">Plomberie</div>
+            <div style="font-size:11px;color:var(--text-gray);font-weight:600;margin-top:1px;">Aujourd'hui, 20:00</div>
+          </div>
+        </div>
+        <div class="badge yellow">En cours</div>
+      </div>
+      <p style="font-size:12px;color:var(--text-gray);line-height:1.5;margin-bottom:12px;font-weight:500;">Fuite d'eau importante au siphon de l'évier.</p>
+      
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:12px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face" class="avatar-img xs" alt="">
+          <span style="font-size:12px;color:var(--text);font-weight:700;">Paul Moukoko</span>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--primary);">
+          <span>RDV : Demain 10h</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mission Card 3 -->
+    <div class="card fade d4">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="icon-box" style="background:var(--error-light);"><span class="material-icons-round" style="color:var(--error);">close</span></div>
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--text);">Climatisation</div>
+            <div style="font-size:11px;color:var(--text-gray);font-weight:600;margin-top:1px;">Il y a 6 jours</div>
+          </div>
+        </div>
+        <div class="badge red">Annulée</div>
+      </div>
+      <p style="font-size:12px;color:var(--text-gray);line-height:1.5;font-weight:500;">Maintenance climatiseur split.</p>
+    </div>
+    
+    <div style="height:20px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item"><span class="material-icons-round" style="color:var(--text-muted);font-size:22px;">home</span><span>Accueil</span></div>
+    <div class="nav-item active"><span class="material-icons-round" style="font-size:22px;">assignment</span><span>Missions</span></div>
+    <div class="nav-item"><span class="material-icons-round" style="color:var(--text-muted);font-size:22px;">chat_bubble_outline</span><span>Messages</span></div>
+    <div class="nav-item"><span class="material-icons-round" style="color:var(--text-muted);font-size:22px;">person_outline</span><span>Profil</span></div>
+  </div>
+</div>
+<div class="label">HISTORIQUE MISSIONS</div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- ÉCRAN 6: PROFIL CLIENT -->
+<!-- ══════════════════════════════════ -->
+<div class="phone-container">
+<div class="phone">
+  <div class="status-bar"><span>21:07</span><span>📶 🔋</span></div>
+  <div class="content">
+    <div class="prof-header fade">
+      <div class="avatar-container">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face" class="avatar-img lg" alt="Aristide">
+        <div style="position:absolute;bottom:4px;right:4px;background:var(--primary);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;border:2px solid white;cursor:pointer;">
+          <span class="material-icons-round" style="font-size:14px;">camera_alt</span>
+        </div>
+      </div>
+      <h2 style="font-size:20px;font-weight:800;color:var(--text);margin-top:14px;">Aristide Kamga</h2>
+      <div style="display:inline-block;background:var(--primary-light);padding:4px 14px;border-radius:20px;margin-top:6px;border:1px solid var(--border-strong);">
+        <span style="font-size:11px;color:var(--primary);font-weight:700;">👤 Client Premium</span>
+      </div>
+    </div>
+    
+    <div class="prof-stats fade d1">
+      <div class="pstat">
+        <div class="v">12</div>
+        <div class="l">Demandes</div>
+      </div>
+      <div class="pstat">
+        <div class="v">4.8</div>
+        <div class="l">Ma note</div>
+      </div>
+      <div class="pstat">
+        <div class="v" style="font-size:15px;color:var(--primary);">185 000 F</div>
+        <div class="l">Dépenses</div>
+      </div>
+    </div>
+    
+    <div class="section-title fade d2">Coordonnées</div>
+    <div class="menu-item fade d2">
+      <div class="icon-box" style="background:var(--primary-light);width:36px;height:36px;border-radius:10px;"><span class="material-icons-round" style="color:var(--primary);font-size:18px;">phone</span></div>
+      <div class="info"><h5>Téléphone</h5><p>+237 6 91 23 45 67</p></div>
+      <span class="material-icons-round" style="color:var(--primary);font-size:18px;">chevron_right</span>
+    </div>
+    <div class="menu-item fade d2">
+      <div class="icon-box" style="background:var(--primary-light);width:36px;height:36px;border-radius:10px;"><span class="material-icons-round" style="color:var(--primary);font-size:18px;">email</span></div>
+      <div class="info"><h5>Adresse email</h5><p>aristide.kamga@gmail.com</p></div>
+      <span class="material-icons-round" style="color:var(--primary);font-size:18px;">chevron_right</span>
+    </div>
+    
+    <div class="section-title fade d3" style="margin-top:16px;">Paramètres généraux</div>
+    <div class="menu-item fade d3">
+      <div class="icon-box" style="background:var(--primary-light);width:36px;height:36px;border-radius:10px;"><span class="material-icons-round" style="color:var(--primary);font-size:18px;">history</span></div>
+      <div class="info"><h5>Historique d'appels</h5><p>Consulter l'activité récente</p></div>
+      <span class="material-icons-round" style="color:var(--primary);font-size:18px;">chevron_right</span>
+    </div>
+    <div class="menu-item fade d3">
+      <div class="icon-box" style="background:var(--primary-light);width:36px;height:36px;border-radius:10px;"><span class="material-icons-round" style="color:var(--primary);font-size:18px;">notifications</span></div>
+      <div class="info"><h5>Alerte & Notifications</h5><p>Activer ou désactiver les alertes</p></div>
+      <span class="material-icons-round" style="color:var(--primary);font-size:18px;">chevron_right</span>
+    </div>
+    
+    <div style="margin:20px 20px;padding:14px;background:var(--error-light);border:1px solid rgba(239,68,68,0.2);border-radius:var(--r-sm);text-align:center;font-weight:800;font-size:13px;color:var(--error);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span class="material-icons-round" style="font-size:18px;">logout</span> Déconnexion du compte
+    </div>
+    <div style="height:12px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item"><span class="material-icons-round" style="color:var(--text-muted);font-size:22px;">home</span><span>Accueil</span></div>
+    <div class="nav-item"><span class="material-icons-round" style="color:var(--text-muted);font-size:22px;">assignment</span><span>Missions</span></div>
+    <div class="nav-item"><span class="material-icons-round" style="color:var(--text-muted);font-size:22px;">chat_bubble_outline</span><span>Messages</span></div>
+    <div class="nav-item active"><span class="material-icons-round" style="font-size:22px;">person</span><span>Profil</span></div>
+  </div>
+</div>
+<div class="label">PROFIL CLIENT</div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- ÉCRAN 7: OUTGOING CALL INTERFACE -->
+<!-- ══════════════════════════════════ -->
+<div class="phone-container">
+<div class="phone">
+  <div class="status-bar light"><span>21:07</span><span>📶 🔋</span></div>
+  <div class="call-screen">
+    <div></div>
+    
+    <!-- Receiver info centered -->
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div class="call-avatar-container">
+        <div class="call-pulse"></div>
+        <img src="https://images.unsplash.com/photo-1621574539437-4b7cb63120b8?w=200&h=200&fit=crop&crop=face" class="call-avatar" alt="James Kamga">
+      </div>
+      <div class="call-info">
+        <div class="call-name">James Kamga</div>
+        <div class="call-status">Appel sortant en cours...</div>
+      </div>
+    </div>
+    
+    <!-- Centered call control buttons -->
+    <div class="call-actions">
+      <div class="call-icon-row">
+        <div class="call-btn-circle"><span class="material-icons-round">volume_up</span></div>
+        <div class="call-btn-circle"><span class="material-icons-round">mic_off</span></div>
+        <div class="call-btn-circle"><span class="material-icons-round">videocam</span></div>
+      </div>
+      <!-- Center end call -->
+      <div class="call-hangup">
+        <span class="material-icons-round" style="font-size:32px; transform: rotate(135deg);">phone</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="label">INTERFACE D'APPEL</div>
+</div>
+
+</body>
+</html>

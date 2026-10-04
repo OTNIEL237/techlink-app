@@ -1,0 +1,100 @@
+﻿2: DEDICACE
+7: REMERCIEMENTS
+38: RESUME
+45: ABSTRACT
+66: SOMMAIRE
+69: DEDICACE
+70: REMERCIEMENTS
+71: SOMMAIRE
+72: LISTE DES TABLEAUX
+73: LISTE DES FIGURES
+74: RESUME
+75: ABSTRACT
+76: LISTE DES SIGLES ET ABREVIATIONS
+77: GLOSSAIRE
+78: INTRODUCTION GENERALE
+79: PARTIE 1 : PHASE D
+81: PHASE TECHNIQUE
+82: DOSSIER I : DOSSIER DE L
+84: DOSSIER II : CAHIER DES CHARGES
+85: DOSSIER III : DOSSIER D
+87: DOSSIER IV : DOSSIER DE CONCEPTION
+88: DOSSIER V : DOSSIER DE REALISATION
+89: DOSSIERS VI : DOSSIER DE REALISATION
+90: DOSSIERS VII : GUIDE D
+92: CONCLUSION GÉNÉRALE
+93: BIBLIOGRAPHIE
+94: WEBOGRAPHIE
+95: TABLE DES MATIÈRES
+96: LISTE DES TABLEAUX
+100: Tableau 1:ressources matérielles De SANGOTECH Sarl
+101: Tableau 2:présentation des systèmes existants
+102: Tableau 3:critique et limite de l'existant
+103: Tableau 4:ressources logicielles du projet (source : mercuriale des prix 2026)
+104: Tableau 5:ressources matérielles du projet (source : mercuriale des prix 2026)
+105: Tableau 6:ressources humaines du projet (source : mercuriale des prix 2026)
+107: Tableau 8:comparaison entre merise et uml
+108: Tableau 9: comparaison processus unifiés
+109: Tableau 10:formalisme diagramme de cas d'utilisation
+110: Tableau 11:types de relation du diagramme de cas d'utilisation
+111: Tableau 12:formalisme description textuelle
+112: Tableau 13: description textuelle de s'authentifier
+113: Tableau 14:description textuelle du cas créer mission
+114: Tableau 15:description textuelle du cas envoyer le devis
+115: Tableau 16:formalisme diagramme de communication
+116: Tableau 17:formalisme diagramme de séquence
+117: Tableau 18:formalisme diagramme d'activité
+118: Tableau 19:formalisme diagramme de classe
+119: Tableau 20:formalisme diagramme d'état transition
+120: Tableau 21:formalisme diagramme de paquetage
+121: Tableau 22:technologie choisis
+122: Tableau 23:formalisme diagramme de paqueta
+123: Tableau 24: formalisme diagramme de composant
+124: LISTE DES FIGURES
+128: Figure 1:diagramme de Gantt
+129: Figure 2:processus 2TUP
+130: Figure 3:diagramme de cas d'utilisation global du système
+131: Figure 4:digramme du cas  d'utilisation créer mission
+132: Figure 5:diagramme du cas d'utilisation executer la mission
+133: Figure 6:diagramme du cas d'utilisation gerer les utilisateurs
+134: Figure 7:diagramme de communication du cas s'authentifier
+135: Figure 8:diagramme de communication du cas créer mission
+136: Figure 9:diagramme de communication du cas payer devis
+137: Figure 10:exemple de diagramme de séquence
+138: Figure 11:diagramme de séquence du cas s
+140: Figure 12:diagramme de séquence du cas créer mission
+141: Figure 13 :diagramme de séquence du cas payer devis
+142: Figure 14:diagramme d'activité du cas s
+144: Figure 15:diagramme d'activité du cas créer mission
+145: Figure 16:diagramme d'activité du cas payer devis
+146: Figure 17:diagramme de classe de notre système
+147: Figure 18:diagramme d'état transition créer un compte
+148: Figure 19:diagramme état transition de l
+150: Figure 20:diagramme de paquetage
+151: Figure 21 :exemple diagramme de déploiement
+152: Figure 22:diagramme de déploiement
+153: Figure 23: exemple diagramme de composant
+154: Figure 24:diagramme de composant
+155: Figure 25:test unitaire de  Valider le format d'un e-mail
+156: Figure 26:test intégration de camerpay
+157: Figure 27:page de login
+158: Figure 28: page du client
+159: Figure 29: page du technicien
+160: Figure 30: page de  Signalement de la panne
+161: Figure 31: page de recherche automatique de techniciens
+162: Figure 32:page de localisation du client
+163: LISTE DES SIGLES ET ABREVIATIONS
+196: GLOSSAIRE
+220: INTRODUCTION GENERALE
+246: PARTIE 1 : PHASE D
+251: RESUME
+258: INTRODUCTION
+288: I.1 ACCUEIL
+295: I.2 INTEGRATION
+427: CONCLUSION
+460: PHASE TECHNIQUE
+463: RESUME
+477: DOSSIER I : DOSSIER DE L
+482: RESUME
+613: DOSSIER II : CAHIER DES CHARGES
+616: RESUME

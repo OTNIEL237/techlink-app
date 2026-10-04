@@ -1,0 +1,281 @@
+═════════════════════════════════════════════════════════════════════════════════
+                        📝 RÉSUMÉ DES CHANGEMENTS CODE
+═════════════════════════════════════════════════════════════════════════════════
+
+
+✅ NOUVEAUX FICHIERS CRÉÉS:
+──────────────────────────
+
+1. mobile/lib/presentation/auth/subscription_selection_screen.dart
+   ├─ Type: NOUVEAU FICHIER
+   ├─ Taille: ~15 KB
+   ├─ Purpose: Écran de sélection des plans d'abonnement après inscription
+   ├─ Contient:
+   │  ├─ Écran "Essai gratuit - 30 jours" (badge visible)
+   │  ├─ Écran "Abonnement mensuel - 2000 FCFA"
+   │  ├─ Écran "Abonnement annuel - 20000 FCFA" (meilleure valeur)
+   │  ├─ Bouton pour démarrer essai gratuit (appel API)
+   │  └─ Bouton pour s'abonner (intégration CamerPay)
+   └─ Action: Rien, fichier est prêt
+
+2. Backend files (déjà créés dans sessions précédentes):
+   ├─ backend/src/modules/payments/payment.routes.js
+   ├─ backend/src/modules/subscriptions.routes.js
+   ├─ backend/src/modules/subscriptionController.js
+   ├─ backend/src/utils/camerpay.service.js
+   ├─ backend/src/config/camerpay.js
+   ├─ backend/src/middlewares/subscription.middleware.js
+   └─ supabase/migrations/008_add_subscriptions.sql
+   └─ Action: À déployer
+
+
+✅ FICHIERS MODIFIÉS:
+─────────────────────
+
+1. backend/.env
+   ├─ Avant: CAMERPAY_API_KEY=PASTE_YOUR_API_KEY_HERE
+   ├─ Après: CAMERPAY_API_KEY=313|V0AUJrh90n2QwxE18SMkLh5h831qpOzqX4kHxwp8fe797d99
+   ├─ Avant: CAMERPAY_SECRET_KEY=PASTE_YOUR_SECRET_KEY_HERE
+   ├─ Après: CAMERPAY_SECRET_KEY=313|V0AUJrh90n2QwxE18SMkLh5h831qpOzqX4kHxwp8fe797d99
+   ├─ Avant: (BACKEND_URL absent)
+   ├─ Après: BACKEND_URL=https://techlink-backend-production.up.railway.app
+   └─ Action: ✅ COMPLÉTÉ
+
+2. mobile/lib/presentation/auth/register_screen.dart
+   ├─ Changement: Ligne 99-116 (création technicien)
+   ├─ Avant: 
+   │   await Supabase.instance.client.from('technicians').insert({...});
+   │   Navigator.pushReplacementNamed(context, '/technician/pending');
+   │
+   ├─ Après:
+   │   final technicianResponse = await Supabase.instance.client
+   │     .from('technicians').insert({...}).select();
+   │   final technicianId = technicianResponse.first['id'] ?? userId;
+   │   Navigator.pushReplacementNamed(context, '/subscription/select', 
+   │     arguments: {'technicianId': technicianId, 'email': ..., 'phone': ...});
+   │
+   ├─ Résultat: Au lieu d'aller à 'pending', va maintenant à 'subscription/select'
+   └─ Action: ✅ COMPLÉTÉ
+
+3. mobile/lib/main.dart
+   ├─ Changement 1: Ajout import (ligne ~30)
+   │   Added: import 'presentation/auth/subscription_selection_screen.dart';
+   │
+   ├─ Changement 2: Ajout route (ligne ~75)
+   │   Avant: 
+   │     case '/register':
+   │       return MaterialPageRoute(builder: (_) => const RegisterScreen());
+   │
+   │   Après:
+   │     case '/register':
+   │       return MaterialPageRoute(builder: (_) => const RegisterScreen());
+   │     case '/subscription/select':
+   │       final args = settings.arguments as Map<String, dynamic>;
+   │       return MaterialPageRoute(
+   │         builder: (_) => SubscriptionSelectionScreen(
+   │           technicianId: args['technicianId'],
+   │           technicianEmail: args['email'],
+   │           technicianPhone: args['phone'],
+   │         ),
+   │       );
+   │
+   └─ Action: ✅ COMPLÉTÉ
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                    🔧 CHANGEMENTS BACKEND (Rappel)
+═════════════════════════════════════════════════════════════════════════════════
+
+✅ backend/src/app.js
+   ├─ AVANT: app.post('/notchpay/callback', ...)
+   ├─ APRÈS: app.post('/camerpay/webhook', ...) avec signature validation
+   └─ Commission: 0% (hardcodé commission_percentage: 0)
+
+✅ backend/src/modules/payments/payment.routes.js
+   ├─ technician_amount = amount (pas 95%, c'est 100%)
+   ├─ commission_percentage = 0 (explicitement 0)
+   ├─ method = 'camerpay' (plus 'notchpay')
+   └─ Résultat: 100% du paiement va au technician
+
+✅ backend/src/modules/subscriptions.routes.js
+   ├─ POST /api/subscriptions/start-trial (free 30j)
+   ├─ POST /api/subscriptions/initialize (paiement)
+   ├─ POST /api/subscriptions/verify (confirmation)
+   ├─ GET /api/subscriptions/status (vérifier si actif)
+   ├─ POST /api/subscriptions/renew (renouveler)
+   └─ POST /api/subscriptions/cancel (annuler)
+
+✅ supabase/migrations/008_add_subscriptions.sql
+   ├─ ALTER TABLE technicians ADD subscription_type (trial/monthly/yearly/inactive)
+   ├─ ALTER TABLE technicians ADD trial_end_date
+   ├─ ALTER TABLE technicians ADD subscription_end_date
+   ├─ ALTER TABLE technicians ADD subscription_status
+   └─ CREATE TABLE technician_subscriptions (historique)
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                         🌊 FLUX DE REQUÊTE (AVANT vs APRÈS)
+═════════════════════════════════════════════════════════════════════════════════
+
+ANCIEN FLUX (NotchPay + 5% Commission):
+─────────────────────────────────────
+1. Client choisit technician et paie 20000 FCFA
+2. Mobile envoie: POST /notchpay/callback
+3. NotchPay retient 5% = 1000 FCFA
+4. Backend calcule: technician_amount = 20000 * 0.95 = 19000 FCFA
+5. Technician wallet += 19000 FCFA
+6. TechLink reçoit: 1000 FCFA
+7. Pas d'abonnement, accès illimité
+
+
+NOUVEAU FLUX (CamerPay + 0% Commission + Subscription):
+────────────────────────────────────────────────────
+1. Technicien s'inscrit
+2. NOUVEAU: Écran de sélection d'abonnement apparaît
+   ├─ Option A: Essai gratuit 30 jours → trial_end_date = now + 30j
+   ├─ Option B: Abonnement 2000 FCFA/mois → CamerPay WebView
+   └─ Option C: Abonnement 20000 FCFA/an → CamerPay WebView
+
+3. Client choisit technician (avec subscription active) et paie 20000 FCFA
+4. Mobile envoie: POST /api/payments/initialize
+5. Backend envoie: POST à CamerPay
+6. CamerPay retient 0% (commission_percentage: 0)
+7. Backend calcule: technician_amount = 20000 FCFA (100%)
+8. Technician wallet += 20000 FCFA ✅ (plus haut!)
+9. TechLink reçoit: 2000 FCFA (subscription fee) + 20000 FCFA/an (annuel)
+10. Technician a accès SEULEMENT s'il a subscription/trial active
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                            💰 ÉCONOMIE TECHNICIEN
+═════════════════════════════════════════════════════════════════════════════════
+
+PER MISSION:
+───────────
+Avant:
+  - Mission value: 20000 FCFA
+  - Commission: -5% = -1000 FCFA
+  - Technician reçoit: 19000 FCFA
+
+Après:
+  - Mission value: 20000 FCFA
+  - Commission: -0% = 0 FCFA
+  - Technician reçoit: 20000 FCFA ✅
+  - Gain par mission: +1000 FCFA (+5.26%)
+
+MENSUEL (exemple: 10 missions/mois):
+──────────────────────────────────
+Avant:
+  - Revenue: 10 × 19000 = 190000 FCFA
+  - Dépense abonnement: 0 FCFA
+  - Net: 190000 FCFA
+
+Après:
+  - Revenue: 10 × 20000 = 200000 FCFA
+  - Dépense abonnement: 2000 FCFA
+  - Net: 200000 - 2000 = 198000 FCFA ✅
+  - Gain total: +8000 FCFA (+4.2%)
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                    ⚙️  VARIABLES D'ENVIRONNEMENT MISES À JOUR
+═════════════════════════════════════════════════════════════════════════════════
+
+backend/.env:
+
+Avant:
+------
+CAMERPAY_API_KEY=PASTE_YOUR_API_KEY_HERE
+CAMERPAY_SECRET_KEY=PASTE_YOUR_SECRET_KEY_HERE
+CAMERPAY_WEBHOOK_SECRET=PASTE_YOUR_WEBHOOK_SECRET_HERE
+CAMERPAY_ENV=test
+
+Après:
+------
+CAMERPAY_API_KEY=313|V0AUJrh90n2QwxE18SMkLh5h831qpOzqX4kHxwp8fe797d99
+CAMERPAY_SECRET_KEY=313|V0AUJrh90n2QwxE18SMkLh5h831qpOzqX4kHxwp8fe797d99
+CAMERPAY_WEBHOOK_SECRET=webhook_secret_techlink_2024
+CAMERPAY_ENV=test
+BACKEND_URL=https://techlink-backend-production.up.railway.app
+
+⚠️  NOTE: Ces variables doivent AUSSI être configurées dans Railway dashboard!
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                        📱 MOBILE SCREEN NAVIGATION
+═════════════════════════════════════════════════════════════════════════════════
+
+AVANT:
+──────
+RegisterScreen (/register)
+         ↓
+         ├─ Role = Client → ClientHomeScreen (/client/home)
+         └─ Role = Technician → PendingValidationScreen (/technician/pending)
+
+
+APRÈS:
+──────
+RegisterScreen (/register)
+         ↓
+         ├─ Role = Client → ClientHomeScreen (/client/home)
+         └─ Role = Technician → SubscriptionSelectionScreen (/subscription/select)
+                                    ↓
+                                    ├─ Free Trial → Accès immédiat
+                                    ├─ Monthly Plan → CamerPay WebView
+                                    └─ Yearly Plan → CamerPay WebView
+                                        ↓
+                                        └─ TechnicianHomeScreen (/technician/home)
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                    🔐 SÉCURITÉ - VALIDATION DE SIGNATURE
+═════════════════════════════════════════════════════════════════════════════════
+
+AVANT:
+- Webhooks NotchPay: Validation simple (juste comparer le statut)
+
+APRÈS (CamerPay):
+- Webhooks CamerPay: Validation HMAC-SHA256
+  ├─ Recevez header: X-CamerPay-Signature
+  ├─ Validez signature avec CAMERPAY_WEBHOOK_SECRET
+  ├─ Rejettez si signature invalide (403 Forbidden)
+  └─ Résultat: Plus sûr, pas de spoofing possible
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                        ✅ PRÊT À DÉPLOYER? CHECKLIST:
+═════════════════════════════════════════════════════════════════════════════════
+
+Backend:
+  ☐ backend/.env a clés CamerPay
+  ☐ backend/src/modules/payments/payment.routes.js (commission_percentage: 0)
+  ☐ backend/src/modules/subscriptions.routes.js (6 endpoints)
+  ☐ backend/src/app.js (webhooks CamerPay)
+  ☐ supabase/migrations/008_add_subscriptions.sql (ready)
+
+Mobile:
+  ☐ mobile/lib/presentation/auth/subscription_selection_screen.dart (created)
+  ☐ mobile/lib/presentation/auth/register_screen.dart (redirect to subscription)
+  ☐ mobile/lib/main.dart (route added)
+  ☐ mobile/lib/data/services/camerpay_service.dart (existing, ready)
+
+Database:
+  ☐ supabase/migrations/008_add_subscriptions.sql (applied)
+  ☐ technicians table has subscription_type column
+  ☐ technician_subscriptions table exists
+
+Environment:
+  ☐ Railway has CAMERPAY_API_KEY
+  ☐ Railway has CAMERPAY_SECRET_KEY
+  ☐ Railway has BACKEND_URL
+  ☐ Backend redeploy triggered
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+VOIR AUSSI:
+- IMMEDIATE_ACTIONS.txt (étapes détaillées)
+- CRITICAL_FIXES_NEEDED.md (diagnostic approfondi)
+- README_DOCS.md (documentation générale)
+
+═════════════════════════════════════════════════════════════════════════════════

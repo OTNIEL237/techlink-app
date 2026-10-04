@@ -1,0 +1,86 @@
+name: techlink
+description: Application de mise en relation techniciens/clients
+
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  speech_to_text: ^7.0.0
+  flutter_tts: ^4.0.2
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  url_launcher: ^6.2.4
+  timeago: ^3.6.1
+  webview_flutter: ^4.7.0
+  zego_uikit_prebuilt_call: ^4.24.2
+
+  # Supabase
+  supabase_flutter: ^2.3.0
+
+  # State management
+  flutter_riverpod: ^2.4.9
+  riverpod_annotation: ^2.3.3
+
+  # Navigation
+  go_router: ^13.0.0
+
+  # HTTP
+  dio: ^5.4.0
+
+  # Maps
+  geolocator: ^11.0.0
+
+  # UI
+  cached_network_image: ^3.3.1
+  shimmer: ^3.0.0
+  lottie: ^3.0.0
+  flutter_animate: ^4.5.0
+  fl_chart: ^0.68.0
+  curved_navigation_bar: ^1.0.3
+  responsive_builder: ^0.7.1
+
+  # Upload photos et documents
+  image_picker: ^1.0.7
+  camera: ^0.11.0+2
+  file_picker: ^10.3.8
+
+  # Utilitaires
+  flutter_dotenv: ^5.1.0
+  intl: ^0.19.0
+  shared_preferences: ^2.2.2
+  permission_handler: ^12.0.1
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+  build_runner: ^2.4.8
+  riverpod_generator: ^2.3.9
+  mocktail: ^1.0.3
+
+dependency_overrides:
+  statemachine: 3.3.1
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - .env
+    # - assets/images/      # Décommenter quand le dossier contient des fichiers
+    # - assets/animations/  # Décommenter quand le dossier contient des fichiers
+    - assets/icon/
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/logo_techlink.png"
+  min_sdk_android: 21

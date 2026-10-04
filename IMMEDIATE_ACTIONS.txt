@@ -1,0 +1,268 @@
+═════════════════════════════════════════════════════════════════════════════════
+                    ⚠️  ACTIONS IMMÉDIATEMENT REQUISES ⚠️
+═════════════════════════════════════════════════════════════════════════════════
+
+PROBLÈME IDENTIFIÉ:
+─────────────────
+✅ Code backend créé et optimisé (0% commission, CamerPay, subscriptions)
+✅ Code mobile créé (nouvel écran abonnement)
+❌ MAIS: Code n'a pas été DÉPLOYÉ en production
+❌ MAIS: Base de données n'a pas été migrée
+❌ RÉSULTAT: Les 5% déduction sont toujours actifs (ancien code en production)
+
+
+URGENCE: 🔴 CRITIQUE
+────────────────────
+Le système utilise TOUJOURS NotchPay et les 5% de déduction.
+Vos logs montrent: "DEBUG NotchPay request body"
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                            ✅ FAIT AUJOURD'HUI
+═════════════════════════════════════════════════════════════════════════════════
+
+✅ BACKEND:
+   ├─ src/modules/payments/payment.routes.js (100% payout, 0% commission)
+   ├─ src/modules/subscriptions.routes.js (6 endpoints)
+   ├─ src/modules/subscriptionController.js (logique abonnement)
+   ├─ src/utils/camerpay.service.js (client CamerPay)
+   ├─ src/config/camerpay.js (config)
+   └─ src/app.js (webhooks CamerPay)
+
+✅ CONFIGURATION:
+   └─ .env: CamerPay keys AJOUTÉES
+      • CAMERPAY_API_KEY=313|V0AUJrh90n2QwxE18SMkLh5h831qpOzqX4kHxwp8fe797d99
+      • CAMERPAY_SECRET_KEY=313|V0AUJrh90n2QwxE18SMkLh5h831qpOzqX4kHxwp8fe797d99
+      • BACKEND_URL mis à jour
+
+✅ MOBILE:
+   ├─ subscription_selection_screen.dart (CRÉÉ - nouvel écran)
+   ├─ register_screen.dart (MODIFIÉ - appelle l'écran abonnement)
+   └─ main.dart (MODIFIÉ - route ajoutée)
+
+✅ DATABASE:
+   └─ supabase/migrations/008_add_subscriptions.sql (CRÉÉ - prêt à appliquer)
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                    🚀 À FAIRE MAINTENANT (30 MIN MAX)
+═════════════════════════════════════════════════════════════════════════════════
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║ ÉTAPE 1: DATABASE MIGRATION (5 MIN)                                 [DO THIS] ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+ALLER À: https://supabase.com/dashboard
+
+1. Cliquez sur votre projet TechLink
+2. Allez dans "SQL Editor"
+3. Créez une NEW QUERY
+4. Copiez-collez le contenu de: supabase/migrations/008_add_subscriptions.sql
+5. Cliquez "Run" ou Ctrl+Enter
+6. Confirmez que la migration s'exécute sans erreur
+
+RÉSULTAT ATTENDU:
+├─ Table "technicians" a nouvelles colonnes:
+│  ├─ subscription_type
+│  ├─ trial_end_date
+│  ├─ subscription_end_date
+│  └─ subscription_status
+└─ Table "technician_subscriptions" créée (historique)
+
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║ ÉTAPE 2: BACKEND REDÉPLOIEMENT (10 MIN)                             [DO THIS] ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+OPTION A - Railway (Recommandé):
+─────────────────────────────────
+1. Allez à: https://railway.app
+2. Connectez-vous
+3. Cliquez sur projet TechLink
+4. Settings → Variables
+5. VÉRIFIEZ / AJOUTEZ ces variables:
+
+   CAMERPAY_API_KEY=313|V0AUJrh90n2QwxE18SMkLh5h831qpOzqX4kHxwp8fe797d99
+   CAMERPAY_SECRET_KEY=313|V0AUJrh90n2QwxE18SMkLh5h831qpOzqX4kHxwp8fe797d99
+   CAMERPAY_WEBHOOK_SECRET=webhook_secret_techlink_2024
+   BACKEND_URL=https://techlink-backend-production.up.railway.app
+   SUBSCRIPTION_MONTHLY_AMOUNT=2000
+   SUBSCRIPTION_YEARLY_AMOUNT=20000
+   SUBSCRIPTION_TRIAL_DAYS=30
+
+6. Sauvegardez
+7. Cliquez "Deploy" (ou push git)
+8. Attendez le message "Deployment successful"
+
+OPTION B - Déploiement local pour test:
+───────────────────────────────────────
+```bash
+cd c:\Users\Lenovo\techlink-app\backend
+npm install
+npm start
+```
+
+VÉRIFICATION:
+```bash
+curl -X GET http://localhost:3000/health
+# Doit répondre: {"status":"OK","message":"TechLink API running"}
+```
+
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║ ÉTAPE 3: VÉRIFIER QUE CAMERPAY FONCTIONNE (5 MIN)                   [DO THIS] ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+TESTEZ l'endpoint de paiement:
+```bash
+curl -X POST https://techlink-backend-production.up.railway.app/api/payments/initialize \
+  -H "Content-Type: application/json" \
+  -d '{
+    "missionId": "test-123",
+    "amount": 10000,
+    "clientId": "client-test",
+    "clientPhone": "+237600000000",
+    "clientEmail": "test@techlink.cm",
+    "description": "Test payment"
+  }'
+```
+
+SI VOUS VOYEZ:
+✅ "CamerPay" ou "paymentUrl" → BON, ça marche
+❌ "NotchPay" ou erreur → Redéploiement nécessaire
+
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║ ÉTAPE 4: RECOMPILER MOBILE (10 MIN)                                 [DO THIS] ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+OUVREZ terminal PowerShell / CMD:
+
+```bash
+cd c:\Users\Lenovo\techlink-app\mobile
+
+# Nettoyez
+flutter clean
+flutter pub get
+
+# Compilez
+flutter run           # pour Android
+# OU
+flutter run -d chrome # pour web
+```
+
+LOGS ATTENDUS:
+✅ "supabase_flutter: INFO: ***** Supabase init completed"
+✅ "Launching lib/main.dart on Chrome/Android"
+✅ Pas d'erreur "subscription_selection_screen" 
+
+SI ERREUR:
+❌ "File not found subscription_selection_screen.dart"
+   → Vérifiez que le fichier existe: 
+      c:\Users\Lenovo\techlink-app\mobile\lib\presentation\auth\subscription_selection_screen.dart
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                         📋 CHECKLIST À COCHER
+═════════════════════════════════════════════════════════════════════════════════
+
+DATABASE:
+  ☐ Supabase SQL migration appliquée
+  ☐ Table technicians a colonne "subscription_type"
+  ☐ Table technician_subscriptions créée
+
+BACKEND:
+  ☐ Railway variables d'env mises à jour (CamerPay keys)
+  ☐ Backend redéployé
+  ☐ API health check réussit (/health endpoint)
+  ☐ Endpoint /api/payments/initialize retourne CamerPay
+
+MOBILE:
+  ☐ Flutter clean exécuté
+  ☐ Flutter pub get exécuté
+  ☐ App compile sans erreur
+  ☐ Écran subscription_selection_screen.dart visible
+
+TESTS:
+  ☐ Nouvelle inscription technicien montre écran abonnement
+  ☐ Écran affiche "Essai gratuit - 30 jours" en premier
+  ☐ Les plans mensuels et annuels sont visibles
+  ☐ Cliquer "Essai gratuit" ne demande pas de paiement
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                    🎯 RÉSULTAT FINAL ATTENDU
+═════════════════════════════════════════════════════════════════════════════════
+
+AVANT (Aujourd'hui):
+┌─────────────────────────────────────────────┐
+│ Client paie 20000 FCFA                      │
+│ Technician reçoit: 19000 FCFA (95%)        │ ❌ MAUVAIS
+│ TechLink retient: 1000 FCFA (5%)           │
+│ Pas d'abonnement                            │
+│ Paiement: NotchPay                          │
+└─────────────────────────────────────────────┘
+
+APRÈS (Après les fixes):
+┌─────────────────────────────────────────────┐
+│ Client paie 20000 FCFA (mission)            │
+│ Technician reçoit: 20000 FCFA (100%)       │ ✅ BON
+│ TechLink retient: 0 FCFA (0%)              │
+│                                             │
+│ + Technician doit avoir abonnement:        │
+│   ├─ Essai gratuit: 30 jours (libre)      │
+│   ├─ Plan mensuel: 2000 FCFA/mois         │
+│   └─ Plan annuel: 20000 FCFA/an           │
+│                                             │
+│ Paiement: CamerPay ✅                       │
+└─────────────────────────────────────────────┘
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                           ⏱️  TIMING TOTAL
+═════════════════════════════════════════════════════════════════════════════════
+
+Étape 1 (DB):         ~5 min
+Étape 2 (Backend):    ~10 min (+ temps d'attente deployment)
+Étape 3 (Test):       ~5 min
+Étape 4 (Mobile):     ~10 min
+
+TOTAL:               ~30 min de votre temps
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                    💡 NOTES IMPORTANTES
+═════════════════════════════════════════════════════════════════════════════════
+
+1. ⚠️  Les changements backend ne prendront effet qu'après REDÉPLOIEMENT
+   - Juste modifier .env local ne suffit pas
+   - Il faut redéployer sur Railway
+
+2. ⚠️  La migration DB doit être faite AVANT les tests
+   - Sans migration, les colonnes d'abonnement n'existent pas
+   - Les nouvelles inscriptions échoueront
+
+3. ✅  Après redéploiement, les paiements vont automatiquement à 100% technician
+   - Pas besoin de modifier les paiements existants
+   - Les nouveaux paiements seront corrects
+
+4. ✅  L'écran d'abonnement s'affichera AUTOMATIQUEMENT après inscription
+   - Pas besoin de modifier le front-end existant
+   - C'est intégré au flux d'inscription
+
+5. 🔒  Les clés CamerPay fournis:
+   - Format: 313|<long_key>
+   - Utilisez EXACTEMENT tel qu'il est
+   - C'est la clé fournie par CamerPay
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+➡️  COMMENCEZ PAR L'ÉTAPE 1 (DATABASE)
+➡️  PUIS ÉTAPE 2 (BACKEND)
+➡️  PUIS ÉTAPE 3 (VÉRIFICATION)
+➡️  PUIS ÉTAPE 4 (MOBILE)
+
+QUESTIONS? Relisez CRITICAL_FIXES_NEEDED.md pour plus de détails.
+
+═════════════════════════════════════════════════════════════════════════════════

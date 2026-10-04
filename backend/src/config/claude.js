@@ -1,0 +1,1 @@
+// Ce fichier n'est plus utilisé. La dépendance @anthropic-ai/sdk a été retirée.
