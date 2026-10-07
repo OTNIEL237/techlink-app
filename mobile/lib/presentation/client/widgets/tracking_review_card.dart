@@ -1,13 +1,34 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : tracking_review_card.dart
+// Rôle          : Carte interactive d'évaluation et de dépôt d'avis (étoiles et commentaire)
+//                 affichée à la fin d'une mission terminée pour noter le technicien.
+// Module        : Présentation Client (Widgets Suivi de Mission)
+// Dépendances   : flutter/material.dart, supabase_flutter, app_colors.dart
+// Sécurité/RLS  : Insertion sécurisée dans la table `ratings` restreinte au
+//                 client authentifié ayant participé à la mission.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 
+/// Carte permettant au client de noter et commenter la prestation du technicien.
 class TrackingReviewCard extends StatefulWidget {
+  /// Identifiant de la mission terminée
   final String missionId;
+
+  /// Identifiant de l'artisan / technicien évalué
   final String technicianId;
+
+  /// Nom d'affichage du technicien
   final String technicianName;
+
+  /// Callback exécuté suite à l'enregistrement réussi de la note
   final VoidCallback onRated;
 
+  /// Constructeur constant de la carte d'avis de mission
   const TrackingReviewCard({
     super.key,
     required this.missionId,
@@ -21,10 +42,16 @@ class TrackingReviewCard extends StatefulWidget {
 }
 
 class _TrackingReviewCardState extends State<TrackingReviewCard> {
+  /// Note sélectionnée sur 5 étoiles (0 par défaut)
   int _rating = 0;
+
+  /// Contrôleur du champ de saisie du commentaire facultatif
   final _commentController = TextEditingController();
+
+  /// Indicateur d'enregistrement en cours dans Supabase
   bool _isSubmitting = false;
 
+  /// Enregistre l'avis dans la table Supabase `ratings`
   Future<void> _submitReview() async {
     if (_rating == 0) {
       ScaffoldMessenger.of(context).showSnackBar(

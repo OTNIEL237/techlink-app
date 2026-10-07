@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : admin_clients_screen.dart
+// RÔLE : Répertoire paginé et modération de l'ensemble des comptes clients
+// MODULE : Presentation / Admin
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, app_colors.dart, theme_provider.dart, admin_client_detail_screen.dart
+// SÉCURITÉ / RLS : Rôle administrateur requis. Lecture filtrée sur `users` avec rôle `'client'`.
+// =============================================================================
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,31 +16,50 @@ import '../shared/widgets/techlink_button.dart';
 import '../shared/widgets/techlink_card.dart';
 import 'admin_client_detail_screen.dart';
 
-// =========================================================================
-// ÉCRAN DE GESTION DES CLIENTS (ADMIN)
-// =========================================================================
-// Affiche la liste paginée de tous les clients avec des options de recherche,
-// de tri et la possibilité de voir les détails de chaque client.
-
+/// Écran administrateur répertoriant tous les utilisateurs ayant le rôle client.
+///
+/// Intègre une barre de recherche textuelle avec anti-rebond (debounce),
+/// un tri par date d'inscription ou ordre alphabétique, et une pagination progressive infinie.
 class AdminClientsScreen extends StatefulWidget {
+  /// Indique si l'AppBar standard doit être affichée (true) ou masquée lorsqu'intégré dans un onglet (false).
   final bool showAppBar;
+
+  /// Constructeur constant du widget [AdminClientsScreen].
   const AdminClientsScreen({super.key, this.showAppBar = true});
 
   @override
   State<AdminClientsScreen> createState() => _AdminClientsScreenState();
 }
 
+/// État associé à l'écran du registre des clients.
+///
+/// Gère la pagination, le déclenchement des recherches temporisées, et la navigation vers les détails.
 class _AdminClientsScreenState extends State<AdminClientsScreen> {
+  /// Liste accumulée des comptes clients affichés dans l'interface.
   List<Map<String, dynamic>> _clients = [];
+
+  /// Indicateur de requête de chargement en cours.
   bool _isLoading = true;
 
-  // Pagination et recherche
+  /// Chaîne de recherche saisie par l'administrateur.
   String _searchQuery = '';
+
+  /// Colonne de tri active ('created_at' ou 'name').
   String _sortBy = 'created_at';
+
+  /// Sens du tri ordonné (ascendant ou descendant).
   bool _isAscending = false;
+
+  /// Index de la page paginée courante (0-indexée).
   int _currentPage = 0;
+
+  /// Nombre d'éléments demandés par requête de lot.
   final int _itemsPerPage = 10;
+
+  /// Indique s'il reste d'autres éléments à charger côté serveur.
   bool _hasMore = true;
+
+  /// Minuteur d'anti-rebond pour fluidifier les saisies dans la barre de recherche.
   Timer? _debounce;
 
   @override
@@ -41,12 +68,16 @@ class _AdminClientsScreenState extends State<AdminClientsScreen> {
     _loadClients();
   }
 
+  /// Annule le minuteur actif à la destruction du widget.
   @override
   void dispose() {
     _debounce?.cancel();
     super.dispose();
   }
 
+  /// Charge ou recharge les clients depuis Supabase en tenant compte des filtres et de la pagination.
+  ///
+  /// Si [resetPage] est vrai, remet la pagination à zéro et vide la liste locale.
   Future<void> _loadClients({bool resetPage = false}) async {
     if (resetPage) {
       _currentPage = 0;
@@ -90,6 +121,7 @@ class _AdminClientsScreenState extends State<AdminClientsScreen> {
     }
   }
 
+  /// Réceptionne les frappes au clavier et applique un délai de 500ms avant de déclencher la recherche.
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
@@ -100,6 +132,7 @@ class _AdminClientsScreenState extends State<AdminClientsScreen> {
     });
   }
 
+  /// Construit la vue de répertoire client avec barre d'outils et liste défilante.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;

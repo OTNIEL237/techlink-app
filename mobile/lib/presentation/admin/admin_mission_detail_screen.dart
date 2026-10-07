@@ -1,23 +1,38 @@
+// =============================================================================
+// FICHIER : admin_mission_detail_screen.dart
+// RÔLE : Vue d'inspection et d'arbitrage forcé d'une mission (annulation d'urgence, vérification des photos)
+// MODULE : Presentation / Admin
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, app_colors.dart
+// SÉCURITÉ / RLS : Rôle administrateur requis. Modification de statut d'urgence dans la table `missions`.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DE DÉTAILS D'UNE MISSION (ADMIN)
-// =========================================================================
-// Permet de visualiser en détail une mission et de forcer son annulation si nécessaire.
-
+/// Écran administrateur affichant les détails exhaustifs d'une intervention.
+///
+/// Permet de contrôler les identités du client et du prestataire assigné, de visualiser
+/// les photographies du problème téléversées, et de forcer l'annulation d'une mission bloquée.
 class AdminMissionDetailScreen extends StatefulWidget {
+  /// Données brutes de la mission sélectionnée.
   final Map<String, dynamic> mission;
 
+  /// Constructeur constant du widget [AdminMissionDetailScreen].
   const AdminMissionDetailScreen({super.key, required this.mission});
 
   @override
   State<AdminMissionDetailScreen> createState() => _AdminMissionDetailScreenState();
 }
 
+/// État associé à la vue détaillée de mission administrative.
+///
+/// Gère l'actualisation locale du statut et l'exécution de l'annulation d'urgence.
 class _AdminMissionDetailScreenState extends State<AdminMissionDetailScreen> {
+  /// Indicateur d'opération d'annulation réseau en cours.
   bool _isCancelling = false;
+
+  /// Statut courant de la mission réactif aux modifications locales.
   late String _currentStatus;
 
   @override
@@ -26,6 +41,7 @@ class _AdminMissionDetailScreenState extends State<AdminMissionDetailScreen> {
     _currentStatus = widget.mission['status'] ?? 'pending';
   }
 
+  /// Déclenche un dialogue de confirmation puis force le basculement du statut à `'cancelled'`.
   Future<void> _forceCancelMission() async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -72,6 +88,7 @@ class _AdminMissionDetailScreenState extends State<AdminMissionDetailScreen> {
     }
   }
 
+  /// Construit la vue de mission avec photos, informations des parties et bouton d'action d'urgence.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -181,6 +198,7 @@ class _AdminMissionDetailScreenState extends State<AdminMissionDetailScreen> {
     );
   }
 
+  /// Construit une carte d'informations d'identité et de contact pour un intervenant (client ou technicien).
   Widget _buildInfoCard(String title, String name, String? phone, TechLinkColors tc, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(16),

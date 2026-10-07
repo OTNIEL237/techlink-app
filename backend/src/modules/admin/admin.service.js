@@ -1,8 +1,32 @@
+// =============================================================================
+// FICHIER : backend/src/modules/admin/admin.service.js
+// RÔLE : Logique métier d'arbitrage et résolution des litiges (remboursement, paiement forcé, annulation)
+// MODULE : Backend / Module Administrateur (Service)
+// DÉPENDANCES : @supabase/supabase-js, ../../utils/camerpay.service, ../../config/supabase
+// SÉCURITÉ / RLS : Utilise le client Supabase privilégié pour mettre à jour les statuts de missions et litiges
+// =============================================================================
+
 const { createClient } = require('@supabase/supabase-js');
 const camerpayService = require('../../utils/camerpay.service');
 const supabase = require('../../config/supabase');
 require('dotenv').config();
 
+/**
+ * Résout un litige ouvert sur une mission avec exécution financière appropriée.
+ * 
+ * Actions possibles :
+ * - `refund_client` : Marque la mission comme 'cancelled_refunded' (remboursement manuel ou passerelle).
+ * - `force_payment` : Déclenche un virement automatique (payout CamerPay) vers le compte Mobile Money du technicien
+ *   basé sur le devis accepté et clôture la mission en 'completed'.
+ * - `neutral_cancel` : Annule la mission sans mouvement financier supplémentaire ('cancelled').
+ *
+ * @param {string} disputeId - Identifiant unique du litige dans la table `disputes`
+ * @param {'refund_client'|'force_payment'|'neutral_cancel'} action - Type de décision arbitrale
+ * @param {string} adminId - Identifiant de l'administrateur ayant rendu la décision
+ * @param {string} [notes] - Motivations et commentaires consignés par l'administrateur
+ * @returns {Promise<{disputeId: string, newMissionStatus: string}>} Bilan de la résolution
+ * @throws {Error} Si le litige, le technicien ou le devis associé est introuvable
+ */
 const resolveDispute = async (disputeId, action, adminId, notes) => {
   // 1. Get the dispute
   const { data: dispute, error: disputeError } = await supabase
@@ -90,3 +114,4 @@ const resolveDispute = async (disputeId, action, adminId, notes) => {
 module.exports = {
   resolveDispute
 };
+

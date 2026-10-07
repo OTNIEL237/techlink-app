@@ -1,9 +1,20 @@
+// =============================================================================
+// FICHIER : admin_mission_detail_screen_test.dart
+// RÔLE : Tests de widgets Flutter pour l'écran AdminMissionDetailScreen
+//         (rendu des détails de mission, informations client/technicien,
+//         catégorie et description de la panne).
+// MODULE : Tests / Widgets Administrateur (Mobile Flutter)
+// DÉPENDANCES : package:flutter_test/flutter_test.dart, package:techlink/presentation/admin/admin_mission_detail_screen.dart
+// SÉCURITÉ / RLS : N/A (Test de rendu de widget isolé)
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:techlink/presentation/admin/admin_mission_detail_screen.dart';
 import 'package:techlink/core/theme/theme_provider.dart';
 import 'package:techlink/core/constants/app_colors.dart';
 
+/// Point d'entrée des tests de widget pour l'écran de détail de mission administrateur.
 void main() {
   testWidgets('AdminMissionDetailScreen affiche les détails de la mission', (WidgetTester tester) async {
     final mockMission = {

@@ -1,0 +1,13 @@
+-- =============================================================================
+-- FICHIER : 003_missions.sql
+-- RÔLE : Migration initiale - Définition de la table 'missions'
+--         (demandes d'intervention, diagnostic IA, statuts du cycle de vie,
+--         assignation du technicien, localisation du problème et avis client).
+-- MODULE : Schéma de base de données / Missions
+-- DÉPENDANCES : public.users, public.technicians, public.categories
+-- SÉCURITÉ / RLS : RLS activé. Visibilité limitée au client émetteur,
+--                  au technicien assigné et aux administrateurs de la plateforme.
+-- =============================================================================
+
+-- Table 'missions' : cycle de vie des interventions de dépannage
+-- (Consulter 'power.sql' pour le schéma DDL consolidé de l'environnement de production).

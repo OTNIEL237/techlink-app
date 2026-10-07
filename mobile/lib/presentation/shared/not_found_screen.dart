@@ -1,9 +1,24 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : not_found_screen.dart
+// Rôle          : Écran d'erreur 404 (Route inconnue ou ressource introuvable).
+// Module        : Presentation / Shared
+// Dépendances   : flutter, go_router, app_colors.dart, theme_provider.dart
+// Sécurité/RLS  : Écran public d'interception d'URL invalide avec retour sécurisé vers l'accueil.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/theme_provider.dart';
 
+/// Écran d'erreur 404 affiché lorsqu'une route demandée n'existe pas ou a été déplacée.
+///
+/// Présente une interface bienveillante invitant l'utilisateur à retourner
+/// à la racine de l'application via [context.go('/')] pour réévaluer son orientation.
 class NotFoundScreen extends StatelessWidget {
+  /// Constructeur constant pour [NotFoundScreen].
   const NotFoundScreen({super.key});
 
   @override

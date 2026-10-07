@@ -1,5 +1,17 @@
+// =============================================================================
+// FICHIER : admin.middleware.test.js
+// RÔLE : Tests unitaires Jest pour le middleware de protection administrateur requireAdmin
+//         (vérification des codes HTTP 401, 403 et passage autorisé next()).
+// MODULE : Tests / Middlewares (Backend)
+// DÉPENDANCES : ../../src/middlewares/admin.middleware, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires de contrôle d'accès)
+// =============================================================================
+
 const requireAdmin = require('../../src/middlewares/admin.middleware');
 
+/**
+ * Suite de tests unitaires pour le middleware requireAdmin.
+ */
 describe('Middleware: requireAdmin', () => {
   let mockReq;
   let mockRes;

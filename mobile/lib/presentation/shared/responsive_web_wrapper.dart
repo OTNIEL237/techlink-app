@@ -1,15 +1,28 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : responsive_web_wrapper.dart
+// Rôle          : Conteneur adaptatif centrant et limitant la largeur d'affichage sur écrans larges (Web/Desktop).
+// Module        : Presentation / Shared
+// Dépendances   : flutter
+// Sécurité/RLS  : Composant UI stateless générique.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 
-// =========================================================================
-// WRAPPER RESPONSIVE WEB
-// =========================================================================
-// Conteneur utilisé pour centrer et limiter la largeur maximale du contenu
-// sur les grands écrans (Web/Desktop), avec une ombre et une bordure légères.
-
+/// Conteneur adaptatif préservant un ratio visuel équilibré sur navigateurs Web et ordinateurs.
+///
+/// Lorsque la largeur d'écran dépasse [maxWidth] (800px par défaut), le contenu
+/// est automatiquement centré avec des ombres subtiles et une bordure périphérique,
+/// évitant l'étirement excessif des formulaires mobiles sur les grands moniteurs.
 class ResponsiveWebWrapper extends StatelessWidget {
+  /// Widget enfant à afficher à l'intérieur du conteneur.
   final Widget child;
+
+  /// Largeur maximale allouée au contenu (par défaut 800 pixels).
   final double maxWidth;
 
+  /// Constructeur de [ResponsiveWebWrapper].
   const ResponsiveWebWrapper({
     super.key,
     required this.child,

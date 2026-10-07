@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : audio_call_screen.dart
+// Rôle          : Écran d'appel audio pair-à-pair avec sonnerie et intégration ZegoCloud UIKit.
+// Module        : Presentation / Shared
+// Dépendances   : flutter, go_router, supabase_flutter, zego_uikit_prebuilt_call, zego_config.dart
+// Sécurité/RLS  : Synchronise l'état de l'appel via Supabase Realtime et libère les canaux WebRTC.
+// =============================================================================
+
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,29 +18,43 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/zego_config.dart';
 import '../../data/services/zego_call_service.dart';
 
-// =========================================================================
-// ÉCRAN D'APPEL AUDIO (Sortant / En cours)
-// =========================================================================
-// Gère l'interface d'appel (ZegoUIKitPrebuiltCall). Si c'est l'appelant,
-// affiche d'abord l'écran d'attente (sonnerie). Dès que le correspondant accepte,
-// bascule sur l'interface ZegoCloud.
-
+/// Écran complet gérant l'expérience d'appel voix (one-on-one audio call).
+///
+/// Si l'utilisateur est l'appelant ([_isCaller]), affiche d'abord l'écran d'attente
+/// avec pulsation et sonnerie sortante. Dès que l'interlocuteur répond (`accepted`),
+/// initialise automatiquement le flux audio haute définition [ZegoUIKitPrebuiltCall].
 class AudioCallScreen extends StatefulWidget {
+  /// Constructeur constant pour [AudioCallScreen].
   const AudioCallScreen({super.key});
 
   @override
   State<AudioCallScreen> createState() => _AudioCallScreenState();
 }
 
+/// État associé à l'écran [AudioCallScreen] gérant la synchronisation temps réel.
 class _AudioCallScreenState extends State<AudioCallScreen> {
+  /// Identifiant unique de la ligne dans la table `calls`.
   late String _callRowId;
+
+  /// Identifiant de la salle d'appel ZegoCloud.
   late String _callId;
+
+  /// Nom de l'interlocuteur affiché à l'écran.
   late String _otherUserName;
+
+  /// Indique si l'utilisateur local est l'émetteur de l'appel.
   late bool _isCaller;
 
+  /// Statut de l'appel ('ringing', 'accepted', 'declined', 'ended', 'missed').
   String _status = 'ringing';
+
+  /// Nom de l'utilisateur connecté affiché dans le SDK Zego.
   String _currentUserName = 'Utilisateur';
+
+  /// Empêche la réinitialisation multiple des arguments de route.
   bool _isInitialized = false;
+
+  /// Souscription au flux d'état émis par [ZegoCallService].
   StreamSubscription<String>? _statusSubscription;
 
   @override

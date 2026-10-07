@@ -1,28 +1,46 @@
+// =============================================================================
+// FICHIER : technician_detail_screen.dart
+// RÔLE : Fiche détaillée d'un technicien avec modération, validation et édition
+// MODULE : Présentation Administrateur (Admin Technician Management)
+// DÉPENDANCES : flutter/material.dart, go_router, supabase_flutter, url_launcher, app_colors.dart
+// SÉCURITÉ / RLS : Réservé aux administrateurs (rôle admin requis)
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DE DÉTAILS D'UN TECHNICIEN (ADMIN)
-// =========================================================================
-// Affiche le profil complet d'un technicien (informations, disponibilité,
-// expérience, avis, documents) et permet de l'approuver, de le suspendre
-// ou de modifier ses informations.
-
+/// Écran administrateur affichant le dossier complet d'un technicien partenaire.
+///
+/// Permet à un administrateur :
+/// - De consulter l'identité, l'expérience, les pièces justificatives et les avis.
+/// - D'approuver, rejeter ou suspendre le compte du technicien.
+/// - De modifier directement ses coordonnées ou informations professionnelles.
 class TechnicianDetailScreen extends StatefulWidget {
+  /// Données complètes du technicien issues de Supabase (`technicians` avec jointure `users`).
   final Map<String, dynamic> technician;
+
+  /// Constructeur de [TechnicianDetailScreen].
   const TechnicianDetailScreen({super.key, required this.technician});
 
   @override
   State<TechnicianDetailScreen> createState() => _TechnicianDetailScreenState();
 }
 
+/// État associé à l'écran [TechnicianDetailScreen] gérant les onglets et les actions de modération.
 class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with SingleTickerProviderStateMixin {
+  /// Données locales mutables du technicien pour refléter immédiatement les modifications d'état.
   late Map<String, dynamic> _technician;
+
+  /// Liste des documents justificatifs téléversés par le technicien.
   List<Map<String, dynamic>> _documents = [];
+
+  /// Indicateur de chargement lors d'une opération asynchrone (validation, mise à jour).
   bool _isLoading = false;
+
+  /// Contrôleur des 5 onglets (À propos, Disponibilité, Expérience, Avis, Documents).
   late TabController _tabController;
 
   @override
@@ -39,6 +57,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     super.dispose();
   }
 
+  /// Récupère la liste des documents associés au technicien depuis `technician_documents`.
   Future<void> _loadDocuments() async {
     try {
       final docs = await Supabase.instance.client
@@ -52,6 +71,10 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     } catch (_) {}
   }
 
+  /// Applique une action de modération administrative sur le technicien.
+  ///
+  /// [action] : Action souhaitée ('approve', 'reject', ou 'suspend').
+  /// Met à jour `validation_status` et journalise l'opération dans `admin_logs`.
   Future<void> _validate(String action) async {
     setState(() => _isLoading = true);
 
@@ -102,6 +125,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final tc = Theme.of(context).extension<TechLinkColors>()!;
@@ -150,6 +174,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit la barre d'en-tête supérieure avec bouton retour, nom et bouton d'édition rapide.
   Widget _buildTopAppBar(String name, String specialty, TechLinkColors tc, bool isDark) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -189,6 +214,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit le bandeau contenant la photo de profil et la carte flottante des statistiques clés.
   Widget _buildImageAndStats(String name, String? avatarUrl, int experience, double rating, int missions, TechLinkColors tc, bool isDark) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -238,6 +264,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit un bloc statistique individuel avec icône, libellé et valeur.
   Widget _buildStatBox(String value, String label, IconData icon, Color bgColor, Color iconColor, TechLinkColors tc, bool isDark) {
     return Container(
       width: 90,
@@ -258,6 +285,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit la barre de navigation à onglets segmentée.
   Widget _buildTabBar(TechLinkColors tc, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(top: 36, bottom: 8),
@@ -282,6 +310,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit l'onglet des informations générales, bio et coordonnées.
   Widget _buildAboutTab(String name, String specialty, String bio, String phone, String email, String? avatarUrl, TechLinkColors tc, bool isDark) {
     final mtn = _technician['mtn_number'] as String? ?? '';
     final orange = _technician['orange_number'] as String? ?? '';
@@ -330,6 +359,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit l'onglet des créneaux de disponibilité hebdomadaire.
   Widget _buildAvailabilityTab(Map<String, dynamic>? availability, TechLinkColors tc, bool isDark) {
     final Map<String, dynamic> schedule = availability ?? {
       'Lundi': '08:00 - 18:00',
@@ -359,6 +389,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit une ligne horaire pour un jour de la semaine.
   Widget _buildDayRow(String day, String hours, TechLinkColors tc, {bool isClosed = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -385,6 +416,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit l'onglet récapitulant les années d'expérience et les compétences/spécialités.
   Widget _buildExperienceTab(int experience, List<String> specialties, TechLinkColors tc, bool isDark) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -426,6 +458,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit l'onglet des évaluations et avis laissés par les clients.
   Widget _buildReviewsTab(double rating, int missions, TechLinkColors tc, bool isDark) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -495,6 +528,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit l'onglet d'inspection et de téléchargement des documents justificatifs.
   Widget _buildDocumentsTab(TechLinkColors tc, bool isDark) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -561,7 +595,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
                           } else {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Aucun lien disponible pour ce document')),
+                                  const SnackBar(content: Text('Aucun lien disponible pour ce document')),
                               );
                             }
                           }
@@ -575,6 +609,7 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Construit la barre d'actions modératrices inférieure (Approuver, Rejeter, Suspendre, Réactiver).
   Widget _buildAdminBottomBar(String status, TechLinkColors tc, bool isDark) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -662,6 +697,8 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
     );
   }
 
+  /// Affiche une boîte de dialogue modale permettant d'éditer manuellement
+  /// les coordonnées et informations techniques du technicien.
   Future<void> _showEditTechnicianDialog() async {
     final user = _technician['users'] as Map<String, dynamic>?;
     final nameController = TextEditingController(text: user?['name'] as String? ?? '');
@@ -801,11 +838,21 @@ class _TechnicianDetailScreenState extends State<TechnicianDetailScreen> with Si
   }
 }
 
+/// Widget réutilisable présentant une ligne clé-valeur avec icône descriptive.
 class _DetailRow extends StatelessWidget {
+  /// Icône d'illustration de la ligne.
   final IconData icon;
+
+  /// Libellé descriptif (ex: 'Email', 'Téléphone').
   final String label;
+
+  /// Valeur affichée (ex: adresse email, numéro).
   final String value;
+
+  /// Thème de couleurs TechLinkColors injecté.
   final TechLinkColors tc;
+
+  /// Constructeur de [_DetailRow].
   const _DetailRow(this.icon, this.label, this.value, this.tc);
 
   @override

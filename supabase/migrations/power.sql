@@ -1,3 +1,14 @@
+-- =============================================================================
+-- FICHIER : power.sql
+-- RÔLE : Schéma de référence DDL consolidé de la base de données PostgreSQL Supabase :
+--         - Définition complète de toutes les tables publiques (users, technicians,
+--           missions, quotes, payments, ratings, messages, categories, etc.)
+--         - Documentation des types de données, contraintes CHECK, clés primaires et étrangères.
+-- MODULE : Schéma de base de données / Schéma consolidé de référence
+-- DÉPENDANCES : Extensions uuid-ossp, postgis / spatial_ref_sys
+-- SÉCURITÉ / RLS : Schéma de référence global (utilisé pour l'alignement typologique et l'outillage).
+-- =============================================================================
+
 -- WARNING: This schema is for context only and is not meant to be run.
 -- Table order and constraints may not be valid for execution.
 

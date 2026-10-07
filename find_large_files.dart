@@ -1,5 +1,15 @@
+// =============================================================================
+// FICHIER : find_large_files.dart
+// RÔLE : Script utilitaire en ligne de commande pour identifier les fichiers volumineux (> 1 Mo)
+//         pouvant bloquer les commits ou transferts Git.
+// MODULE : Outils de maintenance / Scripts racine
+// DÉPENDANCES : dart:io
+// SÉCURITÉ / RLS : N/A (Script utilitaire local de maintenance)
+// =============================================================================
+
 import 'dart:io';
 
+/// Point d'entrée principal du script d'analyse des fichiers volumineux.
 void main() {
   var dir = Directory('.');
   var files = <File>[];

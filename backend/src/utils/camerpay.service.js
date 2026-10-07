@@ -1,8 +1,24 @@
+// =============================================================================
+// FICHIER : backend/src/utils/camerpay.service.js
+// RÔLE : Service d'intégration des paiements mobiles (Campay / CamerPay) pour collectes et retraits
+// MODULE : Backend / Utilitaires et Services Paiements
+// DÉPENDANCES : axios, crypto, ../config/camerpay
+// SÉCURITÉ / RLS : Authentification par token Bearer, validation de signature HMAC SHA256 des webhooks
+// =============================================================================
+
 const axios = require('axios');
 const crypto = require('crypto');
 const { CAMERPAY_CONFIG } = require('../config/camerpay');
 
+/**
+ * Service gérant l'intégration des flux de paiement Mobile Money via l'API Campay / CamerPay.
+ * Prend en charge l'initiation de paiements (USSD push), la vérification de transactions,
+ * les retraits vers les comptes techniciens (payouts) et la signature des webhooks.
+ */
 class CamerPayService {
+  /**
+   * Initialise les paramètres de configuration et l'instance HTTP Axios.
+   */
   constructor() {
     this.baseUrl = CAMERPAY_CONFIG.baseUrl;
     this.apiKey = CAMERPAY_CONFIG.apiKey;
@@ -18,6 +34,11 @@ class CamerPayService {
     });
   }
 
+  /**
+   * Récupère un jeton d'accès temporaire auprès de la passerelle Campay.
+   * @returns {Promise<string>} Jeton d'authentification
+   * @throws {Error} En cas d'échec d'authentification
+   */
   async getToken() {
     try {
       const payload = {
@@ -33,9 +54,14 @@ class CamerPayService {
   }
 
   /**
-   * Initialize a payment (mission or subscription)
-   * @param {Object} paymentData - Payment details
-   * @returns {Promise<Object>} Payment authorization data
+   * Initie un paiement Mobile Money (collecte USSD push) pour une mission ou un abonnement.
+   * @param {Object} paymentData - Détails du paiement
+   * @param {string} paymentData.type - 'mission' ou 'subscription'
+   * @param {number|string} paymentData.amount - Montant en FCFA
+   * @param {string} [paymentData.description] - Libellé affiché sur la demande
+   * @param {string} paymentData.clientPhone - Numéro de téléphone payeur
+   * @param {string} paymentData.reference - Référence unique interne
+   * @returns {Promise<Object>} Données d'autorisation de paiement ou erreur
    */
   async initializePayment(paymentData) {
     try {
@@ -100,9 +126,9 @@ class CamerPayService {
   }
 
   /**
-   * Verify a payment transaction
-   * @param {string} transactionId - Transaction ID from CamerPay (Campay's reference)
-   * @returns {Promise<Object>} Transaction status
+   * Vérifie le statut d'une transaction auprès de la passerelle.
+   * @param {string} transactionId - Référence de transaction renvoyée par Campay
+   * @returns {Promise<Object>} Statut mappé ('pending', 'success', 'failed')
    */
   async verifyTransaction(transactionId) {
     try {
@@ -145,10 +171,10 @@ class CamerPayService {
   }
 
   /**
-   * Validate webhook signature
-   * @param {string} signature - Signature from webhook header
-   * @param {Object} body - Raw webhook body
-   * @returns {boolean} Valid signature
+   * Valide la signature cryptographique HMAC-SHA256 d'un webhook entrant.
+   * @param {string} signature - Signature transmise dans l'en-tête HTTP
+   * @param {Object|string} body - Corps brut du webhook
+   * @returns {boolean} Vrai si la signature est authentique
    */
   validateWebhookSignature(signature, body) {
     if (!this.webhookSecret || !signature) {
@@ -165,9 +191,9 @@ class CamerPayService {
   }
 
   /**
-   * Get subscription details
-   * @param {string} subscriptionId - Subscription ID
-   * @returns {Promise<Object>} Subscription data
+   * Récupère les informations d'un abonnement récurrent.
+   * @param {string} subscriptionId - Identifiant de l'abonnement
+   * @returns {Promise<Object>} Données de l'abonnement
    */
   async getSubscription(subscriptionId) {
     try {
@@ -202,9 +228,9 @@ class CamerPayService {
   }
 
   /**
-   * Cancel a subscription
-   * @param {string} subscriptionId - Subscription ID
-   * @returns {Promise<Object>} Cancellation result
+   * Résilie un abonnement en cours auprès de la passerelle.
+   * @param {string} subscriptionId - Identifiant de l'abonnement
+   * @returns {Promise<Object>} Résultat de la résiliation
    */
   async cancelSubscription(subscriptionId) {
     try {
@@ -233,9 +259,12 @@ class CamerPayService {
   }
 
   /**
-   * Withdraw funds to a mobile money number (Payout)
-   * @param {Object} payoutData - Payout details
-   * @returns {Promise<Object>} Withdrawal result
+   * Effectue un virement sortant vers un compte Mobile Money technicien (Payout).
+   * @param {Object} payoutData - Détails du transfert
+   * @param {number|string} payoutData.amount - Montant à transférer
+   * @param {string} payoutData.phone - Numéro de téléphone bénéficiaire
+   * @param {string} payoutData.reference - Référence unique de paiement
+   * @returns {Promise<Object>} Données de la transaction de retrait
    */
   async withdraw(payoutData) {
     try {
@@ -284,10 +313,10 @@ class CamerPayService {
   }
 
   /**
-   * Generate transaction reference
-   * @param {string} type - 'mission' or 'subscription'
-   * @param {string} id - Mission or Subscription ID
-   * @returns {string} Unique reference
+   * Génère une référence unique de transaction horodatée.
+   * @param {string} type - 'mission' ou 'subscription'
+   * @param {string} id - Identifiant de la mission ou de l'abonnement
+   * @returns {string} Chaîne de référence unique
    */
   generateReference(type, id) {
     const timestamp = Date.now();
@@ -296,8 +325,8 @@ class CamerPayService {
   }
 
   /**
-   * Get payment configuration
-   * @returns {Object} Current configuration
+   * Retourne la configuration courante des abonnements et de l'environnement.
+   * @returns {Object} Configuration active
    */
   getConfig() {
     return {
@@ -309,3 +338,4 @@ class CamerPayService {
 }
 
 module.exports = new CamerPayService();
+

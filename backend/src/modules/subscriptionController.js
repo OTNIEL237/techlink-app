@@ -1,11 +1,28 @@
+// =============================================================================
+// FICHIER : backend/src/modules/subscriptionController.js
+// RÔLE : Gestion du cycle de vie des abonnements techniciens (essai gratuit, paiement, vérification, expiration)
+// MODULE : Backend / Module Abonnements (Contrôleur Métier)
+// DÉPENDANCES : @supabase/supabase-js, ../utils/camerpay.service, ../config/camerpay, ../config/supabase
+// SÉCURITÉ / RLS : Mise à jour sécurisée des droits techniciens et vérification des paiements
+// =============================================================================
+
 const { createClient } = require('@supabase/supabase-js');
 const camerpayService = require('../utils/camerpay.service');
 const { CAMERPAY_CONFIG } = require('../config/camerpay');
 const supabase = require('../config/supabase');
 
+/**
+ * Contrôleur métier régissant les abonnements des techniciens partenaires.
+ * Gère le déclenchement de la période d'essai gratuit de 30 jours, l'initialisation
+ * et la vérification des paiements de renouvellement, ainsi que la purge/expiration automatique.
+ */
 class SubscriptionController {
   /**
-   * Helper to resolve technician ID from either UUID or User ID
+   * Résout l'identifiant technicien (`technicians.id`) qu'un client ait transmis
+   * son identifiant primaire ou son identifiant de compte utilisateur (`users.id`).
+   *
+   * @param {string} idOrUserId - Identifiant UUID
+   * @returns {Promise<string>} Identifiant résolu dans la table `technicians`
    */
   static async resolveTechId(idOrUserId) {
     try {
@@ -25,7 +42,10 @@ class SubscriptionController {
   }
 
   /**
-   * Start free trial for newly registered technician
+   * Active la période d'essai gratuit (30 jours) pour un technicien nouvellement validé.
+   *
+   * @param {string} technicianId - Identifiant du technicien
+   * @returns {Promise<{success: boolean, data?: Object, error?: string}>} Résultat de l'activation
    */
   static async startFreeTrial(technicianId) {
     try {
@@ -84,7 +104,12 @@ class SubscriptionController {
   }
 
   /**
-   * Initialize subscription payment
+   * Initialise un paiement d'abonnement (mensuel ou annuel) via la passerelle CamerPay.
+   *
+   * @param {string} technicianId - Identifiant du technicien
+   * @param {'monthly'|'yearly'} subscriptionType - Formule choisie
+   * @param {Object} technicianData - Coordonnées du payeur (phone, email, name)
+   * @returns {Promise<{success: boolean, data?: Object, error?: string}>} URL de redirection ou invite USSD
    */
   static async initializeSubscription(technicianId, subscriptionType, technicianData) {
     try {
@@ -163,7 +188,10 @@ class SubscriptionController {
   }
 
   /**
-   * Verify subscription payment
+   * Vérifie le règlement effectif d'un abonnement auprès de la passerelle et active le compte.
+   *
+   * @param {string} reference - Référence de transaction générée
+   * @returns {Promise<{success: boolean, data?: Object, error?: string}>} Statut d'activation
    */
   static async verifySubscription(reference) {
     try {
@@ -275,7 +303,10 @@ class SubscriptionController {
   }
 
   /**
-   * Get subscription status
+   * Récupère le statut actuel de l'abonnement d'un technicien (actif, essai, jours restants).
+   *
+   * @param {string} technicianId - Identifiant du technicien
+   * @returns {Promise<{success: boolean, data?: Object, error?: string}>} État détaillé
    */
   static async getSubscriptionStatus(technicianId) {
     try {
@@ -327,7 +358,11 @@ class SubscriptionController {
   }
 
   /**
-   * Renew subscription
+   * Renouvelle l'abonnement existant d'un technicien selon sa formule antérieure.
+   *
+   * @param {string} technicianId - Identifiant du technicien
+   * @param {Object} technicianData - Coordonnées du payeur
+   * @returns {Promise<{success: boolean, data?: Object, error?: string}>} Résultat du renouvellement
    */
   static async renewSubscription(technicianId, technicianData) {
     try {
@@ -348,7 +383,10 @@ class SubscriptionController {
   }
 
   /**
-   * Cancel subscription
+   * Annule l'abonnement d'un technicien à sa demande.
+   *
+   * @param {string} technicianId - Identifiant du technicien
+   * @returns {Promise<{success: boolean, data?: Object, error?: string}>} Confirmation d'annulation
    */
   static async cancelSubscription(technicianId) {
     try {
@@ -383,7 +421,9 @@ class SubscriptionController {
   }
 
   /**
-   * Check and expire subscriptions
+   * Tâche d'arrière-plan inspectant et marquant comme expirés les abonnements échus.
+   *
+   * @returns {Promise<{success: boolean, expiredCount: number, error?: string}>} Bilan des expirations
    */
   static async checkAndExpireSubscriptions() {
     try {
@@ -425,3 +465,4 @@ class SubscriptionController {
 }
 
 module.exports = SubscriptionController;
+

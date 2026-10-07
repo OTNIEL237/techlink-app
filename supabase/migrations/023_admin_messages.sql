@@ -1,4 +1,13 @@
--- 023_admin_messages.sql
+-- =============================================================================
+-- FICHIER : 023_admin_messages.sql
+-- RÔLE : Gestion du support client et assistance back-office :
+--         - Création de la table 'admin_messages' (échanges directs utilisateur <-> support admin)
+--         - Sécurité RLS fine : l'utilisateur accède uniquement à son fil de support,
+--           l'administrateur accède à tous les tickets et conversations.
+-- MODULE : Schéma de base de données / Support & Assistance Administrateur
+-- DÉPENDANCES : public.users
+-- SÉCURITÉ / RLS : RLS activé. Isolation stricte par user_id avec droits transverses pour les administrateurs.
+-- =============================================================================
 
 -- Create table for admin <-> user support messages
 CREATE TABLE IF NOT EXISTS admin_messages (

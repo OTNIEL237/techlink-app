@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : mission.validator.test.js
+// RÔLE : Tests unitaires Jest & Supertest pour les validateurs de requêtes de missions
+//         (createMissionValidator, assignMissionValidator, validateMissionId).
+// MODULE : Tests / Validateurs (Backend)
+// DÉPENDANCES : express, supertest, ../../../src/middlewares/validators/mission.validator
+// SÉCURITÉ / RLS : N/A (Tests d'intégrité de schéma et validation de payload)
+// =============================================================================
+
 const express = require('express');
 const request = require('supertest');
 const {

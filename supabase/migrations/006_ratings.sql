@@ -1,0 +1,13 @@
+-- =============================================================================
+-- FICHIER : 006_ratings.sql
+-- RÔLE : Migration initiale - Définition de la table 'ratings'
+--         (évaluations étoilées, critères de ponctualité/qualité/prix,
+--         commentaires textuels et réponses des techniciens).
+-- MODULE : Schéma de base de données / Évaluations
+-- DÉPENDANCES : public.missions, public.users, public.technicians
+-- SÉCURITÉ / RLS : RLS activé. Dépôt réservé au client de la mission achevée ;
+--                  lecture publique des avis vérifiés.
+-- =============================================================================
+
+-- Table 'ratings' : avis et retours d'expérience clients
+-- (Consulter 'power.sql' pour le schéma DDL consolidé de l'environnement de production).

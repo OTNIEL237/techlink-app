@@ -1,8 +1,23 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : neumorphic_styles.dart
+// Rôle          : Design System Neumorphique & Glassmorphisme 3D.
+//                 Fournit les ombres en relief (embossed), en creux (debossed),
+//                 les dégradés signatures, et les widgets stylisés
+//                 (NeumorphicCard, NeumorphicButton, NeumorphicTextField, etc.).
+// Module        : Core / Thèmes & Design System
+// Dépendances   : Flutter Material, Flutter Riverpod
+// Sécurité/RLS  : Public / UI
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'theme_provider.dart';
 
+/// [NeumorphicTheme]
+///
 /// Système de design Neumorphisme Doux & Glassmorphisme 3D
 /// Inspiré de la maquette moderne Pinterest avec support Mode Clair & Sombre.
 class NeumorphicTheme {

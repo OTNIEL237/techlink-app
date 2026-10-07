@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : setup.js
+// RÔLE : Script utilitaire de migration/déplacement du contrôleur d'abonnements
+//         vers le sous-répertoire modulaire backend/src/modules/subscriptions/.
+// MODULE : Outils d'initialisation / Scripts racine
+// DÉPENDANCES : fs, path
+// SÉCURITÉ / RLS : N/A (Script de migration local)
+// =============================================================================
+
 const fs = require('fs');
 const path = require('path');
 

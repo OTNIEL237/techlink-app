@@ -1,4 +1,13 @@
--- 014_admin_features.sql
+-- =============================================================================
+-- FICHIER : 014_admin_features.sql
+-- RÔLE : Fonctionnalités d'administration du back-office :
+--         - Ajout du statut de bannissement 'is_banned' dans 'users'
+--         - Création de la table 'platform_settings' (taux de commission et tarifs d'abonnement)
+--         - Politiques RLS (lecture publique des paramètres, mise à jour réservée aux admins).
+-- MODULE : Schéma de base de données / Administration & Paramètres
+-- DÉPENDANCES : public.users, public.platform_settings
+-- SÉCURITÉ / RLS : Mise à jour restreinte aux utilisateurs ayant le rôle 'admin'.
+-- =============================================================================
 
 -- 1. Add `is_banned` to `users` if it doesn't exist
 DO $$

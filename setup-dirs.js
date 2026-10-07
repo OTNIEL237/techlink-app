@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : setup-dirs.js
+// RÔLE : Script d'initialisation de l'arborescence des dossiers modules du backend
+//         (création automatique du dossier modules/subscriptions).
+// MODULE : Outils d'initialisation / Scripts racine
+// DÉPENDANCES : fs, path
+// SÉCURITÉ / RLS : N/A (Script utilitaire local de configuration de projet)
+// =============================================================================
+
 const fs = require('fs');
 const path = require('path');
 

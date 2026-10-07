@@ -1,6 +1,20 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : logger_service.dart
+// Rôle          : Service centralisé de journalisation (logs d'information,
+//                 avertissements, erreurs et traces réseau HTTP).
+// Module        : Core / Utilitaires & Journalisation
+// Dépendances   : dart:developer, flutter/foundation
+// Sécurité/RLS  : Public / Utilitaire (filtré en mode Debug)
+// =============================================================================
+
 import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
 
+/// [LoggerService]
+///
+/// Gestionnaire unifié des logs techniques de l'application TechLink.
 class LoggerService {
   static void logInfo(String message, {String tag = 'INFO'}) {
     if (kDebugMode) {

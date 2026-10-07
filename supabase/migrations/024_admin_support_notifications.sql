@@ -1,4 +1,13 @@
--- 024_admin_support_notifications.sql
+-- =============================================================================
+-- FICHIER : 024_admin_support_notifications.sql
+-- RÔLE : Déclencheur automatique de notification pour les réponses du support :
+--         - Fonction 'handle_new_admin_message_notification()'
+--         - Trigger 'on_new_admin_message_notification' sur la table 'admin_messages'
+--         - Notifie l'utilisateur lorsqu'un administrateur répond à sa demande de support.
+-- MODULE : Schéma de base de données / Notifications Support
+-- DÉPENDANCES : public.admin_messages, public.notifications
+-- SÉCURITÉ / RLS : Fonction SECURITY DEFINER garantissant l'insertion de notification système.
+-- =============================================================================
 
 -- Trigger function for new admin support messages
 CREATE OR REPLACE FUNCTION handle_new_admin_message_notification()

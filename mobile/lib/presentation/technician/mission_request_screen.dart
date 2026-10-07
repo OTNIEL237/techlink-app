@@ -1,3 +1,17 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : mission_request_screen.dart
+// Rôle          : Écran de traitement et d'exécution d'une demande de mission par le
+//                 technicien (prise en charge, navigation GPS, devis, paiement direct, litige).
+// Module        : Présentation Technicien (Missions & Interventions)
+// Dépendances   : flutter/material.dart, go_router, supabase_flutter, url_launcher,
+//                 app_colors.dart, zego_call_service.dart, quote_builder_screen.dart,
+//                 client_location_map_screen.dart, responsive_web_wrapper.dart
+// Sécurité/RLS  : Accès réservé au technicien assigné à la mission.
+//                 Validation des transactions et mise à jour du portefeuille.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,15 +22,12 @@ import 'quote_builder_screen.dart';
 import 'client_location_map_screen.dart';
 import '../shared/responsive_web_wrapper.dart';
 
-// =========================================================================
-// ÉCRAN DE DÉTAIL D'UNE DEMANDE DE MISSION
-// =========================================================================
-// Affiche les détails d'une mission pour le technicien, permet d'accepter, 
-// de se mettre en route, de démarrer, d'envoyer un devis, de confirmer 
-// le paiement manuel et de finaliser la mission. Gère aussi les litiges.
-
+/// Écran complet de suivi et gestion du cycle de vie d'une mission pour le technicien.
 class MissionRequestScreen extends StatefulWidget {
+  /// Données brutes de la mission courante
   final Map<String, dynamic> mission;
+
+  /// Constructeur constant de l'écran de demande de mission
   const MissionRequestScreen({super.key, required this.mission});
 
   @override
@@ -24,7 +35,10 @@ class MissionRequestScreen extends StatefulWidget {
 }
 
 class _MissionRequestScreenState extends State<MissionRequestScreen> {
+  /// Données dynamiques de la mission rafraîchies périodiquement
   late Map<String, dynamic> _mission;
+
+  /// Indicateur de traitement asynchrone d'une mise à jour de statut
   bool _isUpdating = false;
 
   @override
@@ -58,6 +72,7 @@ class _MissionRequestScreenState extends State<MissionRequestScreen> {
     } catch (_) {}
   }
 
+  /// Confirme la réception directe d'un paiement en espèces ou transfert manuel et crédite le wallet
   Future<void> _confirmManualPaymentReceived() async {
     setState(() => _isUpdating = true);
     try {
@@ -144,6 +159,7 @@ class _MissionRequestScreenState extends State<MissionRequestScreen> {
     }
   }
 
+  /// Met à jour l'étape courante de la mission dans Supabase (ex: en route, démarrée)
   Future<void> _updateStatus(String newStatus) async {
     setState(() => _isUpdating = true);
     try {
@@ -180,6 +196,7 @@ class _MissionRequestScreenState extends State<MissionRequestScreen> {
     }
   }
 
+  /// Lance l'écran de guidage cartographique vers la position GPS du client
   void _openNavigation() {
     final rawLat = _mission['client_lat'];
     final rawLng = _mission['client_lng'];
@@ -221,6 +238,7 @@ class _MissionRequestScreenState extends State<MissionRequestScreen> {
     );
   }
 
+  /// Initie un appel vocal direct avec le client via le service ZegoCloud
   void _callClient() {
     final client = _mission['users'] as Map<String, dynamic>?;
     final clientId = _mission['client_id'] as String? ?? '';
@@ -233,6 +251,7 @@ class _MissionRequestScreenState extends State<MissionRequestScreen> {
     );
   }
 
+  /// Affiche la boîte de dialogue de déclaration d'un litige pour geler la mission
   void _showDisputeDialog() {
     final descriptionController = TextEditingController();
     String selectedReason = 'Client absent';
@@ -697,11 +716,20 @@ class _MissionRequestScreenState extends State<MissionRequestScreen> {
   }
 }
 
+/// Carte conteneur modulaire affichant une section de détails de la mission
 class _SectionCard extends StatelessWidget {
+  /// Titre explicatif de la section
   final String title;
+
+  /// Icône d'illustration
   final IconData icon;
+
+  /// Contenu enfant personnalisé
   final Widget child;
+
+  /// Thème de couleurs TechLink
   final TechLinkColors tc;
+
   const _SectionCard(
       {required this.title, required this.icon, required this.child, required this.tc});
 
@@ -743,9 +771,14 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
+/// Frise chronologique horizontale affichant l'avancement de la mission étape par étape
 class _StatusTimeline extends StatelessWidget {
+  /// Code textuel du statut de la mission
   final String status;
+
+  /// Thème de couleurs TechLink
   final TechLinkColors tc;
+
   const _StatusTimeline({required this.status, required this.tc});
 
   @override

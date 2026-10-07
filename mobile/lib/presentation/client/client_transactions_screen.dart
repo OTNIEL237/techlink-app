@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : client_transactions_screen.dart
+// Rôle          : Historique et détails des transactions et paiements du client
+// Module        : Présentation / Client / Facturation & Transactions
+// Dépendances   : Supabase Flutter, Intl, AppColors, ThemeProvider
+// Sécurité/RLS  : Accès réservé au client authentifié pour ses propres factures
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -5,10 +15,9 @@ import 'package:intl/intl.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/theme_provider.dart';
 
-// =========================================================================
-// ÉCRAN MODERNE DES TRANSACTIONS CLIENT (Paiements CamerPay / MoMo / Orange)
-// =========================================================================
-
+/// [ClientTransactionsScreen] fournit un relevé financier complet des règlements
+/// effectués par le client (CamerPay, MTN MoMo, Orange Money, Cartes bancaires),
+/// avec filtrage par statut, recherche textuelle, pagination et copie de références.
 class ClientTransactionsScreen extends StatefulWidget {
   const ClientTransactionsScreen({super.key});
 
@@ -16,6 +25,8 @@ class ClientTransactionsScreen extends StatefulWidget {
   State<ClientTransactionsScreen> createState() => _ClientTransactionsScreenState();
 }
 
+/// État interne gérant la pagination infinie, le cumul des montants dépensés
+/// et le tri interactif des transactions du client.
 class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
   bool _isLoading = true;
   bool _isLoadingMore = false;
@@ -45,12 +56,15 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     super.dispose();
   }
 
+  /// Écouteur de défilement déclenchant le chargement de la page suivante à l'approche du bas de liste.
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
       _loadTransactions();
     }
   }
 
+  /// Charge les transactions depuis Supabase avec pagination (10 par page).
+  /// [refresh] réinitialise l'offset à zéro et vide le cache local.
   Future<void> _loadTransactions({bool refresh = false}) async {
     if (refresh) {
       _offset = 0;
@@ -93,6 +107,8 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     }
   }
 
+  /// Filtre les transactions selon le statut sélectionné (Toutes, Réussies, En attente, Échouées)
+  /// et la recherche textuelle saisie par l'utilisateur.
   List<Map<String, dynamic>> _getFilteredTransactions() {
     List<Map<String, dynamic>> list = _allTransactions;
 
@@ -124,6 +140,7 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     return list;
   }
 
+  /// Calcule le montant total cumulé de toutes les transactions validées et payées.
   double get _totalSpent {
     double total = 0;
     for (var tx in _allTransactions) {
@@ -139,6 +156,7 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     return total;
   }
 
+  /// Formate un montant en devise locale FCFA avec séparateur de milliers français.
   String _formatCurrency(dynamic amount) {
     if (amount == null) return '0 FCFA';
     final formatter = NumberFormat('#,###', 'fr_FR');
@@ -149,6 +167,7 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     return '${formatter.format(parsed)} FCFA';
   }
 
+  /// Convertit une chaîne de date ISO en format lisible en heure locale (JJ/MM/AAAA à HH:mm).
   String _formatDate(dynamic dateStr) {
     if (dateStr == null) return 'Date inconnue';
     try {
@@ -159,6 +178,7 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     }
   }
 
+  /// Retourne la couleur indicative selon l'état de la transaction (succès, attente, échec).
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'completed':
@@ -176,6 +196,7 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     }
   }
 
+  /// Traduit le code de statut technique en libellé français compréhensible.
   String _getStatusText(String status) {
     switch (status.toLowerCase()) {
       case 'completed':
@@ -193,6 +214,7 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     }
   }
 
+  /// Retourne l'icône représentative du moyen de paiement employé.
   IconData _getMethodIcon(String method) {
     final m = method.toLowerCase();
     if (m.contains('mtn') || m.contains('momo')) {
@@ -205,6 +227,7 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     return Icons.account_balance_wallet_rounded;
   }
 
+  /// Retourne le nom commercial du moyen de paiement (MTN MoMo, Orange Money, Carte Bancaire, CamerPay).
   String _getMethodLabel(String method) {
     final m = method.toLowerCase();
     if (m.contains('mtn')) return 'MTN MoMo';
@@ -459,6 +482,8 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     );
   }
 
+  /// Construit la carte visuelle d'une transaction avec méthode de paiement, montant,
+  /// référence cliquable pour copie dans le presse-papier et pastille de statut.
   Widget _buildTransactionCard(Map<String, dynamic> tx, TechLinkColors tc, bool isDark) {
     final mission = tx['missions'] as Map<String, dynamic>?;
     final missionTitle = mission?['problem_description'] ?? 'Mission #${tx['mission_id']?.toString().substring(0, 8) ?? 'Générale'}';
@@ -617,6 +642,7 @@ class _ClientTransactionsScreenState extends State<ClientTransactionsScreen> {
     );
   }
 
+  /// Vue affichée lorsqu'aucune transaction ne correspond aux critères de filtre ou de recherche.
   Widget _buildEmptyState(TechLinkColors tc, bool isDark) {
     return Center(
       child: Padding(

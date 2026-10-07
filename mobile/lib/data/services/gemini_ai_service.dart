@@ -1,13 +1,32 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : gemini_ai_service.dart
+// Rôle          : Service d'analyse intelligente de pannes via Google Gemini (relais backend).
+// Module        : Data / Services
+// Dépendances   : api_service.dart, local_ai_service.dart
+// Sécurité/RLS  : Ne divulgue aucune clé d'API côté client ; requêtes déléguées au backend.
+// =============================================================================
+
 import 'dart:convert';
 import 'local_ai_service.dart';
 import 'api_service.dart';
 
+/// Service d'assistance et de diagnostic de pannes alimenté par Google Gemini.
+///
+/// Transmet les descriptions textuelles et pièces jointes des clients au backend
+/// pour catégorisation automatique, niveau d'urgence, conseils de sécurité temporaires
+/// et estimation du temps d'intervention. Intègre un mode de repli local ([LocalAiService])
+/// si le réseau est inaccessible.
 class GeminiAiService {
-  // =========================================================================
-  // SERVICE D'INTELLIGENCE ARTIFICIELLE (GEMINI via Backend)
-  // =========================================================================
-  
-  /// Analyse un problème technique via le backend
+  /// Analyse un problème technique soumis par l'utilisateur via l'API backend.
+  ///
+  /// En cas d'erreur de communication ou de réponse invalide, bascule automatiquement
+  /// sur l'algorithme heuristique hors ligne de [LocalAiService].
+  ///
+  /// [problem] Description brute rédigée par l'utilisateur.
+  /// [photoCount] Nombre de photos fournies pour étayer la panne.
+  /// Retourne un dictionnaire normalisé avec catégorie, urgence, conseils et avertissements.
   static Future<Map<String, dynamic>> analyze(String problem, {int photoCount = 0}) async {
     try {
       final apiService = ApiService();
@@ -28,6 +47,7 @@ class GeminiAiService {
     }
   }
 
+  /// Invite système (System Prompt) de référence configurant le comportement de l'IA Gemini.
   static const String _systemPrompt = '''
 Tu es l'assistant IA expert en diagnostic de pannes de TechLink, une application camerounaise de mise en relation pour des réparations domestiques et techniques.
 Ton rôle est d'analyser la description utilisateur (qui peut contenir des fautes d'orthographe, du langage familier ou des détails imprécis) et de retourner un objet JSON structuré contenant le diagnostic et les conseils.
@@ -69,6 +89,9 @@ Choisis la catégorie la plus pertinente et utilise le slug exact : electricite,
 }
 ''';
 
+  /// Harmonise et assainit la réponse brute renvoyée par le modèle Gemini.
+  ///
+  /// Garantit la présence de toutes les clés attendues par l'interface utilisateur.
   static Map<String, dynamic> _normalizeResponse(
       Map<String, dynamic> raw, String problem, int photoCount) {
     final isRelevant = raw['is_relevant'] as bool? ?? true;
@@ -101,6 +124,7 @@ Choisis la catégorie la plus pertinente et utilise le slug exact : electricite,
     };
   }
 
+  /// Procédure de secours locale (fallback) en cas d'indisponibilité du backend ou d'absence de réseau.
   static Map<String, dynamic> _fallbackAnalysis(String problem, int photoCount) {
     final localResult = LocalAiService.analyze(problem, photoCount: photoCount);
 

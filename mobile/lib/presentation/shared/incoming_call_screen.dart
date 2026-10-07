@@ -1,16 +1,26 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : incoming_call_screen.dart
+// Rôle          : Écran d'alerte d'appel entrant avec boutons d'acceptation et de refus.
+// Module        : Presentation / Shared
+// Dépendances   : flutter, go_router, app_colors.dart, zego_call_service.dart
+// Sécurité/RLS  : Met à jour le statut de l'appel (accepté / refusé) sur Supabase Realtime.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/services/zego_call_service.dart';
 
-// =========================================================================
-// ÉCRAN D'APPEL ENTRANT
-// =========================================================================
-// Cet écran s'affiche lorsqu'un utilisateur reçoit un appel. 
-// Il affiche l'avatar et le nom de l'appelant et propose deux boutons : 
-// Décliner ou Répondre.
-
+/// Interface présentée à l'utilisateur lors de la réception d'un appel audio ou vidéo.
+///
+/// Affiche le nom et l'initiale de l'appelant ainsi que la modalité de communication.
+/// Propose deux actions immédiates :
+/// - Décliner : clôture l'appel côté Supabase et ferme l'écran.
+/// - Répondre : valide l'appel et bascule vers l'interface de communication [AudioCallScreen] ou [VideoCallScreen].
 class IncomingCallScreen extends StatelessWidget {
+  /// Constructeur constant pour [IncomingCallScreen].
   const IncomingCallScreen({super.key});
 
   @override

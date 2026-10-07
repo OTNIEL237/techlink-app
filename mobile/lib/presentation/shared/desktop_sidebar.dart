@@ -1,28 +1,50 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : desktop_sidebar.dart
+// Rôle          : Barre latérale de navigation pour affichage grand écran (Desktop / Web).
+// Module        : Presentation / Shared
+// Dépendances   : flutter, app_colors.dart, theme_provider.dart
+// Sécurité/RLS  : Composant UI d'orientation et de navigation responsive.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/theme_provider.dart';
 
-// =========================================================================
-// BARRE LATÉRALE BUREAU (Desktop Sidebar)
-// =========================================================================
-// Affiche une barre latérale de navigation spécifique aux écrans larges (Web).
-
+/// Modèle de données décrivant un élément de menu dans la barre latérale bureau.
 class DesktopSidebarItem {
+  /// Icône représentative de la section.
   final IconData icon;
+
+  /// Libellé textuel de l'onglet.
   final String label;
 
+  /// Constructeur constant pour [DesktopSidebarItem].
   const DesktopSidebarItem({
     required this.icon,
     required this.label,
   });
 }
 
+/// Barre latérale de navigation ergonomique dédiée aux résolutions larges (desktop / tablette paysage).
+///
+/// Affiche la marque TechLink, la liste des destinations cliquables avec indicateur d'état actif,
+/// et les mentions de copyright en pied de page.
 class CustomDesktopSidebar extends StatelessWidget {
+  /// Index de la destination actuellement sélectionnée.
   final int selectedIndex;
+
+  /// Fonction de rappel invoquée lorsqu'un nouvel onglet est cliqué.
   final ValueChanged<int> onDestinationSelected;
+
+  /// Liste des éléments de navigation affichés dans le menu.
   final List<DesktopSidebarItem> destinations;
+
+  /// Couleurs du thème dynamique TechLink.
   final TechLinkColors tc;
 
+  /// Constructeur de [CustomDesktopSidebar].
   const CustomDesktopSidebar({
     super.key,
     required this.selectedIndex,

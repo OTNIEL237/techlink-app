@@ -1,5 +1,17 @@
+// =============================================================================
+// FICHIER : rateLimit.middleware.test.js
+// RÔLE : Tests unitaires Jest pour les limiteurs de débit globalLimiter et strictLimiter
+//         (validation de la configuration, passage des requêtes initiales).
+// MODULE : Tests / Middlewares (Backend)
+// DÉPENDANCES : ../../src/middlewares/rateLimit.middleware, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires de limitation de débit anti-bruteforce)
+// =============================================================================
+
 const { globalLimiter, strictLimiter } = require('../../src/middlewares/rateLimit.middleware');
 
+/**
+ * Suite de tests unitaires pour les middlewares de limitation de débit.
+ */
 describe('Middleware: rateLimit', () => {
   describe('globalLimiter', () => {
     it('devrait être défini et être une fonction middleware', () => {

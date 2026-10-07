@@ -1,6 +1,17 @@
+// =============================================================================
+// FICHIER : techlink_ai_service_test.dart
+// RÔLE : Tests unitaires pour le service IA hybride TechLinkAiService
+//         (normalisation des réponses JSON, filtrage de pertinence is_relevant,
+//         valeurs par défaut de résilience et bascule de secours sur LocalAiService).
+// MODULE : Tests / Service IA Hybride (Mobile Flutter)
+// DÉPENDANCES : package:flutter_test/flutter_test.dart, package:techlink/data/services/techlink_ai_service.dart
+// SÉCURITÉ / RLS : N/A (Tests unitaires sans dépendance réseau)
+// =============================================================================
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:techlink/data/services/techlink_ai_service.dart';
 
+/// Point d'entrée des tests unitaires pour TechLinkAiService.
 void main() {
   group('TechLinkAiService._normalizeResponse', () {
     // On teste la méthode via la réponse publique du fallback

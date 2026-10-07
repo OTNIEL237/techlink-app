@@ -1,3 +1,13 @@
+// =============================================================================
+// FICHIER : mission.service.test.js
+// RÔLE : Tests unitaires Jest pour le service de missions
+//         (création de mission, consultation, mise à jour de statut,
+//         délivrance des fonds sous séquestre lors du passage en 'completed').
+// MODULE : Tests / Missions (Backend)
+// DÉPENDANCES : ../../../src/modules/missions/mission.service, ../../../src/config/supabase, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec simulation Supabase)
+// =============================================================================
+
 const missionService = require('../../../src/modules/missions/mission.service');
 const supabase = require('../../../src/config/supabase');
 

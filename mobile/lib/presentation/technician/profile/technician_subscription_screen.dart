@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : technician_subscription_screen.dart
+// RÔLE : Gestion et suivi de l'abonnement professionnel du technicien (forfaits, compte à rebours)
+// MODULE : Presentation / Technician / Profile
+// DÉPENDANCES : flutter/material.dart, go_router, supabase_flutter, app_colors.dart, theme_provider.dart
+// SÉCURITÉ / RLS : Authentification technicien requise. Lecture des droits d'abonnement ('technicians.subscription_status', 'subscription_end_date').
+// =============================================================================
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -5,19 +13,36 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/theme_provider.dart';
 
+/// Écran de consultation et renouvellement de l'abonnement du technicien.
+///
+/// Affiche la formule souscrite (essai gratuit, mensuel, annuel), le statut d'activation,
+/// le compte à rebours précis avant expiration, et les options de souscription ou montée en gamme.
 class TechnicianSubscriptionScreen extends StatefulWidget {
+  /// Constructeur constant du widget [TechnicianSubscriptionScreen].
   const TechnicianSubscriptionScreen({super.key});
 
   @override
   State<TechnicianSubscriptionScreen> createState() => _TechnicianSubscriptionScreenState();
 }
 
+/// État associé à l'écran de gestion d'abonnement technicien.
+///
+/// Gère la récupération des informations d'abonnement, le minuteur de compte à rebours,
+/// et la navigation vers l'écran de sélection de forfait.
 class _TechnicianSubscriptionScreenState extends State<TechnicianSubscriptionScreen> {
+  /// Indicateur de chargement initial des données d'abonnement.
   bool _isLoading = true;
+
+  /// Données du profil technicien issues de la table `technicians`.
   Map<String, dynamic>? _technician;
+
+  /// Données de l'utilisateur issues de la table `users`.
   Map<String, dynamic>? _user;
   
+  /// Minuteur périodique mettant à jour le décompte chaque seconde.
   Timer? _countdownTimer;
+
+  /// Durée restante avant l'expiration de la formule d'abonnement en cours.
   Duration _remainingTime = Duration.zero;
 
   @override
@@ -26,12 +51,14 @@ class _TechnicianSubscriptionScreenState extends State<TechnicianSubscriptionScr
     _fetchSubscriptionInfo();
   }
 
+  /// Annule le minuteur périodique pour éviter les fuites de mémoire.
   @override
   void dispose() {
     _countdownTimer?.cancel();
     super.dispose();
   }
 
+  /// Récupère les données d'abonnement du technicien et les informations de profil utilisateur.
   Future<void> _fetchSubscriptionInfo() async {
     try {
       final userId = Supabase.instance.client.auth.currentUser?.id;
@@ -69,6 +96,7 @@ class _TechnicianSubscriptionScreenState extends State<TechnicianSubscriptionScr
     }
   }
 
+  /// Initialise un timer récurrent pour décrémenter le temps restant chaque seconde.
   void _setupCountdown() {
     _countdownTimer?.cancel();
     
@@ -98,6 +126,7 @@ class _TechnicianSubscriptionScreenState extends State<TechnicianSubscriptionScr
     });
   }
 
+  /// Formate un objet [Duration] en chaîne lisible sous la forme `Xj Xh Xm Xs`.
   String _formatDuration(Duration duration) {
     if (duration.inSeconds <= 0) return '0j 0h 0m 0s';
     
@@ -109,6 +138,7 @@ class _TechnicianSubscriptionScreenState extends State<TechnicianSubscriptionScr
     return '${days}j ${hours}h ${minutes}m ${seconds}s';
   }
 
+  /// Redirige le prestataire vers le sélecteur de plans d'abonnement avec ses coordonnées préremplies.
   void _navigateToSubscriptionSelection() {
     if (_technician == null || _user == null) return;
     
@@ -126,6 +156,7 @@ class _TechnicianSubscriptionScreenState extends State<TechnicianSubscriptionScr
     });
   }
 
+  /// Construit la vue de statut d'abonnement avec la carte de forfait, le décompte et les boutons d'action.
   @override
   Widget build(BuildContext context) {
     final tc = Theme.of(context).extension<TechLinkColors>()!;
@@ -167,6 +198,7 @@ class _TechnicianSubscriptionScreenState extends State<TechnicianSubscriptionScr
     );
   }
 
+  /// Carte présentant le nom de l'offre (Mensuel, Annuel, Essai) et son badge d'activité.
   Widget _buildStatusCard(TechLinkColors tc, bool isDark) {
     final type = _technician!['subscription_type'] as String? ?? 'none';
     final status = _technician!['subscription_status'] as String? ?? 'inactive';
@@ -238,6 +270,7 @@ class _TechnicianSubscriptionScreenState extends State<TechnicianSubscriptionScr
     );
   }
 
+  /// Carte en dégradé affichant le compte à rebours précis avant la date limite.
   Widget _buildCountdownCard(TechLinkColors tc, bool isDark) {
     return Container(
       width: double.infinity,
@@ -281,6 +314,7 @@ class _TechnicianSubscriptionScreenState extends State<TechnicianSubscriptionScr
     );
   }
 
+  /// Génère les boutons de souscription, de mise à niveau ou de renouvellement selon l'état actuel.
   Widget _buildActionButtons() {
     final type = _technician!['subscription_type'] as String? ?? 'none';
     final status = _technician!['subscription_status'] as String? ?? 'inactive';

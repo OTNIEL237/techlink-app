@@ -1,5 +1,28 @@
+// =============================================================================
+// FICHIER : backend/src/modules/missions/mission.service.js
+// RÔLE : Logique métier des missions et mécanisme de séquestre financier (Escrow)
+// MODULE : Backend / Module Missions (Service)
+// DÉPENDANCES : ../../config/supabase
+// SÉCURITÉ / RLS : Libération des fonds sous séquestre uniquement à la complétion effective
+// =============================================================================
+
 const supabase = require('../../config/supabase');
 
+/**
+ * Enregistre une nouvelle demande d'intervention dans la table `missions`.
+ *
+ * @param {Object} data - Attributs de la mission
+ * @param {string} data.client_id - UUID du client demandeur
+ * @param {string} data.problem_description - Description détaillée du dysfonctionnement
+ * @param {string[]} [data.problem_photos] - URLs des photos justificatives
+ * @param {string} [data.urgency_level='normal'] - Niveau de criticité ('low', 'normal', 'high', 'urgent')
+ * @param {string} [data.ai_solution] - Diagnostic préconisé par l'assistant IA
+ * @param {string} [data.ai_category_detected] - Catégorie inférée par l'IA
+ * @param {string} [data.client_address] - Adresse textuelle
+ * @param {number} [data.client_lat] - Coordonnée latitude
+ * @param {number} [data.client_lng] - Coordonnée longitude
+ * @returns {Promise<Object>} Enregistrement créé
+ */
 const createMission = async (data) => {
   const { data: mission, error } = await supabase
     .from('missions')
@@ -22,6 +45,12 @@ const createMission = async (data) => {
   return mission;
 };
 
+/**
+ * Récupère l'historique complet des missions commandées par un client, avec les catégories associées.
+ *
+ * @param {string} clientId - Identifiant du client
+ * @returns {Promise<Array<Object>>} Liste ordonnée antéchronologiquement des missions
+ */
 const getClientMissions = async (clientId) => {
   const { data, error } = await supabase
     .from('missions')
@@ -33,6 +62,12 @@ const getClientMissions = async (clientId) => {
   return data;
 };
 
+/**
+ * Récupère les données détaillées d'une mission par sa clé primaire.
+ *
+ * @param {string} missionId - Identifiant unique de la mission
+ * @returns {Promise<Object>} Détails de la mission et catégorie
+ */
 const getMissionById = async (missionId) => {
   const { data, error } = await supabase
     .from('missions')
@@ -44,6 +79,22 @@ const getMissionById = async (missionId) => {
   return data;
 };
 
+/**
+ * Met à jour le statut d'une mission et exécute la libération des fonds sous séquestre (Escrow)
+ * si le statut passe à `completed`.
+ *
+ * Flux Escrow lors de la complétion :
+ * 1. Recherche le paiement réussi en séquestre (`payout_status: 'pending'`).
+ * 2. Récupère le portefeuille du technicien exécutant.
+ * 3. Enregistre une ligne dans `wallet_transactions`.
+ * 4. Crédite `wallet_balance`, `total_earnings` et incrémente `total_missions`.
+ * 5. Marque le paiement comme versé (`payout_status: 'completed'`).
+ * 6. Met à jour le statut de la mission.
+ *
+ * @param {string} missionId - Identifiant de la mission
+ * @param {string} status - Nouveau statut opérationnel
+ * @returns {Promise<Object>} Enregistrement mission mis à jour
+ */
 const updateMissionStatus = async (missionId, status) => {
   // 🛡️ Logique de Séquestration (Escrow) : 
   // Libérer l'argent du paiement SEULEMENT quand la mission est marquée "completed"

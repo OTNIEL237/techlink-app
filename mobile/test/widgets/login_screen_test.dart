@@ -1,8 +1,19 @@
+// =============================================================================
+// FICHIER : login_screen_test.dart
+// RÔLE : Tests de widgets Flutter pour l'écran LoginScreen
+//         (présence des champs email et mot de passe, bouton de soumission,
+//         bascule de visibilité du mot de passe via l'icône oeil).
+// MODULE : Tests / Widgets Authentification (Mobile Flutter)
+// DÉPENDANCES : package:flutter/material.dart, package:flutter_riverpod/flutter_riverpod.dart, package:flutter_test/flutter_test.dart, package:techlink/presentation/auth/login_screen.dart
+// SÉCURITÉ / RLS : N/A (Tests unitaires d'interface avec ProviderScope isolé)
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:techlink/presentation/auth/login_screen.dart';
 
+/// Point d'entrée des tests de widget pour l'écran de connexion.
 void main() {
   group('LoginScreen Widget Tests', () {
     testWidgets('devrait afficher les champs email et mot de passe', (WidgetTester tester) async {

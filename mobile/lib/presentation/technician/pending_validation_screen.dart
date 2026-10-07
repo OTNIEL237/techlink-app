@@ -1,16 +1,25 @@
+// =============================================================================
+// FICHIER : pending_validation_screen.dart
+// RÔLE : Écran de mise en attente et suivi de validation du compte technicien (KYC)
+// MODULE : Presentation / Technician
+// DÉPENDANCES : flutter/material.dart, go_router, supabase_flutter, app_colors.dart, app_router.dart, responsive_web_wrapper.dart
+// SÉCURITÉ / RLS : Rôle technicien en cours de revue ('pending' ou 'rejected'). Polling sécurisé de 'technicians.validation_status'.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/routing/app_router.dart';
 import '../shared/responsive_web_wrapper.dart';
 
-// =========================================================================
-// ÉCRAN D'ATTENTE DE VALIDATION
-// =========================================================================
-// Affiche le statut de validation du profil technicien après l'inscription,
-// et vérifie périodiquement si le profil a été approuvé ou rejeté.
-
+/// Écran d'attente informant le technicien de l'état d'instruction de son dossier.
+///
+/// Affiche la progression administrative (vérification KYC, examen des diplômes),
+/// vérifie périodiquement si l'administrateur a validé le compte et redirige automatiquement
+/// vers l'accueil technicien dès approbation (`validation_status == 'approved'`).
 class PendingValidationScreen extends StatefulWidget {
+  /// Constructeur constant du widget [PendingValidationScreen].
   const PendingValidationScreen({super.key});
 
   @override
@@ -18,14 +27,19 @@ class PendingValidationScreen extends StatefulWidget {
       _PendingValidationScreenState();
 }
 
+/// État associé à l'écran d'attente de validation technicien.
+///
+/// Gère la boucle de vérification périodique (polling toutes les 30s)
+/// et met à jour l'interface en cas d'approbation ou de rejet du dossier.
 class _PendingValidationScreenState extends State<PendingValidationScreen> {
+  /// Statut de validation courant de l'artisan ('pending', 'approved', 'rejected').
   String _validationStatus = 'pending';
 
   @override
   void initState() {
     super.initState();
     _checkStatus();
-    // Vérifier toutes les 30 secondes
+    // Vérifier toutes les 30 secondes tant que le statut reste en attente
     Future.doWhile(() async {
       await Future.delayed(const Duration(seconds: 30));
       if (!mounted) return false;
@@ -34,6 +48,10 @@ class _PendingValidationScreenState extends State<PendingValidationScreen> {
     });
   }
 
+  /// Interroge Supabase pour récupérer le statut d'approbation actuel de l'utilisateur.
+  ///
+  /// Met en cache le rôle validé via [AppRouter.setCachedRole] et redirige vers `/technician/home`
+  /// dès que le profil est marqué comme `approved`.
   Future<void> _checkStatus() async {
     try {
       final userId = Supabase.instance.client.auth.currentUser!.id;
@@ -47,11 +65,13 @@ class _PendingValidationScreenState extends State<PendingValidationScreen> {
       if (mounted) setState(() => _validationStatus = status);
 
       if (status == 'approved' && mounted) {
+        AppRouter.setCachedRole(userId, 'technician', validationStatus: 'approved');
         context.go('/technician/home');
       }
     } catch (_) {}
   }
 
+  /// Construit la vue avec indicateur d'état, étapes de validation et options de déconnexion.
   @override
   Widget build(BuildContext context) {
     final tc = Theme.of(context).extension<TechLinkColors>()!;
@@ -179,9 +199,10 @@ class _PendingValidationScreenState extends State<PendingValidationScreen> {
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () async {
+                  AppRouter.clearRoleCache();
                   await Supabase.instance.client.auth.signOut();
                   if (context.mounted) {
-                    context.go('/phone');
+                    context.go('/login');
                   }
                 },
                 child: Text('Se déconnecter',

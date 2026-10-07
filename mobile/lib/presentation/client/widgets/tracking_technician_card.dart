@@ -1,12 +1,37 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : tracking_technician_card.dart
+// Rôle          : Carte récapitulative du technicien assigné avec avatar, notation,
+//                 spécialités et boutons d'appel vocal ou visio en direct.
+// Module        : Présentation Client (Widgets Suivi de Mission)
+// Dépendances   : flutter/material.dart, app_localizations.dart, app_colors.dart
+// Sécurité/RLS  : Coordonnées de contact affichées uniquement si la mission
+//                 est active et assignée.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:techlink/l10n/app_localizations.dart';
 import '../../../../core/constants/app_colors.dart';
 
+/// Carte présentant l'artisan assigné à la mission avec options d'appels directs.
 class TrackingTechnicianCard extends StatelessWidget {
+  /// Données complètes du profil technicien
   final Map<String, dynamic> technician;
+
+  /// Callback pour lancer l'appel téléphonique audio
   final VoidCallback onCall;
+
+  /// Callback pour initier un appel vidéo WebRTC
   final VoidCallback onVideoCall;
-  const TrackingTechnicianCard({super.key, required this.technician, required this.onCall, required this.onVideoCall});
+
+  /// Constructeur constant de la carte technicien de suivi
+  const TrackingTechnicianCard({
+    super.key,
+    required this.technician,
+    required this.onCall,
+    required this.onVideoCall,
+  });
 
   @override
   Widget build(BuildContext context) {

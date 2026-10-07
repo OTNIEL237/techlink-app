@@ -1,15 +1,37 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : neon_colors.dart
+// Rôle          : Palette de couleurs sombres et néon pour les effets
+//                 visuels futuristes, glassmorphisme et accents lumineux.
+// Module        : Core / Thèmes & Design System
+// Dépendances   : Flutter Material
+// Sécurité/RLS  : Public / UI
+// =============================================================================
+
 import 'package:flutter/material.dart';
 
+/// [NeonColors]
+///
+/// Palette graphique spécialisée pour les contrastes sombres profonds
+/// et les bordures électroluminescentes (effet 3D Glassmorphism).
 class NeonColors {
-  // Deep dark backgrounds
-  static const Color background = Color(0xFF0B0B0F); // Very dark purple/black
-  static const Color sidebar = Color(0xFF101015); // Slightly lighter for sidebar
-  static const Color card = Color(0xFF16161D); // Card background
+  // ── FONDS NOIRS ET PROFONDS ──
+  /// Fond d'écran ultra-sombre (violet/noir profond).
+  static const Color background = Color(0xFF0B0B0F);
+  /// Teinte légèrement surélevée pour les barres latérales ou de navigation.
+  static const Color sidebar = Color(0xFF101015);
+  /// Teinte des cartes et conteneurs glassmorphismes.
+  static const Color card = Color(0xFF16161D);
   
-  // Neon accents
+  // ── ACCENTS LUMINEUX NÉON ──
+  /// Magenta éclatant.
   static const Color neonMagenta = Color(0xFFFF00FF);
+  /// Rose néon pour les états interactifs.
   static const Color neonPink = Color(0xFFFF0080);
+  /// Violet électrique.
   static const Color neonPurple = Color(0xFF8A2BE2);
+  /// Cyan néon (pour les indicateurs technologiques et connectivité).
   static const Color neonCyan = Color(0xFF00E5FF);
   
   // Text

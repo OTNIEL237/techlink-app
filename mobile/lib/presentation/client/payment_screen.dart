@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : payment_screen.dart
+// Rôle          : Règlement sécurisé des devis de mission par Mobile Money ou direct
+// Module        : Présentation / Client / Paiement
+// Dépendances   : Supabase Flutter, GoRouter, CamerPayService, UiFeedback
+// Sécurité/RLS  : Accessible au client ayant accepté le devis de la mission
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
@@ -9,14 +19,15 @@ import '../../data/services/camerpay_service.dart';
 import '../../core/utils/ui_feedback.dart';
 import '../../core/utils/app_error_handler.dart';
 
-// =========================================================================
-// ÉCRAN DE PAIEMENT
-// =========================================================================
-// Permet au client de payer la mission via Mobile Money (MTN/Orange).
-// Gère l'initialisation et le polling du statut de la transaction avec CamerPay.
-
+/// [PaymentScreen] gère le flux de paiement de fin de prestation par le client :
+/// sélection de l'opérateur (MTN Mobile Money ou Orange Money),
+/// initialisation de la requête USSD push via CamerPay ou règlement direct/espèces,
+/// puis vérification en boucle (polling) jusqu'à confirmation bancaire.
 class PaymentScreen extends StatefulWidget {
+  /// Données de la mission ciblée.
   final Map<String, dynamic> mission;
+
+  /// Détails chiffrés du devis validé.
   final Map<String, dynamic> quote;
 
   const PaymentScreen({
@@ -29,6 +40,8 @@ class PaymentScreen extends StatefulWidget {
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
+/// État interne gérant l'initialisation des numéros de paiement de l'artisan,
+/// la soumission de la transaction et la minuterie de polling.
 class _PaymentScreenState extends State<PaymentScreen> {
   bool _isInitializing = true;
   bool _isSubmitting = false;
@@ -59,6 +72,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     super.dispose();
   }
 
+  /// Charge les identifiants et numéros de téléphone marchands (MTN/Orange) du technicien.
   Future<void> _loadTechnicianDetails() async {
     try {
       final techId = widget.mission['technician_id'] as String;
@@ -114,6 +128,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
   }
 
+  /// Extrait le montant total à régler depuis l'objet devis.
   double _getQuoteAmount() {
     final raw = widget.quote['subtotal'] ?? widget.quote['amount'] ?? widget.quote['total'];
     if (raw is num) return raw.toDouble();
@@ -121,6 +136,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return 0.0;
   }
 
+  /// Initie le paiement en ligne automatisé via la passerelle CamerPay/Campay.
   Future<void> _submitCampayPayment() async {
     if (_formKey.currentState?.validate() != true) return;
     if (_selectedOperator == null) {
@@ -180,6 +196,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
   }
 
+  /// Enregistre un règlement manuel ou direct en espèces remis directement au technicien.
   Future<void> _submitManualPayment() async {
     if (_selectedOperator == null) {
       UiFeedback.showWarning(context, 'Veuillez sélectionner un opérateur (MTN ou Orange)');
@@ -232,6 +249,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
   }
 
+  /// Démarre une minuterie répétitive toutes les 10 secondes pour vérifier le statut de paiement auprès de CamerPay.
   void _startPaymentPolling() {
     _pollingTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
       if (!mounted || _paymentReference == null) return;
@@ -692,6 +710,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ));
     }
 
+  /// Construit la carte sélectionnable d'un opérateur de paiement (MTN ou Orange).
   Widget _buildOperatorCard({
     required String id,
     required String name,
@@ -754,6 +773,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
+  /// Carte récapitulative affichant les consignes de paiement USSD et les coordonnées du bénéficiaire.
   Widget _buildInstructionsCard() {
     final tc = Theme.of(context).extension<TechLinkColors>()!;
     final isDark = Theme.of(context).brightness == Brightness.dark;

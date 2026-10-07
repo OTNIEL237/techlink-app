@@ -1,24 +1,37 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : call_history_screen.dart
+// Rôle          : Journal chronologique des appels audio et vidéo (entrants, sortants, manqués).
+// Module        : Presentation / Shared
+// Dépendances   : flutter, supabase_flutter, intl, app_colors.dart, zego_call_service.dart
+// Sécurité/RLS  : Interroge la table Supabase 'calls' avec filtre sur caller_id ou receiver_id.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/services/zego_call_service.dart';
 
-// =========================================================================
-// ÉCRAN D'HISTORIQUE DES APPELS
-// =========================================================================
-// Affiche la liste des appels émis et reçus par l'utilisateur courant.
-// Permet de rappeler un contact directement depuis l'historique.
-
+/// Écran présentant l'historique complet des communications vocales et vidéo.
+///
+/// Affiche la liste des appels (reçus, émis, manqués, refusés) avec horodatage,
+/// statut et permet de rappeler instantanément un contact via [ZegoCallService.startCall].
 class CallHistoryScreen extends StatefulWidget {
+  /// Constructeur constant pour [CallHistoryScreen].
   const CallHistoryScreen({super.key});
 
   @override
   State<CallHistoryScreen> createState() => _CallHistoryScreenState();
 }
 
+/// État associé à [CallHistoryScreen] assurant le rechargement et le rendu de la liste.
 class _CallHistoryScreenState extends State<CallHistoryScreen> {
+  /// Liste des enregistrements d'appels enrichis des jointures `users`.
   List<Map<String, dynamic>> _calls = [];
+
+  /// Indicateur d'état de chargement lors de la requête Supabase.
   bool _isLoading = true;
 
   @override

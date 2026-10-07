@@ -1,3 +1,16 @@
+// =============================================================================
+// FICHIER : errorHandler.middleware.test.js
+// RÔLE : Tests unitaires Jest pour le middleware global de capture d'erreurs
+//         (gestion des statuts HTTP par défaut, masquage de détails sensibles en production,
+//         exposition des traces d'erreurs en mode développement).
+// MODULE : Tests / Middlewares (Backend)
+// DÉPENDANCES : ../../src/middlewares/errorHandler.middleware, jest
+// SÉCURITÉ / RLS : N/A (Tests de conformité de sécurité sur les messages d'erreur)
+// =============================================================================
+
+/**
+ * Suite de tests unitaires pour le gestionnaire d'erreurs global errorHandler.
+ */
 describe('Middleware: errorHandler', () => {
   let errorHandler;
   let mockReq;

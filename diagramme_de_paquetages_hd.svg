@@ -1,0 +1,376 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 1050" width="2200" height="1050" style="background:#ffffff; font-family:'Segoe UI', Arial, sans-serif;">
+  <defs>
+    <!-- Filtre ombre douce pour relief professionnel -->
+    <filter id="pkg-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2.5" flood-color="#887700" flood-opacity="0.12"/>
+    </filter>
+
+    <!-- Marqueur flèche ouverte pour dépendance UML <<access>> / <<merge>> -->
+    <marker id="pkg-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#5555bb" stroke-width="1.6" stroke-linecap="round"/>
+    </marker>
+  </defs>
+
+  <style>
+    .pkg-tab { fill: #fffde0; stroke: #997300; stroke-width: 1.5; }
+    .pkg-body { fill: #fffde0; stroke: #997300; stroke-width: 1.5; filter: url(#pkg-shadow); }
+    .pkg-body-main { fill: #fffcc7; stroke: #997300; stroke-width: 2.2; filter: url(#pkg-shadow); }
+    .pkg-title { font-size: 12.5px; font-weight: bold; fill: #111111; text-anchor: middle; letter-spacing: 0.5px; }
+    .pkg-title-main { font-size: 14.5px; font-weight: bold; fill: #111111; text-anchor: middle; letter-spacing: 0.7px; }
+    .dep-line { stroke: #5555bb; stroke-width: 1.4; stroke-dasharray: 6,4; fill: none; }
+    .stereo-bg { fill: #ffffff; stroke: #bbbbdd; stroke-width: 0.6; rx: 3; ry: 3; }
+    .stereo-text { font-size: 10.5px; font-style: italic; font-weight: 600; fill: #333388; text-anchor: middle; }
+  </style>
+
+  <!-- ======================================================== -->
+  <!-- 1. RELATIONS & DÉPENDANCES UML (Arrière-plan)             -->
+  <!-- ======================================================== -->
+
+  <!-- SIGNALER LITIGE -> S'AUTHENTIFIER (<<access>>) -->
+  <path d="M 1150,150 L 1150,290" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1115" y="215" width="70" height="15" class="stereo-bg"/>
+  <text x="1150" y="226" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- CONSULTER NOTIFICATION -> S'AUTHENTIFIER (<<access>>) -->
+  <path d="M 900,150 L 1080,290" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="980" y="205" width="70" height="15" class="stereo-bg"/>
+  <text x="1015" y="216" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- CONSULTER HISTORIQUE DE PAIEMENT -> S'AUTHENTIFIER (<<access>>) -->
+  <path d="M 870,305 L 1060,320" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="925" y="295" width="70" height="15" class="stereo-bg"/>
+  <text x="960" y="306" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- MODIFIER PROFIL -> S'AUTHENTIFIER (<<access>>) -->
+  <path d="M 910,405 L 1060,370" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="945" y="385" width="70" height="15" class="stereo-bg"/>
+  <text x="980" y="396" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- S'ABONNER -> S'AUTHENTIFIER (<<access>>) -->
+  <path d="M 1230,590 L 1170,430" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1185" y="555" width="70" height="15" class="stereo-bg"/>
+  <text x="1220" y="566" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- CONTACTER -> S'AUTHENTIFIER (<<access>>) -->
+  <path d="M 1320,515 L 1220,430" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1255" y="445" width="70" height="15" class="stereo-bg"/>
+  <text x="1290" y="456" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- GERER LES UTILISATEURS -> S'AUTHENTIFIER (<<access>>) -->
+  <path d="M 990,625 L 1140,625 L 1140,435" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1105" y="618" width="70" height="15" class="stereo-bg"/>
+  <text x="1140" y="629" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- GERER MISSION -> S'AUTHENTIFIER (<<access>>) -->
+  <path d="M 410,460 L 1060,450" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1085" y="445" width="70" height="15" class="stereo-bg"/>
+  <text x="1120" y="456" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- S'AUTHENTIFIER <-> GERER MISSION ATRIBUER (<<access>>) -->
+  <path d="M 1260,325 L 1470,300" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1505" y="300" width="70" height="15" class="stereo-bg"/>
+  <text x="1540" y="311" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- S'AUTHENTIFIER <-> GERER LES LITIGES (<<access>>) -->
+  <path d="M 1260,375 L 1520,430" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1500" y="375" width="70" height="15" class="stereo-bg"/>
+  <text x="1535" y="386" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- SOUMMETRE DEMANDE -> GERER LES LITIGES (<<access>>) -->
+  <path d="M 1485,530 L 1560,530 L 1560,465" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1465" y="415" width="70" height="15" class="stereo-bg"/>
+  <text x="1500" y="426" class="stereo-text">&lt;&lt;access&gt;&gt;</text>
+
+  <!-- ======================================================== -->
+  <!-- 2. MERGES SUR GERER MISSION                              -->
+  <!-- ======================================================== -->
+
+  <!-- CREER MISSION -> GERER MISSION (<<merge>>) -->
+  <path d="M 325,230 L 325,400" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="290" y="310" width="70" height="15" class="stereo-bg"/>
+  <text x="325" y="321" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- ANNULER MISSION -> GERER MISSION (<<merge>>) -->
+  <path d="M 145,360 L 250,425" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="160" y="395" width="70" height="15" class="stereo-bg"/>
+  <text x="195" y="406" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- VALIDER DEVIS -> GERER MISSION (<<merge>>) -->
+  <path d="M 160,445 L 250,445" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="180" y="438" width="70" height="15" class="stereo-bg"/>
+  <text x="215" y="449" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- REFUSER DEVIS -> GERER MISSION (<<merge>>) -->
+  <path d="M 145,570 L 250,490" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="150" y="480" width="70" height="15" class="stereo-bg"/>
+  <text x="185" y="491" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- PAYER DEVIS -> GERER MISSION (<<merge>>) -->
+  <path d="M 155,700 L 340,700 L 340,510" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="305" y="692" width="70" height="15" class="stereo-bg"/>
+  <text x="340" y="703" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- ======================================================== -->
+  <!-- 3. MERGES SUR GERER LES UTILISATEURS                     -->
+  <!-- ======================================================== -->
+
+  <!-- DESACTIVER COMPTE -> GERER LES UTILISATEURS (<<merge>>) -->
+  <path d="M 550,650 L 795,650" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="635" y="642" width="70" height="15" class="stereo-bg"/>
+  <text x="670" y="653" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- ACCEPTER LE TECHNICIEN -> GERER LES UTILISATEURS (<<merge>>) -->
+  <path d="M 620,780 L 800,780 L 800,710" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="600" y="675" width="70" height="15" class="stereo-bg"/>
+  <text x="635" y="686" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- REFUSER LE TECHNICIEN -> GERER LES UTILISATEURS (<<merge>>) -->
+  <path d="M 945,800 L 945,710" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="770" y="805" width="70" height="15" class="stereo-bg"/>
+  <text x="805" y="816" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- VOIR PROFIL UTILISATEUR -> GERER LES UTILISATEURS (<<merge>>) -->
+  <path d="M 1030,940 L 960,940 L 960,710" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="925" y="810" width="70" height="15" class="stereo-bg"/>
+  <text x="960" y="821" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- SUPPRIMER UTILISATEUR -> GERER LES UTILISATEURS (<<merge>>) -->
+  <path d="M 1150,785 L 1150,700 L 995,700" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1080" y="692" width="70" height="15" class="stereo-bg"/>
+  <text x="1115" y="703" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- ACTIVER COMPTE -> GERER LES UTILISATEURS (<<merge>>) -->
+  <path d="M 1320,690 L 995,680" class="dep-line" marker-end="url(#pkg-arrow)"/>
+
+  <!-- ======================================================== -->
+  <!-- 4. MERGES SUR GERER MISSION ATRIBUER                     -->
+  <!-- ======================================================== -->
+
+  <!-- ACCEPTER MISSION -> GERER MISSION ATRIBUER (<<merge>>) -->
+  <path d="M 1660,70 L 1600,70 L 1600,175" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1565" y="25" width="70" height="15" class="stereo-bg"/>
+  <text x="1600" y="36" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <rect x="1570" y="120" width="70" height="15" class="stereo-bg"/>
+  <text x="1605" y="131" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- REFUSER MISSION 2 -> GERER MISSION ATRIBUER (<<merge>>) -->
+  <path d="M 2050,135 L 1700,135 L 1700,200" class="dep-line" marker-end="url(#pkg-arrow)"/>
+
+  <!-- REFUSER MISSION -> GERER MISSION ATRIBUER (<<merge>>) -->
+  <path d="M 2070,225 L 1700,225" class="dep-line" marker-end="url(#pkg-arrow)"/>
+
+  <!-- ENVOYER DEVIS -> GERER MISSION ATRIBUER (<<merge>>) -->
+  <path d="M 1890,265 L 1700,265" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1755" y="258" width="70" height="15" class="stereo-bg"/>
+  <text x="1790" y="269" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- EXECUTER MISSION -> GERER MISSION ATRIBUER (<<merge>>) -->
+  <path d="M 1830,375 L 1670,375 L 1670,305" class="dep-line" marker-end="url(#pkg-arrow)"/>
+  <rect x="1625" y="375" width="70" height="15" class="stereo-bg"/>
+  <text x="1660" y="386" class="stereo-text">&lt;&lt;merge&gt;&gt;</text>
+
+  <!-- GERER LES LITIGES -> GERER MISSION ATRIBUER (<<merge>>) -->
+  <path d="M 1670,410 L 1670,310" class="dep-line" marker-end="url(#pkg-arrow)"/>
+
+  <!-- ======================================================== -->
+  <!-- 5. PAQUETAGES UML (Boîtes dossiers avec onglet)          -->
+  <!-- ======================================================== -->
+
+  <!-- PACKAGE CENTRAL : S'AUTHENTIFIER -->
+  <g transform="translate(1060, 275)">
+    <path d="M 0,0 L 50,0 L 55,16 L 0,16 Z" class="pkg-tab"/>
+    <rect y="16" width="200" height="135" class="pkg-body-main"/>
+    <text x="100" y="90" class="pkg-title-main">S'AUTHENTIFIER</text>
+  </g>
+
+  <!-- TOP : SIGNALER LITIGE -->
+  <g transform="translate(1100, 75)">
+    <path d="M 0,0 L 40,0 L 45,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="140" height="55" class="pkg-body"/>
+    <text x="70" y="47" class="pkg-title">SIGNALER LITIGE</text>
+  </g>
+
+  <!-- TOP-LEFT : CONSULTER NOTIFICATION -->
+  <g transform="translate(770, 95)">
+    <path d="M 0,0 L 45,0 L 50,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="195" height="55" class="pkg-body"/>
+    <text x="97" y="47" class="pkg-title">CONSULTER NOTIFICATION</text>
+  </g>
+
+  <!-- MID-LEFT : CONSULTER HISTORIQUE DE PAIEMENT -->
+  <g transform="translate(585, 255)">
+    <path d="M 0,0 L 55,0 L 60,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="280" height="75" class="pkg-body"/>
+    <text x="140" y="58" class="pkg-title">CONSULTER HISTORIQUE DE PAIEMENT</text>
+  </g>
+
+  <!-- MID-LEFT : MODIFIER PROFIL -->
+  <g transform="translate(765, 375)">
+    <path d="M 0,0 L 40,0 L 45,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="145" height="55" class="pkg-body"/>
+    <text x="72" y="47" class="pkg-title">MODIFIER PROFIL</text>
+  </g>
+
+  <!-- CLUSTER GAUCHE : GERER MISSION -->
+  <g transform="translate(250, 400)">
+    <path d="M 0,0 L 45,0 L 50,16 L 0,16 Z" class="pkg-tab"/>
+    <rect y="16" width="160" height="110" class="pkg-body-main"/>
+    <text x="80" y="78" class="pkg-title-main">GERER MISSION</text>
+  </g>
+
+  <!-- GAUCHE : CREER MISSION -->
+  <g transform="translate(255, 150)">
+    <path d="M 0,0 L 40,0 L 45,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="135" height="60" class="pkg-body"/>
+    <text x="67" y="50" class="pkg-title">CREER MISSION</text>
+  </g>
+
+  <!-- GAUCHE : ANNULER MISSION -->
+  <g transform="translate(0, 305)">
+    <path d="M 0,0 L 40,0 L 45,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="145" height="55" class="pkg-body"/>
+    <text x="72" y="47" class="pkg-title">ANNULER MISSION</text>
+  </g>
+
+  <!-- GAUCHE : VALIDER DEVIS -->
+  <g transform="translate(25, 415)">
+    <path d="M 0,0 L 40,0 L 45,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="135" height="55" class="pkg-body"/>
+    <text x="67" y="47" class="pkg-title">VALIDER DEVIS</text>
+  </g>
+
+  <!-- GAUCHE : REFUSER DEVIS -->
+  <g transform="translate(8, 570)">
+    <path d="M 0,0 L 40,0 L 45,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="135" height="55" class="pkg-body"/>
+    <text x="67" y="47" class="pkg-title">REFUSER DEVIS</text>
+  </g>
+
+  <!-- GAUCHE : PAYER DEVIS -->
+  <g transform="translate(100, 675)">
+    <path d="M 0,0 L 35,0 L 40,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="115" height="55" class="pkg-body"/>
+    <text x="57" y="47" class="pkg-title">PAYER DEVIS</text>
+  </g>
+
+  <!-- CLUSTER BAS-GAUCHE : GERER LES UTILISATEURS -->
+  <g transform="translate(795, 595)">
+    <path d="M 0,0 L 60,0 L 65,16 L 0,16 Z" class="pkg-tab"/>
+    <rect y="16" width="200" height="110" class="pkg-body-main"/>
+    <text x="100" y="78" class="pkg-title-main">GERER LES UTILISATEURS</text>
+  </g>
+
+  <!-- BAS-GAUCHE : DESACTIVER COMPTE -->
+  <g transform="translate(385, 605)">
+    <path d="M 0,0 L 45,0 L 50,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="165" height="60" class="pkg-body"/>
+    <text x="82" y="48" class="pkg-title">DESACTIVER COMPTE</text>
+  </g>
+
+  <!-- BAS-GAUCHE : ACCEPTER LE TECHNICIEN -->
+  <g transform="translate(480, 750)">
+    <path d="M 0,0 L 50,0 L 55,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="190" height="60" class="pkg-body"/>
+    <text x="95" y="49" class="pkg-title">ACCEPTER LE TECHNICIEN</text>
+  </g>
+
+  <!-- BAS-GAUCHE : REFUSER LE TECHNICIEN -->
+  <g transform="translate(755, 800)">
+    <path d="M 0,0 L 50,0 L 55,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="185" height="65" class="pkg-body"/>
+    <text x="92" y="52" class="pkg-title">REFUSER LE TECHNICIEN</text>
+  </g>
+
+  <!-- BAS-CENTRE : VOIR PROFIL UTILISATEUR -->
+  <g transform="translate(925, 915)">
+    <path d="M 0,0 L 50,0 L 55,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="190" height="65" class="pkg-body"/>
+    <text x="95" y="52" class="pkg-title">VOIR PROFIL UTILISATEUR</text>
+  </g>
+
+  <!-- BAS-CENTRE-DROITE : SUPPRIMER UTILISATEUR -->
+  <g transform="translate(1055, 785)">
+    <path d="M 0,0 L 50,0 L 55,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="180" height="60" class="pkg-body"/>
+    <text x="90" y="49" class="pkg-title">SUPPRIMER UTILISATEUR</text>
+  </g>
+
+  <!-- BAS-DROITE : ACTIVER COMPTE -->
+  <g transform="translate(1315, 665)">
+    <path d="M 0,0 L 40,0 L 45,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="135" height="55" class="pkg-body"/>
+    <text x="67" y="47" class="pkg-title">ACTIVER COMPTE</text>
+  </g>
+
+  <!-- BAS-CENTRE : S'ABONNER -->
+  <g transform="translate(1185, 590)">
+    <path d="M 0,0 L 35,0 L 40,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="105" height="50" class="pkg-body"/>
+    <text x="52" y="44" class="pkg-title">S'ABONNER</text>
+  </g>
+
+  <!-- BAS-CENTRE : CONTACTER -->
+  <g transform="translate(1290, 515)">
+    <path d="M 0,0 L 35,0 L 40,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="105" height="50" class="pkg-body"/>
+    <text x="52" y="44" class="pkg-title">CONTACTER</text>
+  </g>
+
+  <!-- BAS-DROITE : SOUMMETRE DEMANDE -->
+  <g transform="translate(1415, 515)">
+    <path d="M 0,0 L 45,0 L 50,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="180" height="55" class="pkg-body"/>
+    <text x="90" y="47" class="pkg-title">SOUMMETRE DEMANDE</text>
+  </g>
+
+  <!-- CLUSTER DROITE : GERER MISSION ATRIBUER -->
+  <g transform="translate(1460, 160)">
+    <path d="M 0,0 L 60,0 L 65,16 L 0,16 Z" class="pkg-tab"/>
+    <rect y="16" width="230" height="145" class="pkg-body-main"/>
+    <text x="115" y="95" class="pkg-title-main">GERER MISSION ATRIBUER</text>
+  </g>
+
+  <!-- DROITE : GERER LES LITIGES -->
+  <g transform="translate(1520, 410)">
+    <path d="M 0,0 L 45,0 L 50,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="155" height="55" class="pkg-body"/>
+    <text x="77" y="47" class="pkg-title">GERER LES LITIGES</text>
+  </g>
+
+  <!-- HAUT-DROITE : ACCEPTER MISSION -->
+  <g transform="translate(1740, 0)">
+    <path d="M 0,0 L 40,0 L 45,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="145" height="55" class="pkg-body"/>
+    <text x="72" y="47" class="pkg-title">ACCEPTER MISSION</text>
+  </g>
+
+  <!-- DROITE-HAUT : REFUSER MISSION 2 -->
+  <g transform="translate(2030, 95)">
+    <path d="M 0,0 L 45,0 L 50,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="165" height="55" class="pkg-body"/>
+    <text x="82" y="47" class="pkg-title">REFUSER MISSION 2</text>
+  </g>
+
+  <!-- DROITE-MILIEU : REFUSER MISSION -->
+  <g transform="translate(2055, 185)">
+    <path d="M 0,0 L 45,0 L 50,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="140" height="55" class="pkg-body"/>
+    <text x="70" y="47" class="pkg-title">REFUSER MISSION</text>
+  </g>
+
+  <!-- DROITE-BAS : ENVOYER DEVIS -->
+  <g transform="translate(1920, 225)">
+    <path d="M 0,0 L 40,0 L 45,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="130" height="60" class="pkg-body"/>
+    <text x="65" y="49" class="pkg-title">ENVOYER DEVIS</text>
+  </g>
+
+  <!-- DROITE-BAS : EXECUTER MISSION -->
+  <g transform="translate(1815, 335)">
+    <path d="M 0,0 L 40,0 L 45,14 L 0,14 Z" class="pkg-tab"/>
+    <rect y="14" width="150" height="60" class="pkg-body"/>
+    <text x="75" y="49" class="pkg-title">EXECUTER MISSION</text>
+  </g>
+
+</svg>

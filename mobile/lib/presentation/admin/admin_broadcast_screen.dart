@@ -1,27 +1,48 @@
+// =============================================================================
+// FICHIER : admin_broadcast_screen.dart
+// RÔLE : Gestion et émission de diffusions / notifications push globales (Broadcasts)
+// MODULE : Presentation / Admin
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, app_colors.dart
+// SÉCURITÉ / RLS : Rôle administrateur requis. Insertion et mise à jour dans la table `broadcasts`.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DES NOTIFICATIONS GLOBALES (ADMIN)
-// =========================================================================
-// Permet à l'administrateur d'envoyer des notifications (broadcasts)
-// à tous les utilisateurs, aux clients ou aux techniciens.
-
+/// Écran administrateur dédié à la création et à la diffusion de messages globaux.
+///
+/// Permet de cibler l'ensemble de la base d'utilisateurs ou de restreindre l'envoi
+/// aux seuls clients ou techniciens, et de basculer la visibilité active des annonces.
 class AdminBroadcastScreen extends StatefulWidget {
+  /// Constructeur constant du widget [AdminBroadcastScreen].
   const AdminBroadcastScreen({super.key});
 
   @override
   State<AdminBroadcastScreen> createState() => _AdminBroadcastScreenState();
 }
 
+/// État associé à l'écran de diffusion d'annonces administratives.
+///
+/// Gère le formulaire de saisie, l'envoi en base, l'activation/désactivation
+/// des annonces existantes et le rechargement réactif de la liste.
 class _AdminBroadcastScreenState extends State<AdminBroadcastScreen> {
+  /// Contrôleur du champ de texte du titre de la notification.
   final _titleController = TextEditingController();
+
+  /// Contrôleur du champ de texte du corps du message.
   final _messageController = TextEditingController();
+
+  /// Cible d'audience sélectionnée ('all', 'clients', 'technicians').
   String _targetAudience = 'all';
+
+  /// Indicateur d'enregistrement asynchrone en cours.
   bool _isSending = false;
 
+  /// Liste des annonces globales récupérées depuis Supabase.
   List<Map<String, dynamic>> _broadcasts = [];
+
+  /// Indicateur de chargement initial de l'historique des diffusions.
   bool _isLoading = true;
 
   @override
@@ -30,6 +51,7 @@ class _AdminBroadcastScreenState extends State<AdminBroadcastScreen> {
     _loadBroadcasts();
   }
 
+  /// Charge toutes les annonces depuis la table `broadcasts` par ordre antichronologique.
   Future<void> _loadBroadcasts() async {
     setState(() => _isLoading = true);
     try {
@@ -49,6 +71,7 @@ class _AdminBroadcastScreenState extends State<AdminBroadcastScreen> {
     }
   }
 
+  /// Valide et publie une nouvelle notification globale dans la base de données.
   Future<void> _sendBroadcast() async {
     if (_titleController.text.trim().isEmpty || _messageController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Veuillez remplir tous les champs')));
@@ -81,6 +104,7 @@ class _AdminBroadcastScreenState extends State<AdminBroadcastScreen> {
     }
   }
 
+  /// Active ou désactive la diffusion d'une annonce identifiée par [id].
   Future<void> _toggleActive(String id, bool currentStatus) async {
     try {
       await Supabase.instance.client.from('broadcasts').update({'is_active': !currentStatus}).eq('id', id);
@@ -90,6 +114,7 @@ class _AdminBroadcastScreenState extends State<AdminBroadcastScreen> {
     }
   }
 
+  /// Construit la vue combinant le formulaire d'envoi et la liste des annonces existantes.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;

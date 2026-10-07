@@ -17,10 +17,34 @@ import 'admin_disputes_screen.dart';
 import 'admin_broadcast_screen.dart';
 import 'admin_support_list_screen.dart';
 
-// =========================================================================
-// ÉCRAN PRINCIPAL D'ADMINISTRATION (5 ONGLETS + NAV BAR MODERNE)
-// =========================================================================
+// =============================================================================
+// FICHIER : admin_home_screen.dart
+// RÔLE : Tableau de bord principal administrateur (navigation multi-onglets, KPIs, missions, support)
+// MODULE : Presentation / Admin
+// DÉPENDANCES : flutter/material.dart, flutter_riverpod, go_router, supabase_flutter, cached_network_image, fl_chart, admin tabs & screens
+// SÉCURITÉ / RLS : Rôle administrateur requis. Vue globale avec droits d'accès étendus sur toutes les ressources système.
+// =============================================================================
 
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_provider.dart';
+import 'technician_validation_screen.dart';
+import 'admin_missions_screen.dart';
+import 'admin_users_tab.dart';
+import 'admin_settings_screen.dart';
+import 'admin_categories_screen.dart';
+import 'admin_payouts_screen.dart';
+import 'admin_disputes_screen.dart';
+import 'admin_broadcast_screen.dart';
+import 'admin_support_list_screen.dart';
+
+/// Fournisseur d'état Riverpod récupérant le profil complet de l'administrateur connecté.
 final adminUserProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
   final userId = Supabase.instance.client.auth.currentUser!.id;
   final res = await Supabase.instance.client
@@ -31,13 +55,22 @@ final adminUserProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref)
   return res;
 });
 
+/// Modèle interne représentant un item de navigation pour la barre latérale ou la barre inférieure.
 class _AdminNavItem {
+  /// Icône par défaut inactive.
   final IconData icon;
+
+  /// Icône active mise en surbrillance.
   final IconData activeIcon;
+
+  /// Libellé textuel de l'onglet.
   final String label;
+
+  /// Constructeur constant du descripteur [_AdminNavItem].
   const _AdminNavItem(this.icon, this.activeIcon, this.label);
 }
 
+/// Liste ordonnée des destinations principales du portail administrateur.
 const List<_AdminNavItem> _adminNavItems = [
   _AdminNavItem(Icons.space_dashboard_outlined, Icons.space_dashboard_rounded, 'Accueil'),
   _AdminNavItem(Icons.assignment_outlined, Icons.assignment_rounded, 'Missions'),
@@ -46,15 +79,26 @@ const List<_AdminNavItem> _adminNavItems = [
   _AdminNavItem(Icons.person_outline_rounded, Icons.person_rounded, 'Profil'),
 ];
 
+/// Écran conteneur principal du portail administrateur.
+///
+/// Adapte dynamiquement l'interface selon la largeur d'écran (Sidebar bureau, NavigationRail tablette,
+/// ou barre flottante moderne sur mobile) et héberge les 5 onglets majeurs du système.
 class AdminHomeScreen extends StatefulWidget {
+  /// Constructeur constant du widget [AdminHomeScreen].
   const AdminHomeScreen({super.key});
 
   @override
   State<AdminHomeScreen> createState() => _AdminHomeScreenState();
 }
 
+/// État associé au conteneur principal de navigation administrateur.
+///
+/// Supervise l'index d'onglet actif et le décompte des dossiers techniciens en attente de validation KYC.
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
+  /// Index de l'onglet couramment sélectionné (0 à 4).
   int _currentIndex = 0;
+
+  /// Nombre d'artisans en attente de vérification administrative.
   int _pendingTechs = 0;
 
   @override
@@ -63,6 +107,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     _loadPendingCount();
   }
 
+  /// Interroge Supabase pour compter les prestataires ayant le statut `'pending'`.
   Future<void> _loadPendingCount() async {
     try {
       final res = await Supabase.instance.client
@@ -73,12 +118,14 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     } catch (_) {}
   }
 
+  /// Change l'onglet actif et rafraîchit le badge de validation si nécessaire.
   void _onTabSelected(int index) {
     if (index == _currentIndex) return;
     setState(() => _currentIndex = index);
     if (index == 2) _loadPendingCount();
   }
 
+  /// Construit la vue adaptative selon la résolution écran (bureau, tablette, mobile).
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -135,14 +182,13 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         return Scaffold(
           backgroundColor: tc.background,
           body: bodyContent,
+          bottomNavigationBar: _buildModernBottomBar(tc, isDark),
         );
       },
     );
   }
 
-  // -----------------------------------------------------------------------
-  // MODERN FLOATING BOTTOM NAV BAR (Ultra design, animations, zero overflow)
-  // -----------------------------------------------------------------------
+  /// Construit la barre de navigation mobile flottante moderne avec animations et badges d'alerte.
   Widget _buildModernBottomBar(TechLinkColors tc, bool isDark) {
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
@@ -280,9 +326,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     );
   }
 
-  // -----------------------------------------------------------------------
-  // MODERN DESKTOP SIDEBAR (Dark Slate, Glass accents, Profile snippet)
-  // -----------------------------------------------------------------------
+  /// Construit la barre latérale pour environnement desktop/web avec logo, menu de navigation et raccourci de déconnexion.
   Widget _buildModernDesktopSidebar(TechLinkColors tc, bool isDark) {
     return Container(
       width: 260,
@@ -459,6 +503,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     );
   }
 
+  /// Construit le rail de navigation vertical compact adapté aux tablettes et écrans intermédiaires.
   Widget _buildNavigationRail(TechLinkColors tc, bool isDark) {
     return NavigationRail(
       extended: MediaQuery.of(context).size.width >= 1000,
@@ -483,27 +528,47 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   }
 }
 
-// =========================================================================
-// ONGLET ACCUEIL (DASHBOARD ADMIN MODERNE)
-// =========================================================================
-
+/// Onglet principal de pilotage et tableau de bord analytique pour l'administrateur.
+///
+/// Affiche les indicateurs clés de performance (KPIs), les graphiques d'évolution hebdomadaire
+/// des revenus et des missions, ainsi que les raccourcis d'administration rapide.
 class AdminDashboardTab extends ConsumerStatefulWidget {
+  /// Callback permettant de basculer vers un autre onglet parent via son index ordinal.
   final ValueChanged<int>? onNavigateTab;
+
+  /// Constructeur constant du widget [AdminDashboardTab].
   const AdminDashboardTab({super.key, this.onNavigateTab});
 
   @override
   ConsumerState<AdminDashboardTab> createState() => _AdminDashboardTabState();
 }
 
+/// État associé au tableau de bord administrateur.
+///
+/// Agrège les métriques des missions, paiements, abonnements et utilisateurs depuis Supabase.
 class _AdminDashboardTabState extends ConsumerState<AdminDashboardTab> {
+  /// Compteurs quantitatifs par entité ('pending', 'approved', 'clients', 'missions').
   Map<String, int> _stats = {};
+
+  /// Volume d'affaires brut total généré par les paiements.
   double _totalRevenue = 0;
+
+  /// Revenus générés par les abonnements techniciens perçus par la plateforme.
   double _totalCommissions = 0;
+
+  /// Montant total reversé aux techniciens sur les interventions.
   double _totalPaidToTechs = 0;
+
+  /// Indicateur de chargement asynchrone des indicateurs statistiques.
   bool _isLoading = true;
 
+  /// Répartition du chiffre d'affaires sur les 7 derniers jours glissants.
   List<double> _weeklyRevenue = List.filled(7, 0.0);
+
+  /// Volume de missions créées sur les 7 derniers jours glissants.
   List<double> _weeklyMissions = List.filled(7, 0.0);
+
+  /// Libellés des jours de la semaine courante pour les axes des graphiques.
   List<String> _weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
   @override
@@ -512,6 +577,7 @@ class _AdminDashboardTabState extends ConsumerState<AdminDashboardTab> {
     _loadStats();
   }
 
+  /// Calcule et synchronise l'ensemble des métriques d'activité et des séries chronologiques.
   Future<void> _loadStats() async {
     try {
       final pending = await Supabase.instance.client
@@ -612,6 +678,7 @@ class _AdminDashboardTabState extends ConsumerState<AdminDashboardTab> {
     }
   }
 
+  /// Ouvre l'écran de validation KYC [TechnicianValidationScreen] filtré sur les dossiers en attente.
   void _navigateToPending(BuildContext context) {
     Navigator.push(
       context,
@@ -621,6 +688,7 @@ class _AdminDashboardTabState extends ConsumerState<AdminDashboardTab> {
     ).then((_) => _loadStats());
   }
 
+  /// Construit la vue complète du tableau de bord avec indicateurs financiers et graphiques d'activité.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -1115,6 +1183,7 @@ class _AdminDashboardTabState extends ConsumerState<AdminDashboardTab> {
     );
   }
 
+  /// Construit une carte KPI compacte et interactive avec valeur mise en exergue et couleur thématique.
   Widget _buildModernKpiCard({
     required String title,
     required String value,
@@ -1200,6 +1269,7 @@ class _AdminDashboardTabState extends ConsumerState<AdminDashboardTab> {
     );
   }
 
+  /// Construit une tuile d'action rapide vers une section d'administration (missions, utilisateurs, broadcasts).
   Widget _buildModernActionTile({
     required String title,
     required String subtitle,
@@ -1270,19 +1340,26 @@ class _AdminDashboardTabState extends ConsumerState<AdminDashboardTab> {
   }
 }
 
-// =========================================================================
-// ONGLET PROFIL (ADMIN MODERNE)
-// =========================================================================
-
+/// Onglet de profil et réglages du compte super-administrateur.
+///
+/// Permet l'actualisation de la photo de profil, le basculement instantané clair/sombre,
+/// l'accès aux paramètres système globaux, et la déconnexion de la console.
 class AdminProfileTab extends ConsumerStatefulWidget {
+  /// Constructeur constant du widget [AdminProfileTab].
   const AdminProfileTab({super.key});
 
   @override
   ConsumerState<AdminProfileTab> createState() => _AdminProfileTabState();
 }
 
+/// État associé à l'onglet de profil administrateur.
+///
+/// Gère la récupération des informations du compte et le téléversement d'un nouvel avatar.
 class _AdminProfileTabState extends ConsumerState<AdminProfileTab> {
+  /// Données de l'administrateur issues de la table `users`.
   Map<String, dynamic>? _adminData;
+
+  /// Indicateur de chargement asynchrone des informations du profil.
   bool _isLoading = true;
 
   @override
@@ -1291,6 +1368,7 @@ class _AdminProfileTabState extends ConsumerState<AdminProfileTab> {
     _loadAdminData();
   }
 
+  /// Charge les données du profil de l'administrateur connecté.
   Future<void> _loadAdminData() async {
     try {
       final userId = Supabase.instance.client.auth.currentUser!.id;
@@ -1311,6 +1389,7 @@ class _AdminProfileTabState extends ConsumerState<AdminProfileTab> {
     }
   }
 
+  /// Ouvre la galerie, redimensionne l'image et l'envoie dans le bucket 'avatars' de Supabase Storage.
   Future<void> _pickAndUploadImage() async {
     try {
       final ImagePicker picker = ImagePicker();
@@ -1364,6 +1443,7 @@ class _AdminProfileTabState extends ConsumerState<AdminProfileTab> {
     }
   }
 
+  /// Construit la vue de profil administrateur avec carte d'identité, commutateur de thème et déconnexion.
   @override
   Widget build(BuildContext context) {
     final themeMode = ref.watch(themeModeProvider);
@@ -1678,6 +1758,7 @@ class _AdminProfileTabState extends ConsumerState<AdminProfileTab> {
     );
   }
 
+  /// Construit une tuile d'option de menu de profil avec icône, libellé et chevron indicateur.
   Widget _buildProfileTile({
     required IconData icon,
     required Color color,

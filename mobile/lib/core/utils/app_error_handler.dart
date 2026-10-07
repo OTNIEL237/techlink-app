@@ -1,7 +1,22 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : app_error_handler.dart
+// Rôle          : Intercepteur et traducteur universel d'erreurs en français.
+//                 Convertit les exceptions réseau (DioException), base de
+//                 données (PostgrestException), authentification (AuthException)
+//                 et socket en messages clairs et bienveillants pour l'utilisateur.
+// Module        : Core / Utilitaires & Gestion d'erreurs
+// Dépendances   : Dio, Supabase Flutter
+// Sécurité/RLS  : Public / Utilitaire
+// =============================================================================
+
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// [AppErrorHandler]
+///
 /// Gestionnaire centralisé des erreurs pour l'application TechLink.
 /// Transforme toute exception technique en message français, précis, concis et compréhensible.
 class AppErrorHandler {

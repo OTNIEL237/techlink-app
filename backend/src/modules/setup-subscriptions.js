@@ -1,5 +1,14 @@
+// =============================================================================
+// FICHIER : backend/src/modules/setup-subscriptions.js
+// RÔLE : Script d'initialisation et de provisionnement des fichiers du module abonnements
+// MODULE : Backend / Scripts de configuration
+// DÉPENDANCES : fs, path
+// SÉCURITÉ / RLS : Script utilitaire exécuté lors de la mise en place du projet
+// =============================================================================
+
 const fs = require('fs');
 const path = require('path');
+
 
 const targetDir = 'c:\\Users\\Lenovo\\techlink-app\\backend\\src\\modules\\subscriptions';
 const controllerPath = path.join(targetDir, 'subscription.controller.js');

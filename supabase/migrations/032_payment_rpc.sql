@@ -1,3 +1,14 @@
+-- =============================================================================
+-- FICHIER : 032_payment_rpc.sql
+-- RÔLE : Procédure stockée PostgreSQL (RPC) 'confirm_mission_payment' :
+--         - Exécution transactionnelle atomique pour la confirmation de paiement de mission
+--         - Validation de la référence CamerPay, mise à jour du statut du paiement vers 'success'
+--         - Transition d'état de la mission vers 'paid' (fonds sous séquestre).
+-- MODULE : Schéma de base de données / Fonctions RPC & Paiements
+-- DÉPENDANCES : public.payments, public.missions
+-- SÉCURITÉ / RLS : Fonction déclarée en SECURITY DEFINER pour être invoquée par le webhook backend.
+-- =============================================================================
+
 -- Migration 032 : Procédure stockée (RPC) pour les webhooks de paiement
 -- Regroupe la mise à jour du paiement et de la mission en une seule transaction
 

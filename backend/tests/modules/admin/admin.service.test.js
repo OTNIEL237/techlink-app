@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : admin.service.test.js
+// RÔLE : Tests unitaires Jest pour le service administrateur
+//         (résolution des litiges : remboursement client, paiement forcé via CamerPay, annulation neutre).
+// MODULE : Tests / Administration (Backend)
+// DÉPENDANCES : ../../../src/modules/admin/admin.service, ../../../src/config/supabase, ../../../src/utils/camerpay.service, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec mocks de base de données et passerelle)
+// =============================================================================
+
 const adminService = require('../../../src/modules/admin/admin.service');
 const supabase = require('../../../src/config/supabase');
 const camerpayService = require('../../../src/utils/camerpay.service');

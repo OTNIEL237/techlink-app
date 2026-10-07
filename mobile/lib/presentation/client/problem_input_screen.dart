@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : problem_input_screen.dart
+// Rôle          : Formulaire de saisie et description de panne (voix, texte, photos)
+// Module        : Présentation / Client / Diagnostic & Déclaration
+// Dépendances   : speech_to_text, image_picker, permission_handler, TechLinkAiService
+// Sécurité/RLS  : Accessible aux utilisateurs authentifiés souhaitant créer une mission
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -12,10 +22,20 @@ import '../shared/widgets/techlink_input.dart';
 import '../../../data/services/techlink_ai_service.dart';
 import '../shared/responsive_web_wrapper.dart';
 
+/// [ProblemInputScreen] permet au client de consigner sa panne ou son besoin technique :
+/// saisie textuelle guidée, dictée vocale temps réel (Speech-to-Text),
+/// ajout de photos (caméra/galerie) et soumission au moteur IA TechLink.
 class ProblemInputScreen extends StatefulWidget {
+  /// Catégorie pré-sélectionnée issue de l'écran d'accueil (ex: 'plomberie').
   final String? preselectedCategory;
+
+  /// Texte initial éventuel pré-rempli.
   final String? initialProblem;
+
+  /// Donne immédiatement le focus au champ de saisie si vrai.
   final bool autofocus;
+
+  /// Lance automatiquement la dictée vocale à l'ouverture de l'écran si vrai.
   final bool startVoice;
 
   const ProblemInputScreen({
@@ -30,6 +50,8 @@ class ProblemInputScreen extends StatefulWidget {
   State<ProblemInputScreen> createState() => _ProblemInputScreenState();
 }
 
+/// État interne gérant la reconnaissance vocale, l'animation du micro pulsé
+/// et la sélection de fichiers images.
 class _ProblemInputScreenState extends State<ProblemInputScreen>
     with SingleTickerProviderStateMixin {
   late final TextEditingController _problemController;
@@ -94,6 +116,7 @@ class _ProblemInputScreenState extends State<ProblemInputScreen>
     _pulseController.stop();
   }
 
+  /// Bascule l'état d'écoute du microphone pour transcrire la voix du client en texte.
   Future<void> _toggleListening() async {
     if (!_speechAvailable) {
       final status = await Permission.microphone.request();
@@ -148,6 +171,7 @@ class _ProblemInputScreenState extends State<ProblemInputScreen>
     }
   }
 
+  /// Déclenche la prise ou la sélection d'une photo d'illustration (limite à 3 photos).
   Future<void> _pickPhoto() async {
     if (_selectedPhotos.length >= 3) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -170,6 +194,7 @@ class _ProblemInputScreenState extends State<ProblemInputScreen>
     }
   }
 
+  /// Ouvre la feuille modale de sélection de la source de l'image (Appareil photo ou Galerie).
   Future<ImageSource?> _showPhotoSourceDialog() {
     return showModalBottomSheet<ImageSource>(
       context: context,
@@ -224,6 +249,7 @@ class _ProblemInputScreenState extends State<ProblemInputScreen>
     );
   }
 
+  /// Soumet le texte et le nombre de photos au service IA pour classification et diagnostic.
   Future<void> _analyzeWithAI() async {
     if (_isListening) {
       await _speechToText.stop();

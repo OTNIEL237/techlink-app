@@ -1,8 +1,21 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : help_center_screen.dart
+// Rôle          : Écran du centre d'aide et support pour le client. Propose un
+//                 onglet FAQ avec filtrage par catégorie et un onglet Contact.
+// Module        : Présentation Client (Profil / Centre d'aide)
+// Dépendances   : flutter/material.dart, go_router, app_colors.dart
+// Sécurité/RLS  : Accès public / client sans restriction sensible.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 
+/// Écran du centre d'aide et de foire aux questions (FAQ) avec canaux de contact.
 class HelpCenterScreen extends StatefulWidget {
+  /// Constructeur constant de l'écran du centre d'aide
   const HelpCenterScreen({super.key});
 
   @override
@@ -10,8 +23,13 @@ class HelpCenterScreen extends StatefulWidget {
 }
 
 class _HelpCenterScreenState extends State<HelpCenterScreen> with SingleTickerProviderStateMixin {
+  /// Contrôleur des onglets de navigation (FAQ et Contact)
   late TabController _tabController;
+
+  /// Index de la catégorie sélectionnée dans l'onglet FAQ
   int _selectedCategoryIndex = 0;
+
+  /// Liste des thématiques disponibles pour filtrer les questions
   final List<String> _categories = ['General', 'Account', 'Service', 'Payment'];
 
   @override
@@ -57,6 +75,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> with SingleTickerPr
     );
   }
 
+  /// Construit la vue de l'onglet FAQ avec catégories et accordéons de réponses
   Widget _buildFaqTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -126,6 +145,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> with SingleTickerPr
     );
   }
 
+  /// Construit un élément déroulant accordéon pour une question fréquente
   Widget _buildFaqItem(String title, String content, {bool isExpanded = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -155,6 +175,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> with SingleTickerPr
     );
   }
 
+  /// Construit l'onglet répertoriant les options de contact du support
   Widget _buildContactUsTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -173,6 +194,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> with SingleTickerPr
     );
   }
 
+  /// Construit une tuile d'option de contact direct (réseau social, chat ou web)
   Widget _buildContactOption(IconData icon, String title, {VoidCallback? onTap}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),

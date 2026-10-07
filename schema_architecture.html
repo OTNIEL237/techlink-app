@@ -3,71 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schéma Architecture TechLink</title>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <title>Schéma Architecture Physique 4-Tiers - TechLink</title>
+    <!-- Mermaid pour le rendu du diagramme -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <!-- html2canvas pour une capture PNG 100% fiable sans blocage de sécurité -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #eef2f7;
             margin: 0;
-            background-color: #f8f9fa;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .mermaid-container {
-            background: white;
-            padding: 40px;
+        .header-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header-title h2 {
+            color: #2c3e50;
+            margin: 0 0 8px 0;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+        .header-title p {
+            color: #7f8c8d;
+            margin: 0;
+            font-size: 14px;
+        }
+        /* Conteneur blanc qui sera capturé en image */
+        #capture-zone {
+            background: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 1px solid #dce4ec;
+            display: inline-block;
+        }
+        .diagram-title-box {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+        }
+        .diagram-title-box h3 {
+            margin: 0;
+            color: #1b4f72;
+            font-size: 19px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .footer-caption {
+            margin-top: 25px;
+            text-align: center;
+            font-style: italic;
+            color: #2c3e50;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .btn-png {
+            background: #27ae60;
+        }
+        .btn-png:hover {
+            background: #219653;
+            transform: translateY(-2px);
+        }
+        .btn-svg {
+            background: #2980b9;
+        }
+        .btn-svg:hover {
+            background: #1f618d;
+            transform: translateY(-2px);
+        }
+        #status-msg {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #27ae60;
+            font-weight: bold;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="mermaid-container">
-        <div class="mermaid">
-            graph LR
-                classDef niveau fill:#e8f4f8,stroke:#3498db,stroke-width:3px,stroke-dasharray: 5 5,color:#2c3e50,font-weight:bold
-                classDef box fill:#ffffff,stroke:#2c3e50,stroke-width:2px,color:#000000,font-weight:bold,rx:5,ry:5
-                classDef db fill:#ffffff,stroke:#2c3e50,stroke-width:2px,shape:cylinder,color:#000000,font-weight:bold
 
-                subgraph TIER1 [NIVEAU 1 : CLIENT]
-                    direction TB
-                    APP[📱 App Mobile Flutter<br/>Client, Technicien & Admin]:::box
-                end
+    <div class="header-title">
+        <h2>GÉNÉRATEUR DU SCHÉMA D'ARCHITECTURE PHYSIQUE</h2>
+        <p>TechLink - IAI-Cameroun / SANGOTECH SARL</p>
+    </div>
 
-                subgraph TIER2 [NIVEAU 2 : SERVEUR D'APPLICATION]
-                    direction TB
-                    NODE[Environnement<br/>Node.js]:::box
-                    EXP[Framework<br/>Express.js]:::box
-                    NODE --- EXP
-                end
+    <!-- Zone exacte qui sera exportée en image PNG -->
+    <div id="capture-zone">
+        <div class="diagram-title-box">
+            <h3>ARCHITECTURE PHYSIQUE À 4-TIERS DU SYSTÈME TECHLINK</h3>
+        </div>
 
-                subgraph TIER3 [NIVEAU 3 : SGBD]
-                    direction TB
-                    SUPA[(Base de données<br/>Supabase / PostgreSQL)]:::db
-                end
+        <pre class="mermaid">
+graph LR
+    %% Styles graphiques
+    classDef niveau fill:#f4f9fd,stroke:#2980b9,stroke-width:2px,stroke-dasharray: 5 5,color:#1b4f72,font-weight:bold,rx:8,ry:8
+    classDef box fill:#ffffff,stroke:#2c3e50,stroke-width:2px,color:#000000,font-weight:bold,rx:6,ry:6
+    classDef db fill:#ffffff,stroke:#27ae60,stroke-width:2px,shape:cylinder,color:#000000,font-weight:bold
+    classDef service fill:#ffffff,stroke:#8e44ad,stroke-width:2px,color:#000000,font-weight:bold,rx:6,ry:6
 
-                subgraph TIER4 [NIVEAU 4 : API]
-                    direction TB
-                    PAY[API de Paiement<br/>CamerPay]:::box
-                    IA[Modèle NLP<br/>Groq / Gemini API]:::box
-                end
+    subgraph TIER1 [TIER 1 : PRÉSENTATION]
+        direction TB
+        APP["📱 Application Mobile Flutter<br/>(Clients, Techniciens, Admins)<br/>• Capteur GPS natif<br/>• Chiffrement SSL/TLS"]:::box
+    end
 
-                TIER1 -- "REQUÊTES HTTPS" --> TIER2
-                TIER2 -- "RÉPONSES HTTPS" --> TIER1
+    subgraph TIER2 [TIER 2 : LOGIQUE MÉTIER]
+        direction TB
+        NODE["Serveur Applicatif Node.js<br/>• Framework Express.js<br/>• Hébergement Vercel Serverless"]:::box
+        AUTH["Orchestrateur & Sécurité<br/>• Contrôle d'accès & Webhooks<br/>• Zéro commission (100% gain)"]:::box
+        NODE --- AUTH
+    end
 
-                TIER2 -- "REQUÊTES SQL" --> TIER3
-                TIER3 -- "RÉPONSES BD" --> TIER2
+    subgraph TIER3 [TIER 3 : DONNÉES / SGBD]
+        direction TB
+        SUPA[("Base de Données PostgreSQL<br/>(Supabase Cloud Managed)")]:::db
+        RLS["Sécurité RLS (Row Level)<br/>• Authentification JWT<br/>• Stockage Photos / Documents"]:::db
+        SUPA --- RLS
+    end
 
-                TIER2 -- "REQUÊTES" --> TIER4
-                TIER4 -- "RÉPONSES" --> TIER2
+    subgraph TIER4 [TIER 4 : SERVICES CLOUD TIERS]
+        direction TB
+        PAY["💳 CamerPay API<br/>Paiements MTN / Orange MoMo"]:::service
+        IA["🤖 Groq Cloud NLP<br/>Pré-diagnostic IA instantané"]:::service
+        VIDEO["📹 ZegoCloud WebRTC<br/>Assistance Visio / Audio live"]:::service
+        MAPS["🗺️ OpenStreetMap / Leaflet<br/>Cartographie & Guidage GPS"]:::service
+    end
 
-                class TIER1,TIER2,TIER3,TIER4 niveau
+    %% Connexions réseaux
+    TIER1 <== "Requêtes HTTPS (REST / JSON)" ==> TIER2
+    TIER2 <== "Requêtes SQL (Pool pg)" ==> TIER3
+    TIER2 <== "Webhooks & Appels APIs" ==> TIER4
+    TIER1 -. "Flux WebRTC & Tuiles Carto" .- TIER4
+
+    class TIER1,TIER2,TIER3,TIER4 niveau
+        </pre>
+
+        <div class="footer-caption">
+            <strong>Figure 18 :</strong> Schéma de l'architecture physique distribuée à 4-tiers de la solution TechLink.
         </div>
     </div>
+
+    <div class="btn-container">
+        <button class="btn btn-png" id="btn-download-png" onclick="telechargerPNG()">
+            📥 Télécharger l'Image PNG (Prête pour Word)
+        </button>
+        <button class="btn btn-svg" onclick="telechargerSVG()">
+            📥 Télécharger en Vectoriel (SVG)
+        </button>
+    </div>
+
+    <div id="status-msg">✅ Téléchargement réussi ! Vérifiez votre dossier Téléchargements.</div>
+
     <script>
-        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'default',
+            flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+        });
+
+        // Téléchargement PNG direct et infaillible avec html2canvas
+        function telechargerPNG() {
+            const btn = document.getElementById('btn-download-png');
+            const statusMsg = document.getElementById('status-msg');
+            btn.innerText = "⏳ Génération de l'image...";
+            btn.style.opacity = "0.7";
+
+            const element = document.getElementById('capture-zone');
+
+            html2canvas(element, {
+                scale: 2.5, // Ultra Haute Définition
+                backgroundColor: "#ffffff",
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'architecture_physique_techlink.png';
+                link.href = canvas.toDataURL('image/png', 1.0);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                btn.innerText = "📥 Télécharger l'Image PNG (Prête pour Word)";
+                btn.style.opacity = "1";
+                statusMsg.style.display = "block";
+                setTimeout(() => { statusMsg.style.display = "none"; }, 4000);
+            }).catch(err => {
+                console.error(err);
+                btn.innerText = "📥 Télécharger l'Image PNG (Prête pour Word)";
+                btn.style.opacity = "1";
+                alert("Erreur lors de la capture. Veuillez faire une capture d'écran directe (Windows + Maj + S).");
+            });
+        }
+
+        // Téléchargement SVG direct
+        function telechargerSVG() {
+            const svgElement = document.querySelector('.mermaid svg');
+            if (!svgElement) {
+                alert("Le schéma est en cours de chargement...");
+                return;
+            }
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'architecture_physique_techlink.svg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     </script>
 </body>
 </html>

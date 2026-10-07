@@ -1,6 +1,19 @@
+// =============================================================================
+// FICHIER : backend/src/middlewares/errorHandler.middleware.js
+// RÔLE : Gestionnaire d'erreurs global Express (formatage JSON, masquage en production)
+// MODULE : Backend / Middlewares d'erreurs
+// DÉPENDANCES : process.env.NODE_ENV
+// SÉCURITÉ / RLS : Masque les détails techniques sensibles (stack trace) en environnement de production
+// =============================================================================
+
 /**
- * Middleware global de gestion d'erreurs
- * À placer en TOUT DERNIER dans app.js
+ * Middleware global de capture et formatage des erreurs Express.
+ * Doit impérativement être déclaré après l'ensemble des routes dans app.js.
+ *
+ * @param {Error & {statusCode?: number}} err - Objet d'erreur capturé
+ * @param {import('express').Request} req - Requête HTTP Express
+ * @param {import('express').Response} res - Réponse HTTP Express
+ * @param {import('express').NextFunction} next - Fonction next (requise par la signature à 4 arguments)
  */
 const errorHandler = (err, req, res, next) => {
   console.error(`[Error] ${err.message}`);
@@ -25,3 +38,4 @@ const errorHandler = (err, req, res, next) => {
 };
 
 module.exports = errorHandler;
+

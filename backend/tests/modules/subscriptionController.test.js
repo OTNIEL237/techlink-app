@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : subscriptionController.test.js
+// RÔLE : Tests unitaires Jest pour le contrôleur d'abonnements techniciens
+//         (période d'essai gratuite, initialisation via CamerPay, résiliation).
+// MODULE : Tests / Abonnements (Backend)
+// DÉPENDANCES : ../../src/modules/subscriptionController, ../../src/config/supabase, ../../src/utils/camerpay.service, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec mocks de persistance)
+// =============================================================================
+
 const SubscriptionController = require('../../src/modules/subscriptionController');
 const supabase = require('../../src/config/supabase');
 const camerpayService = require('../../src/utils/camerpay.service');

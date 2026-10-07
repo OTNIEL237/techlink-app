@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : technician_validation_screen.dart
+// RÔLE : Modération et validation des dossiers techniciens (en attente, approuvés, rejetés)
+// MODULE : Présentation Administrateur (Admin Technician Validation)
+// DÉPENDANCES : flutter/material.dart, go_router, supabase_flutter, app_colors.dart, technician_detail_screen.dart
+// SÉCURITÉ / RLS : Réservé aux administrateurs (rôle admin requis)
+// =============================================================================
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -5,15 +13,18 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import 'technician_detail_screen.dart';
 
-// =========================================================================
-// ÉCRAN DE VALIDATION DES TECHNICIENS (ADMIN)
-// =========================================================================
-// Affiche la liste des techniciens selon leur statut de validation (en attente,
-// approuvés, rejetés) et permet de les valider ou de les rejeter.
-
+/// Écran administrateur dédié à la liste et à la modération rapide des techniciens.
+///
+/// Permet de filtrer par statut de vérification (`pending`, `approved`, `rejected`, `all`),
+/// de rechercher un technicien par son nom, et d'approuver ou rejeter rapidement son inscription.
 class TechnicianValidationScreen extends StatefulWidget {
+  /// Filtre initial appliqué aux techniciens ('all', 'pending', 'approved', 'rejected').
   final String filter;
+
+  /// Indique si l'AppBar standard doit être affichée (désactivée en mode onglet intégré).
   final bool showAppBar;
+
+  /// Constructeur de [TechnicianValidationScreen].
   const TechnicianValidationScreen({super.key, required this.filter, this.showAppBar = true});
 
   @override
@@ -21,19 +32,37 @@ class TechnicianValidationScreen extends StatefulWidget {
       _TechnicianValidationScreenState();
 }
 
+/// État associé à l'écran de modération des techniciens.
 class _TechnicianValidationScreenState
     extends State<TechnicianValidationScreen> {
+  /// Liste paginée des techniciens chargés depuis Supabase.
   List<Map<String, dynamic>> _technicians = [];
+
+  /// Indicateur d'état de chargement asynchrone des données.
   bool _isLoading = true;
+
+  /// Filtre actif sélectionné par l'administrateur.
   late String _currentFilter;
 
-  // Pagination et recherche
+  /// Terme de recherche textuelle saisi dans la barre de recherche.
   String _searchQuery = '';
+
+  /// Colonne utilisée pour trier les résultats ('created_at' ou 'experience_years').
   String _sortBy = 'created_at';
+
+  /// Ordre de tri (croissant ou décroissant).
   bool _isAscending = false;
+
+  /// Index de page courant pour la pagination par curseur/offset.
   int _currentPage = 0;
+
+  /// Nombre d'éléments retournés par page.
   final int _itemsPerPage = 10;
+
+  /// Indique si d'autres enregistrements peuvent être chargés.
   bool _hasMore = true;
+
+  /// Minuteur anti-rebond (debounce) pour la recherche instantanée.
   Timer? _debounce;
 
   @override
@@ -49,6 +78,9 @@ class _TechnicianValidationScreenState
     super.dispose();
   }
 
+  /// Charge ou recharge les techniciens depuis Supabase selon les filtres, le tri et la pagination.
+  ///
+  /// [resetPage] : Si vrai, réinitialise le curseur de page à 0 et vide la liste existante.
   Future<void> _loadTechnicians({bool resetPage = false}) async {
     if (resetPage) {
       _currentPage = 0;
@@ -149,6 +181,9 @@ class _TechnicianValidationScreenState
     }
   }
 
+  /// Déclenche la recherche textuelle avec délai de temporisation (500ms).
+  ///
+  /// [query] : Terme de recherche saisi par l'administrateur.
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
@@ -158,6 +193,12 @@ class _TechnicianValidationScreenState
       }
     });
   }
+
+  /// Exécute une validation ou un rejet rapide d'un technicien directement depuis la liste.
+  ///
+  /// [technicianId] : Identifiant unique de l'enregistrement technicien.
+  /// [userId] : Identifiant du compte utilisateur associé.
+  /// [action] : Action d'approbation ('approve') ou de rejet ('reject').
   Future<void> _quickValidate(
     String technicianId, String userId, String action) async {
   try {
@@ -217,6 +258,7 @@ class _TechnicianValidationScreenState
     }
   }
 }
+
   
 
   @override
@@ -484,6 +526,9 @@ class _TechnicianValidationScreenState
     );
   }
 
+  /// Affiche une boîte de dialogue de confirmation avant de rejeter l'inscription d'un technicien.
+  ///
+  /// [tech] : Données du technicien concerné.
   void _showRejectDialog(Map<String, dynamic> tech) {
     showDialog(
       context: context,
@@ -516,14 +561,27 @@ class _TechnicianValidationScreenState
   }
 }
 
+/// Carte représentant un technicien individuel dans la liste de modération.
 class _TechnicianTile extends StatelessWidget {
+  /// Données brutes du technicien avec profil utilisateur joint.
   final Map<String, dynamic> technician;
+
+  /// Callback déclenché pour valider le technicien immédiatement.
   final VoidCallback? onApprove;
+
+  /// Callback déclenché pour ouvrir la modale de rejet du dossier.
   final VoidCallback? onReject;
+
+  /// Action déclenchée au clic sur la carte pour ouvrir la vue détaillée.
   final VoidCallback onTap;
+
+  /// Palette de couleurs dynamiques TechLink.
   final TechLinkColors tc;
+
+  /// Indique si l'interface est en mode sombre.
   final bool isDark;
 
+  /// Constructeur de [_TechnicianTile].
   const _TechnicianTile({
     required this.technician,
     this.onApprove,

@@ -1,3 +1,16 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : client_location_map_screen.dart
+// Rôle          : Écran cartographique interactif permettant au technicien de
+//                 localiser le client, calculer la distance et lancer l'itinéraire GPS.
+// Module        : Présentation Technicien (Navigation & Géolocalisation)
+// Dépendances   : flutter/material.dart, flutter_map, latlong2, geolocator,
+//                 url_launcher, app_colors.dart
+// Sécurité/RLS  : Coordonnées du client accessibles uniquement pour les missions
+//                 assignées ou acceptées par le technicien.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -5,18 +18,21 @@ import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DE LA CARTE DE LOCALISATION DU CLIENT
-// =========================================================================
-// Permet au technicien de visualiser la position du client sur la carte, 
-// de voir sa propre position, et de lancer la navigation GPS.
-
+/// Écran cartographique affichant l'emplacement du client et la position actuelle du technicien.
 class ClientLocationMapScreen extends StatefulWidget {
+  /// Latitude GPS du lieu d'intervention du client
   final double clientLat;
+
+  /// Longitude GPS du lieu d'intervention du client
   final double clientLng;
+
+  /// Nom complet du client demandeur
   final String clientName;
+
+  /// Catégorie ou libellé de l'intervention à réaliser
   final String missionCategory;
 
+  /// Constructeur constant de l'écran cartographique de localisation client
   const ClientLocationMapScreen({
     super.key,
     required this.clientLat,
@@ -31,9 +47,16 @@ class ClientLocationMapScreen extends StatefulWidget {
 }
 
 class _ClientLocationMapScreenState extends State<ClientLocationMapScreen> {
+  /// Contrôleur de la carte OpenStreetMap FlutterMap
   final MapController _mapController = MapController();
+
+  /// Coordonnées GPS réelles du technicien
   Position? _techPosition;
+
+  /// Indicateur de détection GPS en cours
   bool _loadingLocation = true;
+
+  /// Niveau de zoom actuel de la caméra cartographique
   double _currentZoom = 15.0;
 
   @override
@@ -48,6 +71,7 @@ class _ClientLocationMapScreenState extends State<ClientLocationMapScreen> {
     super.dispose();
   }
 
+  /// Détecte la position GPS actuelle du technicien après vérification des permissions
   Future<void> _fetchTechPosition() async {
     try {
       final permission = await Geolocator.checkPermission();
@@ -63,6 +87,7 @@ class _ClientLocationMapScreenState extends State<ClientLocationMapScreen> {
     if (mounted) setState(() => _loadingLocation = false);
   }
 
+  /// Ouvre l'application Google Maps externe avec guidage routier vers l'adresse client
   Future<void> _openGoogleMaps() async {
     final uri = Uri.parse(
       'https://www.google.com/maps/dir/?api=1'
@@ -83,6 +108,7 @@ class _ClientLocationMapScreenState extends State<ClientLocationMapScreen> {
     }
   }
 
+  /// Calcule la distance orthodromique en kilomètres entre le technicien et le client
   double _distanceKm() {
     if (_techPosition == null) return -1;
     final d = Geolocator.distanceBetween(
@@ -94,6 +120,7 @@ class _ClientLocationMapScreenState extends State<ClientLocationMapScreen> {
     return d / 1000;
   }
 
+  /// Augmente le niveau de zoom de la carte
   void _zoomIn() {
     setState(() {
       _currentZoom = (_currentZoom + 1).clamp(3.0, 19.0);
@@ -104,6 +131,7 @@ class _ClientLocationMapScreenState extends State<ClientLocationMapScreen> {
     });
   }
 
+  /// Réduit le niveau de zoom de la carte
   void _zoomOut() {
     setState(() {
       _currentZoom = (_currentZoom - 1).clamp(3.0, 19.0);
@@ -114,6 +142,7 @@ class _ClientLocationMapScreenState extends State<ClientLocationMapScreen> {
     });
   }
 
+  /// Recentres la caméra cartographique sur la position du client
   void _centerOnClient() {
     _mapController.move(
       LatLng(widget.clientLat, widget.clientLng),
@@ -427,8 +456,11 @@ class _ClientLocationMapScreenState extends State<ClientLocationMapScreen> {
 }
 
 // ── Widget : Marker client ──
+/// Marqueur cartographique rouge signalant la position exacte du client
 class _ClientMarker extends StatelessWidget {
+  /// Nom du client à afficher sur l'étiquette au-dessus du repère
   final String name;
+
   const _ClientMarker({required this.name});
 
   @override
@@ -463,6 +495,7 @@ class _ClientMarker extends StatelessWidget {
 }
 
 // ── Widget : Marker technicien ──
+/// Marqueur cartographique circulaire bleu représentant le technicien en direct
 class _TechMarker extends StatelessWidget {
   const _TechMarker();
 
@@ -488,10 +521,17 @@ class _TechMarker extends StatelessWidget {
 }
 
 // ── Widget : Bouton zoom ──
+/// Bouton circulaire flottant de commande de zoom (+ / -)
 class _ZoomButton extends StatelessWidget {
+  /// Icône d'agrandissement ou de rétrécissement
   final IconData icon;
+
+  /// Action déclenchée au clic
   final VoidCallback onTap;
+
+  /// Palette thématique de couleurs
   final TechLinkColors tc;
+
   const _ZoomButton({required this.icon, required this.onTap, required this.tc});
 
   @override
@@ -519,10 +559,17 @@ class _ZoomButton extends StatelessWidget {
 }
 
 // ── Widget : Légende ──
+/// Pastille d'indication de légende colorée (ex: Rouge Client, Bleu Technicien)
 class _LegendDot extends StatelessWidget {
+  /// Couleur de la pastille indicatrice
   final Color color;
+
+  /// Libellé descriptif
   final String label;
+
+  /// Palette thématique
   final TechLinkColors tc;
+
   const _LegendDot({required this.color, required this.label, required this.tc});
 
   @override

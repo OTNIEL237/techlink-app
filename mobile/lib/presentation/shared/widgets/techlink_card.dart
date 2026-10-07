@@ -1,11 +1,35 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : techlink_card.dart
+// Rôle          : Conteneur carte élégant et moderne avec coins arrondis et ombre douce.
+// Module        : Presentation / Shared / Widgets
+// Dépendances   : flutter
+// Sécurité/RLS  : Composant UI stateless générique.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 
+/// Carte visuelle unifiée utilisée pour regrouper les informations dans l'application.
+///
+/// Intègre :
+/// - Une bordure discrète et des ombres douces adaptées au thème clair/sombre.
+/// - Des coins arrondis prononcés (rayon de 24).
+/// - Un effet d'ondulation tactile ([InkWell]) si une action [onTap] est fournie.
 class TechLinkCard extends StatelessWidget {
+  /// Widget enfant enveloppé à l'intérieur de la carte.
   final Widget child;
+
+  /// Marges internes de la carte (20 par défaut si non spécifié).
   final EdgeInsetsGeometry? padding;
+
+  /// Fonction de rappel facultative activant l'interactivité au toucher.
   final VoidCallback? onTap;
+
+  /// Couleur de fond personnalisée (utilise la couleur du thème par défaut).
   final Color? color;
 
+  /// Constructeur de [TechLinkCard].
   const TechLinkCard({
     super.key,
     required this.child,

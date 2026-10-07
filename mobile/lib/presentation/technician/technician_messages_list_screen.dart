@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : technician_messages_list_screen.dart
+// RÔLE : Messagerie instantanée et boîte de réception des conversations du technicien
+// MODULE : Presentation / Technician
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, cached_network_image, chat_screen.dart, support_chat_screen.dart
+// SÉCURITÉ / RLS : Authentification technicien requise. Agrégation des échanges par mission (`messages`) et du fil administrateur (`admin_messages`).
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -5,27 +13,42 @@ import '../../core/constants/app_colors.dart';
 import '../shared/chat_screen.dart';
 import '../shared/support_chat_screen.dart';
 
-// =========================================================================
-// ÉCRAN DES MESSAGES DU TECHNICIEN
-// =========================================================================
-// Affiche la liste des conversations du technicien avec ses clients et 
-// avec le support administrateur. Permet d'y accéder.
-
+/// Écran centralisant toutes les conversations actives et passées de l'artisan.
+///
+/// Présente les fils de discussion avec chaque client (liés à des missions actives ou terminées)
+/// ainsi que le canal d'assistance direct avec le Support TechLink.
 class TechnicianMessagesListScreen extends StatefulWidget {
+  /// Constructeur constant du widget [TechnicianMessagesListScreen].
   const TechnicianMessagesListScreen({super.key});
 
   @override
   State<TechnicianMessagesListScreen> createState() => _TechnicianMessagesListScreenState();
 }
 
+/// État associé à l'écran de messagerie de l'artisan technicien.
+///
+/// Gère la pagination infinie des fils de messages, l'écoute des défilements,
+/// l'agrégation des derniers messages et la distinction visuelle des messages non-lus.
 class _TechnicianMessagesListScreenState extends State<TechnicianMessagesListScreen> {
+  /// Indicateur de chargement initial des conversations.
   bool _isLoading = true;
+
+  /// Liste synthétique des métadonnées de conversations (client, support, dernier extrait).
   List<Map<String, dynamic>> _chats = [];
 
+  /// Contrôleur de défilement pour la pagination continue de l'historique.
   final ScrollController _scrollController = ScrollController();
+
+  /// Indicateur de chargement de pages supplémentaires lors du scroll.
   bool _isLoadingMore = false;
+
+  /// Indique si d'autres conversations sont encore disponibles sur le serveur.
   bool _hasMore = true;
+
+  /// Index de la page de pagination courante.
   int _page = 0;
+
+  /// Nombre de conversations chargées par lot de pagination.
   final int _pageSize = 10;
 
   @override
@@ -41,6 +64,7 @@ class _TechnicianMessagesListScreenState extends State<TechnicianMessagesListScr
     super.dispose();
   }
 
+  /// Écoute le défilement et déclenche le chargement paginé avant d'atteindre le bas de la liste.
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 &&
         !_isLoadingMore &&
@@ -49,6 +73,11 @@ class _TechnicianMessagesListScreenState extends State<TechnicianMessagesListScr
     }
   }
 
+  /// Charge initialement la liste des conversations (première page) depuis Supabase.
+  ///
+  /// Récupère les missions associées au technicien, extrait le dernier message échangé
+  /// pour chacune d'entre elles ainsi que pour le canal Support TechLink, puis trie
+  /// l'ensemble par ordre chronologique décroissant.
   Future<void> _loadChats() async {
     setState(() {
       _isLoading = true;
@@ -158,6 +187,9 @@ class _TechnicianMessagesListScreenState extends State<TechnicianMessagesListScr
     }
   }
 
+  /// Récupère la page suivante de conversations lors d'un défilement vers le bas.
+  ///
+  /// Évite les requêtes concurrentes grâce à `_isLoadingMore` et concatène les nouveaux éléments.
   Future<void> _loadMoreChats() async {
     if (_isLoadingMore || !_hasMore) return;
     setState(() => _isLoadingMore = true);
@@ -239,6 +271,7 @@ class _TechnicianMessagesListScreenState extends State<TechnicianMessagesListScr
     }
   }
 
+  /// Formate l'horodatage ISO d'un message en notation relative conviviale (HH:mm, Hier, ou jj/MM).
   String _formatTime(String dateStr) {
     try {
       final date = DateTime.parse(dateStr).toLocal();
@@ -258,6 +291,7 @@ class _TechnicianMessagesListScreenState extends State<TechnicianMessagesListScr
     }
   }
 
+  /// Construit la vue de la boîte de réception avec rafraîchissement glissant et liste paginée.
   @override
   Widget build(BuildContext context) {
     final tc = Theme.of(context).extension<TechLinkColors>()!;
@@ -301,6 +335,7 @@ class _TechnicianMessagesListScreenState extends State<TechnicianMessagesListScr
     );
   }
 
+  /// Construit une tuile interactive représentant une conversation (client ou support).
   Widget _buildChatItem(Map<String, dynamic> chat, TechLinkColors tc, bool isDark) {
     final avatarUrl = chat['client_avatar'] as String?;
     final name = chat['client_name'] as String;
@@ -442,6 +477,7 @@ class _TechnicianMessagesListScreenState extends State<TechnicianMessagesListScr
     );
   }
 
+  /// Construit la vue d'état vide lorsqu'aucune conversation n'a encore été initiée.
   Widget _buildEmpty(TechLinkColors tc, bool isDark) {
     return Center(
       child: Column(

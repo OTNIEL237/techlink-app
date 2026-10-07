@@ -1,3 +1,14 @@
+-- =============================================================================
+-- FICHIER : 020_storage_documents.sql
+-- RÔLE : Configuration du bucket Supabase Storage 'documents' :
+--         - Création du bucket 'documents' (pièces justificatives, CNI, diplômes techniciens)
+--         - Politiques RLS storage (lecture publique, upload par utilisateur authentifié,
+--           modification/suppression par le propriétaire du fichier).
+-- MODULE : Schéma de base de données / Supabase Storage & Documents
+-- DÉPENDANCES : storage.buckets, storage.objects
+-- SÉCURITÉ / RLS : Upload réservé aux utilisateurs authentifiés, modifications par owner.
+-- =============================================================================
+
 -- Create the storage bucket for documents
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('documents', 'documents', true)

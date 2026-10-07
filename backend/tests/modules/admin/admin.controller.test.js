@@ -1,8 +1,19 @@
+// =============================================================================
+// FICHIER : admin.controller.test.js
+// RÔLE : Tests unitaires Jest pour le contrôleur administrateur (résolution de litiges).
+// MODULE : Tests / Administration (Backend)
+// DÉPENDANCES : ../../../src/modules/admin/admin.controller, ../../../src/modules/admin/admin.service, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec mocks de service)
+// =============================================================================
+
 const adminController = require('../../../src/modules/admin/admin.controller');
 const adminService = require('../../../src/modules/admin/admin.service');
 
 jest.mock('../../../src/modules/admin/admin.service');
 
+/**
+ * Suite de tests unitaires pour le contrôleur administrateur.
+ */
 describe('Admin Controller', () => {
   let req, res;
 

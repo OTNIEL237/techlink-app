@@ -1,3 +1,14 @@
+-- =============================================================================
+-- FICHIER : 009_create_calls.sql
+-- RÔLE : Création de la table 'calls' pour la gestion des appels voix/vidéo ZEGOCLOUD :
+--         - Suivi des statuts (ringing, accepted, declined, ended, missed)
+--         - Sécurité RLS et politiques pour l'émetteur et le récepteur
+--         - Activation de la publication Realtime Supabase pour la signalisation d'appels.
+-- MODULE : Schéma de base de données / Appels en temps réel
+-- DÉPENDANCES : public.users, supabase_realtime
+-- SÉCURITÉ / RLS : RLS activé. Visibilité et mise à jour limitées à caller_id et receiver_id.
+-- =============================================================================
+
 -- Create calls table for ZEGOCLOUD Voice Call integration
 CREATE TABLE IF NOT EXISTS calls (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

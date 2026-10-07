@@ -1,22 +1,37 @@
+// =============================================================================
+// FICHIER : admin_disputes_screen.dart
+// RÔLE : Tableau de bord et supervision de l'ensemble des réclamations et litiges
+// MODULE : Presentation / Admin
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, app_colors.dart, admin_dispute_details_screen.dart
+// SÉCURITÉ / RLS : Rôle administrateur requis. Lecture de la table `disputes` et des liaisons `users` et `missions`.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import 'admin_dispute_details_screen.dart';
 
-// =========================================================================
-// ÉCRAN DES LITIGES (ADMIN)
-// =========================================================================
-// Affiche la liste des litiges ouverts et résolus entre clients et techniciens.
-
+/// Écran administrateur répertoriant tous les litiges déclarés sur la plateforme.
+///
+/// Distingue les contestations ouvertes, en cours d'instruction, et résolues,
+/// avec accès direct au détail pour procéder à l'arbitrage.
 class AdminDisputesScreen extends StatefulWidget {
+  /// Constructeur constant du widget [AdminDisputesScreen].
   const AdminDisputesScreen({super.key});
 
   @override
   State<AdminDisputesScreen> createState() => _AdminDisputesScreenState();
 }
 
+/// État associé au tableau de bord des litiges administrateur.
+///
+/// Gère la récupération des litiges avec les détails du rapporteur et de la mission,
+/// ainsi que le rafraîchissement automatique après arbitrage.
 class _AdminDisputesScreenState extends State<AdminDisputesScreen> {
+  /// Liste des litiges récupérés depuis la base de données.
   List<Map<String, dynamic>> _disputes = [];
+
+  /// Indicateur de chargement asynchrone des litiges.
   bool _isLoading = true;
 
   @override
@@ -25,6 +40,7 @@ class _AdminDisputesScreenState extends State<AdminDisputesScreen> {
     _loadDisputes();
   }
 
+  /// Charge tous les litiges par ordre chronologique décroissant depuis Supabase.
   Future<void> _loadDisputes() async {
     setState(() => _isLoading = true);
     try {
@@ -45,6 +61,7 @@ class _AdminDisputesScreenState extends State<AdminDisputesScreen> {
     }
   }
 
+  /// Ouvre l'écran d'arbitrage [AdminDisputeDetailsScreen] et recharge la liste si le litige a été résolu.
   void _navigateToDetails(Map<String, dynamic> dispute) async {
     final result = await Navigator.push(
       context,
@@ -55,6 +72,7 @@ class _AdminDisputesScreenState extends State<AdminDisputesScreen> {
     }
   }
 
+  /// Construit la vue de liste des litiges avec badges de statut et boutons d'examen.
   @override
   Widget build(BuildContext context) {
     return Scaffold(

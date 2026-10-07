@@ -1,13 +1,32 @@
+// =============================================================================
+// FICHIER : auth_validator_test.dart
+// RÔLE : Tests unitaires pour les fonctions de validation métier d'authentification
+//         (formats d'adresses e-mail, numéros de téléphone camerounais MTN/Orange,
+//         longueur minimale des mots de passe).
+// MODULE : Tests / Validation Métier (Mobile Flutter)
+// DÉPENDANCES : package:flutter_test/flutter_test.dart
+// SÉCURITÉ / RLS : N/A (Tests unitaires sans état réseau)
+// =============================================================================
+
 import 'package:flutter_test/flutter_test.dart';
 
-// Fonctions de validation métier de TechLink
+/// Utilitaires de validation pour les formulaires d'authentification TechLink.
 class AuthValidators {
+  /// Vérifie si l'adresse e-mail fournie respecte le format standard utilisateur@domaine.ext.
+  ///
+  /// [email] : La chaîne représentant l'adresse e-mail à analyser.
+  /// Retourne `true` si le format est valide, `false` sinon.
   static bool isValidEmail(String email) {
     if (email.isEmpty) return false;
     final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     return regex.hasMatch(email.trim());
   }
 
+  /// Vérifie si le numéro correspond à un format valide au Cameroun (9 chiffres débutant par 6).
+  ///
+  /// Prend en compte les préfixes des opérateurs MTN, Orange et Camtel (65x à 69x).
+  /// [phone] : La chaîne représentant le numéro de téléphone.
+  /// Retourne `true` si le format camerounais est respecté, `false` sinon.
   static bool isValidCameroonPhone(String phone) {
     // Format camerounais : 9 chiffres commençant par 6 (ex: 6XXXXXXXX)
     final cleanPhone = phone.replaceAll(RegExp(r'\s+'), '');
@@ -15,11 +34,16 @@ class AuthValidators {
     return regex.hasMatch(cleanPhone);
   }
 
+  /// Vérifie que le mot de passe comporte au minimum 6 caractères de sécurité.
+  ///
+  /// [password] : Mot de passe saisi par l'utilisateur.
+  /// Retourne `true` si la longueur est supérieure ou égale à 6 caractères.
   static bool isValidPassword(String password) {
     return password.length >= 6;
   }
 }
 
+/// Point d'entrée de la suite de tests unitaires d'authentification.
 void main() {
   group('Module d\'Authentification - Tests Unitaires de Validation', () {
     

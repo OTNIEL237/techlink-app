@@ -1,43 +1,41 @@
 graph LR
-    %% Styles
-    classDef niveau fill:#e8f4f8,stroke:#3498db,stroke-width:3px,stroke-dasharray: 5 5,color:#2c3e50,font-weight:bold
-    classDef box fill:#ffffff,stroke:#2c3e50,stroke-width:2px,color:#000000,font-weight:bold,rx:5,ry:5
-    classDef db fill:#ffffff,stroke:#2c3e50,stroke-width:2px,shape:cylinder,color:#000000,font-weight:bold
-    classDef edgeLabel fill:#ffffdd,stroke:#f1c40f,stroke-width:1px,color:#000000
+    %% Styles généraux
+    classDef niveau fill:#f4f8fb,stroke:#2980b9,stroke-width:2px,stroke-dasharray: 5 5,color:#1a252f,font-weight:bold,rx:8,ry:8
+    classDef box fill:#ffffff,stroke:#2c3e50,stroke-width:2px,color:#000000,font-weight:bold,rx:6,ry:6
+    classDef db fill:#ffffff,stroke:#27ae60,stroke-width:2px,shape:cylinder,color:#000000,font-weight:bold
+    classDef service fill:#ffffff,stroke:#8e44ad,stroke-width:2px,color:#000000,font-weight:bold,rx:6,ry:6
 
-    subgraph TIER1 [NIVEAU 1 : CLIENT]
+    subgraph TIER1 [TIER 1 : COUCHE PRÉSENTATION]
         direction TB
-        APP[📱 App Mobile Flutter<br/>Client, Technicien & Admin]:::box
+        APP[📱 Application Mobile Flutter<br/><i>(Clients, Techniciens, Admins)</i><br/>Capteur GPS natif]:::box
     end
 
-    subgraph TIER2 [NIVEAU 2 : SERVEUR D'APPLICATION]
+    subgraph TIER2 [TIER 2 : SERVEUR D'APPLICATION]
         direction TB
-        NODE[Environnement<br/>Node.js]:::box
-        EXP[Framework<br/>Express.js]:::box
-        NODE --- EXP
+        NODE[Serveur Backend Node.js<br/>+ Framework Express.js<br/><i>(Hébergé sur Vercel)</i>]:::box
+        AUTH[Logique Métier & Webhooks<br/>Gestion Abonnements 0% com.]:::box
+        NODE --- AUTH
     end
 
-    subgraph TIER3 [NIVEAU 3 : SGBD]
+    subgraph TIER3 [TIER 3 : PERSISTANCE & SGBD]
         direction TB
-        SUPA[(Base de données<br/>Supabase / PostgreSQL)]:::db
+        SUPA[(Base de données PostgreSQL<br/>Supabase BaaS)]:::db
+        RLS[Sécurité RLS & Auth JWT<br/>Stockage Médias / Photos]:::db
+        SUPA --- RLS
     end
 
-    subgraph TIER4 [NIVEAU 4 : API]
+    subgraph TIER4 [TIER 4 : SERVICES CLOUD & APIS EXTERNES]
         direction TB
-        PAY[API de Paiement<br/>CamerPay]:::box
-        IA[Modèle NLP<br/>Groq / Gemini API]:::box
+        PAY[💳 CamerPay API<br/><i>(Orange Money & MTN MoMo)</i>]:::service
+        IA[🤖 Groq Cloud NLP<br/><i>(Pré-diagnostic d'urgence)</i>]:::service
+        VIDEO[📹 ZegoCloud WebRTC<br/><i>(Assistance Visio / Audio)</i>]:::service
+        MAPS[🗺️ OpenStreetMap / Leaflet<br/><i>(Tuiles carto & Itinéraires)</i>]:::service
     end
 
-    %% Connections N1 <-> N2
-    TIER1 -- "REQUETES HTTPS" --> TIER2
-    TIER2 -- "REPONSES HTTPS" --> TIER1
-
-    %% Connections N2 <-> N3
-    TIER2 -- "REQUETES SQL" --> TIER3
-    TIER3 -- "REPONSES BD" --> TIER2
-
-    %% Connections N2 <-> N4
-    TIER2 -- "REQUETES" --> TIER4
-    TIER4 -- "REPONSES" --> TIER2
+    %% Flux réseau
+    TIER1 <== "Requêtes HTTPS (SSL/TLS)<br/>Flux JSON" ==> TIER2
+    TIER2 <== "Requêtes SQL (pg)<br/>Pool de connexions" ==> TIER3
+    TIER2 <== "Webhooks & Rest APIs<br/>Paiement & IA" ==> TIER4
+    TIER1 -. "Flux WebRTC Direct<br/>& Tuiles Carto" .- TIER4
 
     class TIER1,TIER2,TIER3,TIER4 niveau

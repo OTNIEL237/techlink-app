@@ -1,3 +1,16 @@
+-- =============================================================================
+-- FICHIER : 022_add_performance_indexes.sql
+-- RÔLE : Optimisation des performances et réduction de latence globale :
+--         - Index sur missions (client_id, technician_id, status, created_at DESC)
+--         - Index sur messages (mission_id, sender_id, created_at DESC)
+--         - Index sur quotes (mission_id)
+--         - Index sur ratings (mission_id, client_id, technician_id)
+--         - Index sur users (role) et technicians (validation_status).
+-- MODULE : Schéma de base de données / Optimisation & Indexation
+-- DÉPENDANCES : public.missions, public.messages, public.quotes, public.ratings, public.users, public.technicians
+-- SÉCURITÉ / RLS : Sans impact RLS (optimisation du planificateur d'exécution PostgreSQL).
+-- =============================================================================
+
 -- Migration to add performance indexes
 -- This reduces latency globally by preventing sequential scans on large tables
 

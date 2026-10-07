@@ -1,8 +1,21 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : add_card_screen.dart
+// Rôle          : Écran d'ajout d'une nouvelle carte bancaire pour le client.
+//                 Propose un aperçu virtuel de la carte et le formulaire de saisie.
+// Module        : Présentation Client (Profil / Moyens de paiement)
+// Dépendances   : flutter/material.dart, go_router, app_colors.dart
+// Sécurité/RLS  : Interface de saisie sécurisée des coordonnées bancaires.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 
+/// Écran permettant à un client d'enregistrer une nouvelle carte de crédit ou débit.
 class AddCardScreen extends StatelessWidget {
+  /// Constructeur constant de l'écran d'ajout de carte
   const AddCardScreen({super.key});
 
   @override
@@ -123,6 +136,7 @@ class AddCardScreen extends StatelessWidget {
     );
   }
 
+  /// Construit un champ de formulaire personnalisé avec son libellé et son style visuel
   Widget _buildTextField(String label, String hint, {bool isNumber = false, IconData? icon}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

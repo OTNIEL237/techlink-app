@@ -1,22 +1,39 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : payment_webview_screen.dart
+// Rôle          : Affichage intégré de la passerelle de paiement web (CamerPay / NotchPay) dans une WebView.
+// Module        : Presentation / Shared
+// Dépendances   : flutter, go_router, webview_flutter, app_colors.dart, camerpay_service.dart
+// Sécurité/RLS  : Détecte les URLs de retour et vérifie cryptographiquement la transaction côté backend.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/services/camerpay_service.dart';
 
-// =========================================================================
-// ÉCRAN DE PAIEMENT (WebView)
-// =========================================================================
-// Affiche la page de paiement sécurisée CamerPay dans une WebView.
-// Écoute les changements d'URL pour détecter le succès ou l'échec du paiement
-// et effectue la vérification finale avec l'API CamerPay.
-
+/// Écran conteneur d'affichage de page de paiement bancaire ou Mobile Money dans une WebView.
+///
+/// Supervise la navigation web de la passerelle de paiement :
+/// - Détecte automatiquement les URLs de succès (`/payment/success`) ou d'annulation (`/payment/cancel`).
+/// - Déclenche la vérification officielle du paiement via [CamerPayService.verifyTransaction].
+/// - Redirige vers le tableau de bord approprié dès confirmation.
 class PaymentWebViewScreen extends StatefulWidget {
+  /// URL de la session de paiement générée par la passerelle.
   final String url;
+
+  /// Titre affiché dans la barre supérieure de l'écran.
   final String title;
+
+  /// Référence unique de la transaction.
   final String reference;
+
+  /// Nature du paiement ('mission' ou 'subscription').
   final String type;
 
+  /// Constructeur de [PaymentWebViewScreen].
   const PaymentWebViewScreen({
     super.key,
     required this.url,
@@ -29,6 +46,7 @@ class PaymentWebViewScreen extends StatefulWidget {
   State<PaymentWebViewScreen> createState() => _PaymentWebViewScreenState();
 }
 
+/// État associé à l'écran [PaymentWebViewScreen] supervisant le navigateur web et les callbacks.
 class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
   late final WebViewController _controller;
   final _camerPayService = CamerPayService();

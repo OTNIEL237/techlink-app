@@ -1,3 +1,16 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : home_screen.dart
+// Rôle          : Écran tableau de bord principal du technicien structuré en 4 onglets
+//                 (Accueil / KPIs, Missions & devis, Messages et Profil artisan).
+// Module        : Présentation Technicien (Tableau de bord & Navigation)
+// Dépendances   : flutter/material.dart, go_router, supabase_flutter, cached_network_image,
+//                 app_colors.dart, morph_transitions.dart, desktop_sidebar.dart
+// Sécurité/RLS  : Accès exclusif aux utilisateurs avec rôle technicien approuvé
+//                 et abonnement actif vérifié.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -10,15 +23,9 @@ import 'mission_request_screen.dart';
 import 'technician_messages_list_screen.dart';
 import '../shared/profile_screen.dart';
 
-// =========================================================================
-// ÉCRAN PRINCIPAL DU TECHNICIEN (4 ONGLETS)
-// =========================================================================
-// 1. Accueil : Tableau de bord pro, disponibilité, KPIs, actions rapides & urgences
-// 2. Missions : Suivi complet de toutes les interventions, devis et filtres
-// 3. Messages : Messagerie instantanée avec les clients et le support
-// 4. Profil : Espace artisan, abonnement, gains et paramètres du compte
-
+/// Tableau de bord central et point d'entrée de l'expérience technicien.
 class TechnicianHomeScreen extends StatefulWidget {
+  /// Constructeur constant du tableau de bord technicien
   const TechnicianHomeScreen({super.key});
 
   @override
@@ -26,26 +33,52 @@ class TechnicianHomeScreen extends StatefulWidget {
 }
 
 class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
+  /// Données personnelles de l'utilisateur issues de la table `users`
   Map<String, dynamic>? _userData;
+
+  /// Données professionnelles du technicien issues de la table `technicians`
   Map<String, dynamic>? _technicianData;
+
+  /// Liste des missions actives ou en attente d'intervention
   List<Map<String, dynamic>> _activeMissions = [];
+
+  /// Liste des dernières missions achevées ou annulées
   List<Map<String, dynamic>> _completedMissions = [];
 
+  /// Index du filtre de missions actuellement sélectionné
   int _selectedFilterIndex = 0;
+
+  /// Liste des options de filtrage pour l'onglet Missions
   final List<String> _filters = ['Toutes', 'Nouvelles', 'En cours', 'Terminées'];
 
+  /// Indicateur de chargement initial des données du tableau de bord
   bool _isLoading = true;
+
+  /// Indique si le technicien est actuellement en ligne pour recevoir des clients
   bool _isAvailable = true;
+
+  /// Indique si la mise à jour de disponibilité est en cours de communication réseau
   bool _isUpdatingAvailability = false;
 
+  /// Index de l'onglet actif affiché (0: Accueil, 1: Missions, 2: Messages, 3: Profil)
   int _currentIndex = 0;
+
+  /// Contrôleur de défilement horizontal entre les onglets
   late final PageController _pageController;
 
-  // Pagination pour l'onglet Missions
+  /// Contrôleur de défilement pour la pagination infinie de l'onglet Missions
   final ScrollController _missionsScrollController = ScrollController();
+
+  /// Indicateur de chargement d'une page de missions supplémentaire
   bool _isLoadingMore = false;
+
+  /// Indique s'il reste des missions supplémentaires à charger
   bool _hasMore = true;
+
+  /// Index de la page courante pour la pagination
   int _page = 0;
+
+  /// Nombre d'éléments chargés par lot de pagination
   final int _pageSize = 10;
 
   @override
@@ -63,6 +96,7 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
     super.dispose();
   }
 
+  /// Change l'onglet actif et anime la transition dans le PageController
   void _switchTab(int index) {
     if (_currentIndex == index) return;
     HapticFeedback.lightImpact();
@@ -76,6 +110,7 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
     }
   }
 
+  /// Détecte lorsque le défilement approche du bas pour charger des missions supplémentaires
   void _onMissionsScroll() {
     if (_missionsScrollController.position.pixels >= _missionsScrollController.position.maxScrollExtent - 200 &&
         !_isLoadingMore &&
@@ -84,6 +119,7 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
     }
   }
 
+  /// Charge l'ensemble des données du tableau de bord (profil, statut d'abonnement, missions en cours et archivées)
   Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
@@ -169,6 +205,7 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
     }
   }
 
+  /// Charge le lot suivant de missions dans le cadre de la pagination
   Future<void> _loadMoreData() async {
     if (_isLoadingMore || !_hasMore) return;
     setState(() => _isLoadingMore = true);
@@ -196,6 +233,7 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
     }
   }
 
+  /// Met à jour la disponibilité en ligne du technicien dans Supabase avec confirmation visuelle
   Future<void> _toggleAvailability(bool newValue) async {
     if (_isUpdatingAvailability) return;
     HapticFeedback.heavyImpact();
@@ -604,7 +642,7 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
               ),
             ),
 
-          // 3. SECTION STATISTIQUES VIP (GRILLE 2x2)
+          // 3. SECTION STATISTIQUES (Aperçu épuré & élégant)
           _buildSliverSectionTitle('Aperçu de votre activité', tc),
           SliverToBoxAdapter(
             child: Padding(
@@ -619,7 +657,9 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
                           value: '${pendingMissions.length}',
                           subtitle: pendingMissions.isEmpty ? 'À jour' : 'En attente',
                           icon: Icons.flash_on_rounded,
-                          colors: [const Color(0xFFF59E0B), const Color(0xFFD97706)],
+                          accentColor: const Color(0xFFF59E0B),
+                          tc: tc,
+                          isDark: isDark,
                           onTap: () {
                             setState(() => _selectedFilterIndex = 1);
                             _switchTab(1);
@@ -633,7 +673,9 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
                           value: '${myMissions.length}',
                           subtitle: myMissions.isEmpty ? 'Aucune' : 'En intervention',
                           icon: Icons.engineering_rounded,
-                          colors: [const Color(0xFF2563EB), const Color(0xFF1D4ED8)],
+                          accentColor: AppColors.primary,
+                          tc: tc,
+                          isDark: isDark,
                           onTap: () {
                             setState(() => _selectedFilterIndex = 2);
                             _switchTab(1);
@@ -651,7 +693,9 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
                           value: '$earnings F',
                           subtitle: 'Portefeuille pro',
                           icon: Icons.account_balance_wallet_rounded,
-                          colors: [const Color(0xFF059669), const Color(0xFF047857)],
+                          accentColor: const Color(0xFF10B981),
+                          tc: tc,
+                          isDark: isDark,
                           onTap: () => context.push('/technician/earnings'),
                         ),
                       ),
@@ -662,62 +706,13 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
                           value: '${rating.toStringAsFixed(1)} ★',
                           subtitle: '$totalMissionsCount intervention${totalMissionsCount > 1 ? 's' : ''}',
                           icon: Icons.star_rounded,
-                          colors: [const Color(0xFF7C3AED), const Color(0xFF6D28D9)],
+                          accentColor: const Color(0xFF8B5CF6),
+                          tc: tc,
+                          isDark: isDark,
                           onTap: () => _switchTab(3),
                         ),
                       ),
                     ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const SliverToBoxAdapter(child: SizedBox(height: 18)),
-
-          // 4. RACCOURCIS PRO 1-CLIC
-          _buildSliverSectionTitle('Accès Rapides Pro', tc),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 92,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: [
-                  _buildQuickAction(
-                    icon: Icons.calendar_month_rounded,
-                    label: 'Disponibilité',
-                    color: const Color(0xFF059669),
-                    tc: tc,
-                    isDark: isDark,
-                    onTap: () => context.push('/technician/availability'),
-                  ),
-                  const SizedBox(width: 10),
-                  _buildQuickAction(
-                    icon: Icons.payments_rounded,
-                    label: 'Mes Revenus',
-                    color: const Color(0xFF2563EB),
-                    tc: tc,
-                    isDark: isDark,
-                    onTap: () => context.push('/technician/earnings'),
-                  ),
-                  const SizedBox(width: 10),
-                  _buildQuickAction(
-                    icon: Icons.workspace_premium_rounded,
-                    label: 'Abonnement',
-                    color: const Color(0xFFD97706),
-                    tc: tc,
-                    isDark: isDark,
-                    onTap: () => context.push('/technician/profile/subscription'),
-                  ),
-                  const SizedBox(width: 10),
-                  _buildQuickAction(
-                    icon: Icons.badge_outlined,
-                    label: 'Mon Profil',
-                    color: const Color(0xFF7C3AED),
-                    tc: tc,
-                    isDark: isDark,
-                    onTap: () => context.push('/technician/profile/edit'),
                   ),
                 ],
               ),
@@ -1063,7 +1058,9 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
     required String value,
     required String subtitle,
     required IconData icon,
-    required List<Color> colors,
+    required Color accentColor,
+    required TechLinkColors tc,
+    required bool isDark,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -1072,15 +1069,19 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
         onTap();
       },
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: colors, begin: Alignment.topLeft, end: Alignment.bottomRight),
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+            width: 1,
+          ),
           boxShadow: [
             BoxShadow(
-              color: colors.first.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: Colors.black.withOpacity(isDark ? 0.25 : 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -1093,20 +1094,23 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
                 Flexible(
                   child: Text(
                     title,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
+                    style: TextStyle(
+                      color: tc.textSecondary,
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
-                  child: Icon(icon, color: Colors.white, size: 13),
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: accentColor.withOpacity(isDark ? 0.18 : 0.10),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: accentColor, size: 14),
                 ),
               ],
             ),
@@ -1116,67 +1120,23 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
               alignment: Alignment.centerLeft,
               child: Text(
                 value,
-                style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900),
+                style: TextStyle(
+                  color: tc.textPrimary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.3,
+                ),
                 maxLines: 1,
               ),
             ),
-            const SizedBox(height: 1),
+            const SizedBox(height: 2),
             Text(
               subtitle,
-              style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 11, fontWeight: FontWeight.w500),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildQuickAction({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required TechLinkColors tc,
-    required bool isDark,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.selectionClick();
-        onTap();
-      },
-      child: Container(
-        width: 100,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: tc.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
-                shape: BoxShape.circle,
+              style: TextStyle(
+                color: tc.textSecondary,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
               ),
-              child: Icon(icon, color: color, size: 20),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: TextStyle(color: tc.textPrimary, fontSize: 11, fontWeight: FontWeight.w700),
-              textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -1576,6 +1536,7 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
         return Scaffold(
           backgroundColor: tc.background,
           body: bodyContent,
+          bottomNavigationBar: _buildBottomNav(tc, isDark),
         );
       },
     );
@@ -1584,69 +1545,85 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
   Widget _buildBottomNav(TechLinkColors tc, bool isDark) {
     final bottomPadding = MediaQuery.paddingOf(context).bottom;
     return Container(
-      height: 64 + bottomPadding,
+      height: 75 + bottomPadding,
       padding: EdgeInsets.only(bottom: bottomPadding),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        border: Border(
-          top: BorderSide(
-            color: isDark ? const Color(0xFF333333) : const Color(0xFFE2E8F0),
-            width: 1,
-          ),
-        ),
+        color: isDark ? tc.card : Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.25 : 0.05),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
           ),
         ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildJumpingNavItem(Icons.home_rounded, Icons.home_outlined, 0, tc, isDark, 'Accueil'),
-          _buildJumpingNavItem(Icons.assignment_rounded, Icons.assignment_outlined, 1, tc, isDark, 'Missions'),
-          _buildJumpingNavItem(Icons.chat_bubble_rounded, Icons.chat_bubble_outline_rounded, 2, tc, isDark, 'Messages'),
-          _buildJumpingNavItem(Icons.person_rounded, Icons.person_outline_rounded, 3, tc, isDark, 'Profil'),
+          _buildJumpingNavItem(Icons.home, Icons.home_outlined, 0, tc, isDark),
+          _buildJumpingNavItem(Icons.assignment, Icons.assignment_outlined, 1, tc, isDark),
+          _buildJumpingNavItem(Icons.chat_bubble, Icons.chat_bubble_outline, 2, tc, isDark),
+          _buildJumpingNavItem(Icons.person, Icons.person_outline, 3, tc, isDark),
         ],
       ),
     );
   }
 
-  Widget _buildJumpingNavItem(IconData filledIcon, IconData outlinedIcon, int index, TechLinkColors tc, bool isDark, String label) {
+  Widget _buildJumpingNavItem(
+    IconData filledIcon,
+    IconData outlinedIcon,
+    int index,
+    TechLinkColors tc,
+    bool isDark,
+  ) {
     final isSelected = _currentIndex == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => _switchTab(index),
-        behavior: HitTestBehavior.opaque,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return GestureDetector(
+      onTap: () => _switchTab(index),
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        width: 70,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary.withOpacity(isDark ? 0.25 : 0.12) : Colors.transparent,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                isSelected ? filledIcon : outlinedIcon,
-                color: isSelected ? AppColors.primary : tc.textSecondary,
-                size: 22,
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.elasticOut,
+              top: isSelected ? 5 : 25,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.primary : Colors.transparent,
+                  shape: BoxShape.circle,
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.4),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          )
+                        ]
+                      : [],
+                ),
+                child: Icon(
+                  isSelected ? filledIcon : outlinedIcon,
+                  color: isSelected ? Colors.white : tc.textSecondary,
+                  size: 24,
+                ),
               ),
             ),
-            const SizedBox(height: 2),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: isSelected ? AppColors.primary : tc.textSecondary,
-                  fontSize: 10.5,
-                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            Positioned(
+              bottom: 12,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 300),
+                opacity: isSelected ? 1.0 : 0.0,
+                child: Container(
+                  width: 5,
+                  height: 5,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
                 ),
-                maxLines: 1,
               ),
             ),
           ],

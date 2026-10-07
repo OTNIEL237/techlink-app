@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : auth.middleware.test.js
+// RÔLE : Tests unitaires Jest pour le middleware d'authentification requireAuth
+//         (validation token Bearer JWT, simulation Supabase Auth, injection de req.user).
+// MODULE : Tests / Middlewares (Backend)
+// DÉPENDANCES : ../../src/middlewares/auth.middleware, ../../src/config/supabase, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec mocks de sécurité)
+// =============================================================================
+
 const requireAuth = require('../../src/middlewares/auth.middleware');
 const supabase = require('../../src/config/supabase');
 
@@ -12,6 +21,9 @@ jest.mock('../../src/config/supabase', () => ({
   single: jest.fn(),
 }));
 
+/**
+ * Suite de tests unitaires pour le middleware requireAuth.
+ */
 describe('Middleware: requireAuth', () => {
   let mockReq;
   let mockRes;

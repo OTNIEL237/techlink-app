@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : kyc_camera_screen.dart
+// Rôle          : Interface de capture photo guidée pour la vérification KYC (CNI ou Selfie).
+// Module        : Presentation / Shared
+// Dépendances   : flutter, camera, go_router, app_colors.dart
+// Sécurité/RLS  : Capture des documents officiels pour validation administrative et lutte contre l'usurpation.
+// =============================================================================
+
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -6,28 +16,32 @@ import 'package:go_router/go_router.dart';
 import 'package:camera/camera.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN CAMÉRA KYC
-// =========================================================================
-// Ouvre la caméra en direct pour capturer la CNI ou le selfie.
-// Retourne le fichier capturé (XFile) via Navigator.pop().
-//
-// Usage:
-//   final result = await Navigator.push(context,
-//     MaterialPageRoute(builder: (_) => KycCameraScreen(mode: KycCaptureMode.cni)));
-//   if (result != null) { /* result est un XFile */ }
+/// Modalité de capture pour la procédure de vérification d'identité KYC.
+enum KycCaptureMode {
+  /// Capture de la Carte Nationale d'Identité (caméra arrière avec cadre rectangulaire).
+  cni,
 
-enum KycCaptureMode { cni, selfie }
+  /// Capture du visage et selfie avec CNI (caméra avant avec ovale de cadrage).
+  selfie,
+}
 
+/// Écran personnalisé de prise de vue photographique pour la vérification KYC.
+///
+/// Sélectionne intelligemment l'objectif adapté (arrière pour document CNI, avant pour selfie),
+/// superpose un guide visuel de cadrage et renvoie le fichier capturé ([XFile])
+/// au formulaire appelant via `Navigator.pop(context, photo)`.
 class KycCameraScreen extends StatefulWidget {
+  /// Mode de prise de vue sélectionné ([KycCaptureMode.cni] ou [KycCaptureMode.selfie]).
   final KycCaptureMode mode;
 
+  /// Constructeur de [KycCameraScreen].
   const KycCameraScreen({super.key, required this.mode});
 
   @override
   State<KycCameraScreen> createState() => _KycCameraScreenState();
 }
 
+/// État associé à l'écran de caméra [KycCameraScreen] gérant le cycle de vie du capteur optique.
 class _KycCameraScreenState extends State<KycCameraScreen>
     with WidgetsBindingObserver {
   CameraController? _controller;

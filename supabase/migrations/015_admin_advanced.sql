@@ -1,4 +1,15 @@
--- 015_admin_advanced.sql
+-- =============================================================================
+-- FICHIER : 015_admin_advanced.sql
+-- RÔLE : Modules d'administration avancée TechLink :
+--         - Enrichissement de la table 'categories' (is_active, icon_name)
+--         - Création de la table 'payouts' (reversements manuels aux techniciens)
+--         - Création de la table 'disputes' (gestion des litiges et médiation)
+--         - Création de la table 'broadcasts' (diffusion d'annonces globales)
+--         - Politiques RLS fines (techniciens/utilisateurs restreints, accès complet administrateurs).
+-- MODULE : Schéma de base de données / Back-office & Gestion des litiges
+-- DÉPENDANCES : public.categories, public.payouts, public.disputes, public.broadcasts, public.users, public.technicians, public.missions
+-- SÉCURITÉ / RLS : RLS activé sur payouts, disputes et broadcasts.
+-- =============================================================================
 
 -- 1. Modify `categories` to add `is_active` and `icon_name`
 DO $$

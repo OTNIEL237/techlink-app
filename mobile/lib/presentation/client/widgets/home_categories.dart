@@ -1,3 +1,15 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : home_categories.dart
+// Rôle          : Carrousel 3D interactif des domaines d'intervention et métiers
+//                 avec photographies, filtres rapides en jetons et navigation problème.
+// Module        : Présentation Client (Widgets Accueil)
+// Dépendances   : flutter/material.dart, cached_network_image, go_router,
+//                 neumorphic_styles.dart, morph_transitions.dart
+// Sécurité/RLS  : Widget de présentation client sans restriction d'accès.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,17 +18,33 @@ import 'dart:math' as math;
 import '../../../../core/theme/neumorphic_styles.dart';
 import '../../../../core/animations/morph_transitions.dart';
 
-/// Modèle pour les cartes réalistes de catégories / missions
+/// Modèle de données pour une carte métier / catégorie du carrousel d'accueil.
 class CategoryCardData {
+  /// Identifiant technique de la catégorie (ex: 'plomberie')
   final String slug;
+
+  /// Titre d'affichage principal de la catégorie
   final String title;
+
+  /// Sous-titre détaillant les types de pannes ou prestations
   final String subtitle;
+
+  /// Indication sur les délais ou engagements de la mission (ex: 'Dépannage express < 30 min')
   final String missionsInfo;
+
+  /// URL de l'image haute définition illustrant le métier
   final String imageUrl;
+
+  /// Icône vectorielle représentative du métier
   final IconData icon;
+
+  /// Couleur d'accentuation thématique
   final Color accentColor;
+
+  /// Nombre indicatif d'artisans actifs en ligne pour ce métier
   final String activeCount;
 
+  /// Constructeur constant du modèle de données de catégorie
   const CategoryCardData({
     required this.slug,
     required this.title,
@@ -29,10 +57,12 @@ class CategoryCardData {
   });
 }
 
-/// Carrousel 3D Ultra-Animé avec photos réalistes des missions & catégories
+/// Carrousel 3D animé présentant les catégories d'intervention disponibles sur TechLink.
 class ClientHomeCategories extends StatefulWidget {
+  /// Liste optionnelle des catégories brutes provenant du backend
   final List<Map<String, dynamic>> categories;
 
+  /// Constructeur constant du carrousel des catégories
   const ClientHomeCategories({
     super.key,
     required this.categories,
@@ -43,11 +73,16 @@ class ClientHomeCategories extends StatefulWidget {
 }
 
 class _ClientHomeCategoriesState extends State<ClientHomeCategories> {
+  /// Contrôleur du carrousel PageView pour l'effet de carte 3D
   late PageController _pageController;
+
+  /// Position courante de la page pour le calcul des transformations matricielles
   double _currentPage = 0.0;
+
+  /// Index de la catégorie actuellement sélectionnée via la barre de jetons
   int _selectedChipIndex = 0;
 
-  // Données des catégories avec photos ultra-réalistes et palette harmonisée TechLink
+  /// Données par défaut des métiers avec photos réalistes et palette harmonisée
   static const List<CategoryCardData> _defaultCards = [
     CategoryCardData(
       slug: 'plomberie',
@@ -153,6 +188,7 @@ class _ClientHomeCategoriesState extends State<ClientHomeCategories> {
     super.dispose();
   }
 
+  /// Déclenche la navigation vers le formulaire de description de problème avec pré-sélection
   void _onCategoryTapped(CategoryCardData card) {
     HapticFeedback.lightImpact();
     context.push(

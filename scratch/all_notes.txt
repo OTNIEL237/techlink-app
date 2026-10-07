@@ -1,0 +1,81 @@
+﻿=== SLIDE 1 NOTES ===
+C’est avec gratitude que nous remercions Madame / Monsieur le Président du jury de nous avoir accordé la parole. À travers ces mots, nous adressons également nos salutations distinguées aux membres du jury, à nos encadreurs, à nos chers parents et à nos honorables invités. Nous sommes heureux de vous souhaiter à tous la bienvenue et une agréable journée. 1
+
+=== SLIDE 2 NOTES ===
+Nous vous présentons notre travail intitulé « Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens ». Ce travail est le fruit d’un stage académique effectué du 06 juillet au 30 septembre 2026 au sein de l’entreprise SANGOTECH SARL, en vue de l’obtention du Diplôme d’Ingénieur des Travaux Informatiques, option Génie Logiciel. Je suis FEUNOU FOSSO Otniel, et ce travail a bénéficié de l’encadrement académique de Mme MAGNE Prudence et de l’encadrement professionnel de M. NSANGOU Ghislain. 2
+
+=== SLIDE 3 NOTES ===
+Madame / Monsieur le Président du jury, permettez-nous de vous présenter le plan qui guidera cet échange. Après une brève introduction, nous présenterons l’entreprise d’accueil. Nous vous plongerons ensuite dans le contexte qui nous a permis de relever des problèmes, lesquels ont fait émerger notre problématique. Celle-ci nous a conduits à adopter une méthodologie, qui a produit des résultats que nous commenterons à travers une démonstration. Enfin, nous conclurons et présenterons quelques perspectives avant de vous céder la parole. 3
+
+=== SLIDE 4 NOTES ===
+Au quotidien, les pannes – électriques, de plomberie, d’électroménager ou informatiques – surviennent toujours au mauvais moment. Pourtant, trouver rapidement un technicien fiable reste difficile. Dans le même temps, la généralisation du smartphone, du paiement mobile et de l’intelligence artificielle ouvre de nouvelles possibilités. C’est dans ce cadre que s’inscrit notre travail : une plateforme qui pré-diagnostique la panne grâce à l’IA et met le client en relation avec le technicien qualifié le plus proche. 4
+
+=== SLIDE 5 NOTES ===
+Avant d’entrer dans le vif du sujet, présentons brièvement l’entreprise qui nous a accueillis durant ce stage. 5
+
+=== SLIDE 6 NOTES ===
+SANGOTECH SARL est la société qui nous a accueillis pour ce stage. Elle est située Rue Pau, à Akwa, Douala, comme le montre le plan de localisation. [Présentez ici l’historique de l’entreprise, sa vision, ses missions et ses principaux services.] Notre stage s’y est déroulé du 06 juillet au 30 septembre 2026 sous l’encadrement professionnel de M. NSANGOU Ghislain. 6
+
+=== SLIDE 7 NOTES ===
+D’où nous vient l’idée de réaliser une telle plateforme ? Voyons le contexte qui a motivé ce projet. 7
+
+=== SLIDE 8 NOTES ===
+Notre point de départ est un constat simple. Les pannes du quotidien sont fréquentes et souvent urgentes. Pourtant, la recherche d’un technicien reste informelle : bouche-à-oreille, contacts personnels, affichettes. Elle est lente et n’offre aucune garantie : compétences non vérifiées, tarifs opaques et aucun recours en cas de litige. Enfin, il n’existe aucun diagnostic préalable : le client décrit mal sa panne, et le technicien se déplace sans savoir quoi prévoir. 8
+
+=== SLIDE 9 NOTES ===
+Ces constats nous amènent à la problématique suivante : comment concevoir une plateforme permettant d’optimiser la mise en relation entre particuliers et techniciens de dépannage de manière rapide, fiable et assistée par l’intelligence artificielle ? Trois exigences en découlent : la rapidité, la fiabilité et l’apport de l’intelligence artificielle. 9
+
+=== SLIDE 10 NOTES ===
+Pour répondre à cette problématique, nous proposons la mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens. Elle repose sur quatre piliers : un diagnostic assisté par l’intelligence artificielle grâce à Groq ; une mise en relation géolocalisée avec le technicien qualifié le plus proche ; des devis en ligne et un paiement mobile sécurisé via Orange Money et MTN Mobile Money ; et enfin la confiance et le suivi, grâce aux évaluations, à la gestion des litiges, à la messagerie, aux appels et aux notifications. 10
+
+=== SLIDE 11 NOTES ===
+La méthodologie présente la démarche d’analyse, de conception et de réalisation de notre plateforme. 11
+
+=== SLIDE 12 NOTES ===
+Le langage de modélisation retenu est UML, Unified Modeling Language, mis en œuvre avec l’outil PowerAMC. Nous l’avons choisi pour trois raisons : il est orienté objet, notamment à travers son diagramme de classes ; il est formel et normalisé par l’OMG ; enfin, c’est un support de communication performant grâce à ses différents diagrammes. 12
+
+=== SLIDE 13 NOTES ===
+Pour accompagner UML, nous avons adopté le processus 2TUP, Two Track Unified Process, dit « processus en Y ». Il sépare d’un côté la branche fonctionnelle – capture des besoins fonctionnels puis analyse – et de l’autre la branche technique – capture des besoins techniques puis conception générique. Les deux branches se rejoignent ensuite dans la conception préliminaire, la conception détaillée, le codage et les tests, puis la recette. Ce processus est itératif et incrémental, piloté par les risques et centré sur l’architecture. 13
+
+=== SLIDE 14 NOTES ===
+L’analyse des besoins nous a permis d’identifier les acteurs du système. Les acteurs principaux sont : le visiteur, qui consulte la plateforme et crée son compte ; le client, qui soumet sa demande, trouve un technicien, paie et l’évalue ; le technicien, qui gère ses missions, propose des devis et s’abonne ; et l’administrateur, qui gère les utilisateurs, les litiges et vérifie les documents des techniciens. Les acteurs secondaires sont des systèmes externes : Groq pour l’intelligence artificielle, ZegoCloud pour les appels, l’API de paiement pour Orange Money et MTN Mobile Money, et l’API de notification. 14
+
+=== SLIDE 15 NOTES ===
+Voici le diagramme de cas d’utilisation du futur système. Il expose les différents acteurs et les fonctionnalités qui leur sont liées. Le client soumet une demande, trouve un technicien et gère ses missions. Le technicien gère les missions qui lui sont attribuées et s’abonne à la plateforme, ce qui implique un paiement par Orange ou MTN. L’administrateur gère les utilisateurs et les litiges. Enfin, tout utilisateur authentifié peut contacter un autre utilisateur par message ou par appel, signaler un litige, consulter ses notifications et son historique de paiement. Chaque cas d’utilisation inclut l’authentification. 15
+
+=== SLIDE 16 NOTES ===
+Le diagramme de séquence décrit de façon séquentielle le cas d’utilisation « Créer une mission ». Après authentification, le client décrit son besoin puis clique sur « Analyser avec l’IA ». Le système vérifie la saisie : si elle est incorrecte, il demande au client de détailler davantage son problème. Sinon, la description est envoyée à l’IA via une requête API sécurisée. Si le problème est pertinent, l’IA renvoie un pré-diagnostic qui s’affiche à l’écran ; sinon, le client est invité à reformuler. Enfin, lorsqu’il clique sur « Trouver un technicien proche », la mission est enregistrée dans la base de données et un message de confirmation s’affiche. 16
+
+=== SLIDE 17 NOTES ===
+Le diagramme de classes présente la structure statique du système à travers seize classes. La classe abstraite Utilisateur est spécialisée en Client, Technicien et Administrateur. Le cœur métier s’articule autour de la Mission, de la DemandeMission, de la Catégorie et du Devis. La partie financière comprend le Paiement, l’AbonnementTechnicien et l’HistoriqueVersement. Enfin, la qualité et les échanges sont assurés par l’Évaluation, le Litige, le Message, l’Appel et la Notification. 17
+
+=== SLIDE 18 NOTES ===
+Notre système repose sur une architecture physique 3-tiers. La première couche, la présentation, correspond à l’application utilisée par le client, le technicien et l’administrateur. La deuxième couche, la logique métier, est assurée par le serveur applicatif, qui expose une API sécurisée et orchestre les services. La troisième couche est la base de données. Le serveur communique également avec des services externes : Groq pour l’intelligence artificielle, ZegoCloud pour les appels, Orange Money et MTN Mobile Money pour les paiements, ainsi qu’un service de notifications. 18
+
+=== SLIDE 19 NOTES ===
+Notre système repose sur une architecture physique 3-tiers. La première couche, la présentation, correspond à l’application utilisée par le client, le technicien et l’administrateur. La deuxième couche, la logique métier, est assurée par le serveur applicatif, qui expose une API sécurisée et orchestre les services. La troisième couche est la base de données. Le serveur communique également avec des services externes : Groq pour l’intelligence artificielle, ZegoCloud pour les appels, Orange Money et MTN Mobile Money pour les paiements, ainsi qu’un service de notifications. 19
+
+=== SLIDE 20 NOTES ===
+Notre système repose sur une architecture physique 3-tiers. La première couche, la présentation, correspond à l’application utilisée par le client, le technicien et l’administrateur. La deuxième couche, la logique métier, est assurée par le serveur applicatif, qui expose une API sécurisée et orchestre les services. La troisième couche est la base de données. Le serveur communique également avec des services externes : Groq pour l’intelligence artificielle, ZegoCloud pour les appels, Orange Money et MTN Mobile Money pour les paiements, ainsi qu’un service de notifications. 20
+
+=== SLIDE 21 NOTES ===
+Passons maintenant aux résultats obtenus. 21
+
+=== SLIDE 22 NOTES ===
+Nous allons maintenant vous présenter la plateforme en direct sur smartphone, en suivant le parcours d’un client : authentification, description de la panne et pré-diagnostic par l’IA, recherche du technicien le plus proche, devis et paiement mobile, puis suivi et évaluation du technicien. [Passez à la démonstration sur votre téléphone, puis revenez à la diapositive suivante.] 22
+
+=== SLIDE 23 NOTES ===
+Comme résultats, la plateforme offre à chaque acteur les fonctionnalités dont il a besoin. Le client soumet une demande avec diagnostic IA, trouve un technicien proche, accepte un devis, paie et évalue le technicien. Le technicien reçoit et accepte des missions, propose des devis, s’abonne et suit ses versements. L’administrateur gère les utilisateurs, vérifie les documents des techniciens, résout les litiges et contacte les utilisateurs. Enfin, tous les utilisateurs disposent de la messagerie, des appels intégrés, des notifications, de la gestion du profil, de l’historique des paiements et du signalement de litige. 23
+
+=== SLIDE 24 NOTES ===
+Concernant l’état d’avancement du projet : le cahier des charges est réalisé à 100 %, l’analyse et la conception à 90 % et la réalisation à 80 %, soit un avancement global d’environ 90 %. Les modules essentiels sont opérationnels ; les efforts restants portent sur les derniers tests et l’optimisation. 24
+
+=== SLIDE 25 NOTES ===
+Nous arrivons au terme de notre présentation. 25
+
+=== SLIDE 26 NOTES ===
+En conclusion, ce stage chez SANGOTECH SARL nous a permis de concevoir et de réaliser une plateforme qui simplifie le dépannage : l’intelligence artificielle pré-diagnostique la panne, puis le client est mis en relation avec un technicien qualifié et proche, avec devis, paiement mobile et suivi intégrés. Ce projet nous a également permis d’enrichir notre bagage en analyse et conception UML, en développement et en intégration de services externes. Comme perspectives, nous envisageons de publier l’application sur Google Play et l’App Store, de permettre un diagnostic IA à partir de photos, d’ajouter le suivi du technicien en temps réel, d’étendre le service à d’autres villes et de doter l’administrateur d’un tableau de bord statistique. 26
+
+=== SLIDE 27 NOTES ===
+Aucune œuvre humaine n’étant parfaite, nous nous soumettons à vos questions et suggestions. Merci pour votre aimable attention. 27
+

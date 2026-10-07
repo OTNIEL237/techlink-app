@@ -1,0 +1,13 @@
+-- =============================================================================
+-- FICHIER : 004_quotes.sql
+-- RÔLE : Migration initiale - Définition de la table 'quotes'
+--         (devis chiffrés émis par les techniciens, lignes de prestations/pièces,
+--         frais de diagnostic, TVA/frais de plateforme et statut d'acceptation client).
+-- MODULE : Schéma de base de données / Devis
+-- DÉPENDANCES : public.missions, public.technicians
+-- SÉCURITÉ / RLS : RLS activé. Émission par le technicien assigné à la mission,
+--                  lecture et acceptation/rejet par le client de la mission.
+-- =============================================================================
+
+-- Table 'quotes' : propositions financières et devis détaillés
+-- (Consulter 'power.sql' pour le schéma DDL consolidé de l'environnement de production).

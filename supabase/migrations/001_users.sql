@@ -1,0 +1,12 @@
+-- =============================================================================
+-- FICHIER : 001_users.sql
+-- RÔLE : Migration initiale - Définition de la table centrale 'users'
+--         (identifiants Supabase Auth, numéros de téléphone, rôles client/technicien/admin,
+--         préférences linguistiques et jetons de notifications FCM).
+-- MODULE : Schéma de base de données / Utilisateurs
+-- DÉPENDANCES : auth.users (Supabase Auth)
+-- SÉCURITÉ / RLS : RLS activé sur la table 'users'. Chaque utilisateur gère son profil.
+-- =============================================================================
+
+-- Table 'users' : profil applicatif synchronisé avec le compte Supabase Auth
+-- (Consulter 'power.sql' pour le schéma DDL consolidé de l'environnement de production).

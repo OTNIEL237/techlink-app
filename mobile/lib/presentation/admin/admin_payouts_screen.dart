@@ -1,22 +1,34 @@
+// =============================================================================
+// FICHIER : admin_payouts_screen.dart
+// RÔLE : Gestion et validation des demandes de retraits d'argent des techniciens
+// MODULE : Présentation Administrateur (Admin Payouts)
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, app_colors.dart
+// SÉCURITÉ / RLS : Réservé aux administrateurs autorisés (rôle admin requis)
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DE GESTION DES PAIEMENTS/RETRAITS (ADMIN)
-// =========================================================================
-// Permet à l'administrateur de traiter et de valider les demandes de retrait
-// effectuées par les techniciens.
-
+/// Écran de gestion administrative des paiements et retraits.
+///
+/// Permet à un administrateur d'examiner les demandes de retraits soumises
+/// par les techniciens partenaires (via Mobile Money ou virement) et de les
+/// marquer comme exécutées ou rejetées.
 class AdminPayoutsScreen extends StatefulWidget {
+  /// Constructeur par défaut de [AdminPayoutsScreen].
   const AdminPayoutsScreen({super.key});
 
   @override
   State<AdminPayoutsScreen> createState() => _AdminPayoutsScreenState();
 }
 
+/// État associé à l'écran de gestion des retraits [AdminPayoutsScreen].
 class _AdminPayoutsScreenState extends State<AdminPayoutsScreen> {
+  /// Liste des enregistrements bruts de demandes de retraits récupérées depuis Supabase.
   List<Map<String, dynamic>> _payouts = [];
+
+  /// Indicateur d'état de chargement asynchrone des données de retrait.
   bool _isLoading = true;
 
   @override
@@ -25,6 +37,8 @@ class _AdminPayoutsScreenState extends State<AdminPayoutsScreen> {
     _loadPayouts();
   }
 
+  /// Charge la liste des retraits depuis la table Supabase `payouts`
+  /// avec jointure sur la table `technicians` et les profils utilisateurs.
   Future<void> _loadPayouts() async {
     setState(() => _isLoading = true);
     try {
@@ -45,6 +59,11 @@ class _AdminPayoutsScreenState extends State<AdminPayoutsScreen> {
     }
   }
 
+  /// Met à jour le statut d'une demande de retrait (`completed` ou `failed`)
+  /// et enregistre l'identifiant de l'administrateur traitant l'opération.
+  ///
+  /// [id] : Identifiant unique du retrait.
+  /// [newStatus] : Nouveau statut ('completed' ou 'failed').
   Future<void> _processPayout(String id, String newStatus) async {
     try {
       await Supabase.instance.client.from('payouts').update({
@@ -147,3 +166,4 @@ class _AdminPayoutsScreenState extends State<AdminPayoutsScreen> {
     );
   }
 }
+

@@ -1,18 +1,36 @@
+// =============================================================================
+// FICHIER : admin_users_tab.dart
+// RÔLE : Onglet de gestion unifiée des utilisateurs (Clients et Techniciens)
+// MODULE : Présentation Administrateur (Admin Users)
+// DÉPENDANCES : flutter/material.dart, app_colors.dart, admin_clients_screen.dart, technician_validation_screen.dart
+// SÉCURITÉ / RLS : Réservé aux administrateurs (rôle admin requis)
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import 'admin_clients_screen.dart';
 import 'technician_validation_screen.dart';
 
+/// Onglet principal de gestion des comptes utilisateurs pour le portail administrateur.
+///
+/// Propose un sélecteur segmenté pour basculer aisément entre :
+/// - La liste des clients ([AdminClientsScreen]).
+/// - La liste et la validation des techniciens ([TechnicianValidationScreen]).
 class AdminUsersTab extends StatefulWidget {
+  /// Constructeur par défaut de [AdminUsersTab].
   const AdminUsersTab({super.key});
 
   @override
   State<AdminUsersTab> createState() => _AdminUsersTabState();
 }
 
+/// État associé à [AdminUsersTab] contrôlant l'animation de bascule entre sous-onglets.
 class _AdminUsersTabState extends State<AdminUsersTab>
     with SingleTickerProviderStateMixin {
+  /// Contrôleur gérant la transition entre la vue Clients et la vue Techniciens.
   late TabController _tabController;
+
+  /// Index de l'onglet actif (0: Clients, 1: Techniciens).
   int _currentIndex = 0;
 
   @override
@@ -34,6 +52,7 @@ class _AdminUsersTabState extends State<AdminUsersTab>
     _tabController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {

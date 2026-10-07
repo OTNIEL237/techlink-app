@@ -1,3 +1,13 @@
+-- =============================================================================
+-- FICHIER : 012_storage_avatars.sql
+-- RÔLE : Configuration du bucket Supabase Storage 'avatars' :
+--         - Création du bucket public 'avatars'
+--         - Politiques RLS storage (lecture publique, upload/mise à jour/suppression par le propriétaire).
+-- MODULE : Schéma de base de données / Supabase Storage & Médias
+-- DÉPENDANCES : storage.buckets, storage.objects
+-- SÉCURITÉ / RLS : Lecture publique autorisée. Modifications restreintes à auth.uid() = owner.
+-- =============================================================================
+
 -- Create the storage bucket for avatars
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('avatars', 'avatars', true)

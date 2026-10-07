@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : messages_list_screen.dart
+// Rôle          : Liste unifiée des conversations du client (techniciens et support)
+// Module        : Présentation / Client / Messagerie
+// Dépendances   : Supabase Flutter, CachedNetworkImage, AppColors, ThemeProvider
+// Sécurité/RLS  : Accès réservé au client authentifié pour ses messages et missions
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -7,10 +17,9 @@ import '../../core/theme/theme_provider.dart';
 import '../shared/chat_screen.dart';
 import '../shared/support_chat_screen.dart';
 
-// =========================================================================
-// ÉCRAN MODERNE DE LISTE DES MESSAGES CLIENT
-// =========================================================================
-
+/// [MessagesListScreen] regroupe toutes les discussions actives du client :
+/// échanges avec les artisans assignés aux interventions en cours ou passées,
+/// ainsi que le fil de discussion dédié au support client TechLink.
 class MessagesListScreen extends StatefulWidget {
   const MessagesListScreen({super.key});
 
@@ -18,6 +27,8 @@ class MessagesListScreen extends StatefulWidget {
   State<MessagesListScreen> createState() => _MessagesListScreenState();
 }
 
+/// État interne gérant la pagination des conversations, le calcul des messages non lus
+/// et le filtrage dynamique par nom ou contenu.
 class _MessagesListScreenState extends State<MessagesListScreen> {
   bool _isLoading = true;
   List<Map<String, dynamic>> _chats = [];
@@ -51,6 +62,7 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
     super.dispose();
   }
 
+  /// Liste des discussions filtrées en fonction de la saisie utilisateur.
   List<Map<String, dynamic>> get _filteredChats {
     if (_searchQuery.isEmpty) return _chats;
     return _chats.where((chat) {
@@ -60,11 +72,13 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
     }).toList();
   }
 
+  /// Totalise les messages non lus reçus provenant d'interlocuteurs tiers.
   int get _unreadTotal {
     final currentUserId = Supabase.instance.client.auth.currentUser?.id;
     return _chats.where((c) => !(c['is_read'] as bool? ?? true) && c['sender_id'] != currentUserId).length;
   }
 
+  /// Détecte le défilement vers le bas et déclenche la pagination des conversations.
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 &&
         !_isLoadingMore &&
@@ -73,6 +87,7 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
     }
   }
 
+  /// Charge initialement la liste des conversations (artisans et support client TechLink).
   Future<void> _loadChats() async {
     setState(() {
       _isLoading = true;
@@ -183,6 +198,7 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
     }
   }
 
+  /// Charge la page suivante de missions et conversations archivées.
   Future<void> _loadMoreChats() async {
     if (_isLoadingMore || !_hasMore) return;
     setState(() => _isLoadingMore = true);
@@ -251,6 +267,7 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
     }
   }
 
+  /// Formate la date du message (HH:mm pour aujourd'hui, 'Hier', jour de la semaine ou JJ/MM).
   String _formatTime(String dateStr) {
     try {
       final date = DateTime.parse(dateStr).toLocal();
@@ -401,6 +418,8 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
     );
   }
 
+  /// Construit la vignette cliquable d'une conversation (avatar, nom, aperçu du message,
+  /// badge non lu et redirection vers l'écran de chat approprié).
   Widget _buildChatItem(Map<String, dynamic> chat, TechLinkColors tc, bool isDark) {
     final avatarUrl = chat['technician_avatar'] as String?;
     final name = chat['technician_name'] as String;
@@ -623,6 +642,7 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
     );
   }
 
+  /// Affichage d'état lorsque le client ne possède aucun fil de discussion actif.
   Widget _buildEmpty(TechLinkColors tc, bool isDark) {
     return Center(
       child: Padding(

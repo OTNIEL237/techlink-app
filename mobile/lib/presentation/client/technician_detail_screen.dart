@@ -1,14 +1,20 @@
-import 'package:flutter/material.dart';
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : technician_detail_screen.dart
+// Rôle          : Fiche détaillée de profil et avis d'un technicien
+// Module        : Présentation / Client / Découverte Artisans
+// Dépendances   : flutter/material.dart, AppColors
+// Sécurité/RLS  : Vue publique/client pour la consultation des profils vérifiés
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DE DÉTAIL DU TECHNICIEN
-// =========================================================================
-// Affiche le profil détaillé, la galerie photos/vidéos et les avis d'un technicien.
-// Ancienne version, peut être redondant avec TechnicianProfileScreen.
-
+/// [TechnicianDetailScreen] expose les informations complètes d'un artisan sélectionné :
+/// service principal, note moyenne, biographie, galerie de réalisations et avis clients.
 class TechnicianDetailScreen extends StatelessWidget {
+  /// Objet dictionnaire contenant les métadonnées de l'artisan et son utilisateur associé.
   final Map<String, dynamic> technician;
 
   const TechnicianDetailScreen({super.key, required this.technician});
@@ -292,6 +298,7 @@ class TechnicianDetailScreen extends StatelessWidget {
     );
   }
 
+  /// Pastille de filtrage par note d'évaluation (Toutes, 5 étoiles, 4 étoiles, etc.).
   Widget _buildReviewFilterChip(String label, bool isSelected, {IconData? icon}) {
     return Container(
       margin: const EdgeInsets.only(right: 8),
@@ -321,6 +328,7 @@ class TechnicianDetailScreen extends StatelessWidget {
     );
   }
 
+  /// Vignette affichant un avis client individuel avec note en étoiles et commentaire.
   Widget _buildReviewItem(String name, String content, int stars, String time) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),

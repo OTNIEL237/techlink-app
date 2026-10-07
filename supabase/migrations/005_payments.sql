@@ -1,0 +1,13 @@
+-- =============================================================================
+-- FICHIER : 005_payments.sql
+-- RÔLE : Migration initiale - Définition de la table 'payments'
+--         (transactions financières, séquestre des fonds de mission,
+--         méthodes de paiement CamerPay/MTN/Orange, commissions plateforme et reversements).
+-- MODULE : Schéma de base de données / Paiements
+-- DÉPENDANCES : public.missions, public.users, public.technicians
+-- SÉCURITÉ / RLS : RLS activé. Consultation des règlements par le client payeur,
+--                  le technicien bénéficiaire et les administrateurs.
+-- =============================================================================
+
+-- Table 'payments' : transactions de paiement et séquestre
+-- (Consulter 'power.sql' pour le schéma DDL consolidé de l'environnement de production).

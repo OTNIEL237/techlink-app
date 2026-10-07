@@ -1,3 +1,15 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : home_popular_services.dart
+// Rôle          : Section d'accueil affichant la liste défilante des artisans
+//                 populaires / élite à proximité avec cartes morphiques et avis.
+// Module        : Présentation Client (Widgets Accueil)
+// Dépendances   : flutter/material.dart, cached_network_image, go_router,
+//                 app_localizations.dart, neumorphic_styles.dart, morph_transitions.dart
+// Sécurité/RLS  : Widget de présentation client sans restriction d'accès.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
@@ -5,9 +17,12 @@ import 'package:techlink/l10n/app_localizations.dart';
 import '../../../../core/theme/neumorphic_styles.dart';
 import '../../../../core/animations/morph_transitions.dart';
 
+/// Section présentant horizontalement les artisans les plus demandés et les mieux notés.
 class ClientHomePopularServices extends StatelessWidget {
+  /// Liste des données brutes des techniciens populaires
   final List<Map<String, dynamic>> popularTechnicians;
 
+  /// Constructeur constant de la section des services populaires
   const ClientHomePopularServices({
     super.key,
     required this.popularTechnicians,
@@ -94,8 +109,12 @@ class ClientHomePopularServices extends StatelessWidget {
   }
 }
 
+/// Carte morphique affichant le profil résumé d'un technicien (avatar, nom, spécialité, note)
 class _TechnicianMorphCard extends StatelessWidget {
+  /// Données détaillées du technicien et de son compte utilisateur
   final Map<String, dynamic> technician;
+
+  /// Indique si le thème actuel est sombre
   final bool isDark;
 
   const _TechnicianMorphCard({
@@ -279,6 +298,7 @@ class _TechnicianMorphCard extends StatelessWidget {
     );
   }
 
+  /// Construit un avatar avec les initiales du nom en cas d'absence de photo
   Widget _buildInitials(String name) {
     return Center(
       child: Text(

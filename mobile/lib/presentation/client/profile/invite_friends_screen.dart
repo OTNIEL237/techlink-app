@@ -1,12 +1,25 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : invite_friends_screen.dart
+// Rôle          : Écran d'invitation et de parrainage de contacts pour rejoindre
+//                 la plateforme TechLink.
+// Module        : Présentation Client (Profil / Parrainage)
+// Dépendances   : flutter/material.dart, app_colors.dart
+// Sécurité/RLS  : Accès client standard sans restriction de sécurité.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 
+/// Écran présentant la liste des contacts pour envoyer des invitations à rejoindre TechLink.
 class InviteFriendsScreen extends StatelessWidget {
+  /// Constructeur constant de l'écran d'invitation d'amis
   const InviteFriendsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Mock data for friends
+    // Données de démonstration des contacts invitables
     final List<Map<String, String>> friends = [
       {'name': 'Tynisha Obey', 'phone': '+1-300-555-0135'},
       {'name': 'Florencio Dorrance', 'phone': '+1-202-555-0136'},

@@ -1,3 +1,16 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : main.dart
+// Rôle          : Point d'entrée principal de l'application mobile TechLink.
+//                 Initialise les liaisons Flutter, intercepte les erreurs
+//                 globales (UI et asynchrones), charge l'environnement (.env),
+//                 configure Supabase et monte le ProviderScope Riverpod.
+// Module        : Core / Démarrage
+// Dépendances   : Supabase, Riverpod, flutter_dotenv, ZegoCloud, GoRouter
+// Sécurité/RLS  : Accès initial public, délègue le contrôle d'accès à AppRouter
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,10 +32,13 @@ import 'core/utils/logger_service.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:techlink/l10n/app_localizations.dart';
 
-// Point d'entrée principal de l'application
+/// Point d'entrée principal de l'application TechLink.
+///
+/// Exécute l'application dans une zone sécurisée via [runZonedGuarded] afin de
+/// capturer toutes les exceptions non interceptées et garantir une haute disponibilité.
 void main() {
   runZonedGuarded(() async {
-    // S'assure que les widgets Flutter sont bien initialisés avant de lancer l'app
+    // ── 1. Initialisation des liaisons du moteur Flutter ──
     WidgetsFlutterBinding.ensureInitialized();
 
     // Capture les erreurs Flutter (UI, Layout)
@@ -71,6 +87,11 @@ void main() {
 // navigatorKey n'est plus géré ici, il est géré par AppRouter.rootNavigatorKey
 // pour éviter les conflits et permettre à ZegoCloud de se superposer proprement.
 
+/// [TechLinkApp]
+///
+/// Composant racine de l'application TechLink.
+/// Responsabilité : Initialise les thèmes (Light / Dark), configure la
+/// localisation multilingue (FR/EN) et branche le routeur [AppRouter.router].
 class TechLinkApp extends ConsumerStatefulWidget {
   const TechLinkApp({super.key});
 
@@ -78,7 +99,12 @@ class TechLinkApp extends ConsumerStatefulWidget {
   ConsumerState<TechLinkApp> createState() => _TechLinkAppState();
 }
 
+/// [_TechLinkAppState]
+///
+/// État du widget racine [TechLinkApp].
+/// Gère le cycle de vie des services globaux (appels ZegoCloud et notifications en temps réel).
 class _TechLinkAppState extends ConsumerState<TechLinkApp> {
+  /// Initialise les écouteurs d'appels entrants et les notifications push.
   @override
   void initState() {
     super.initState();

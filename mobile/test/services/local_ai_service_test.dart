@@ -1,6 +1,17 @@
+// =============================================================================
+// FICHIER : local_ai_service_test.dart
+// RÔLE : Tests unitaires pour le moteur IA embarqué LocalAiService
+//         (normalisation textuelle sans accent, classification heuristique des pannes,
+//         évaluation du degré d'urgence et génération de solutions d'urgence).
+// MODULE : Tests / Intelligence Artificielle Locale (Mobile Flutter)
+// DÉPENDANCES : package:flutter_test/flutter_test.dart, package:techlink/data/services/local_ai_service.dart
+// SÉCURITÉ / RLS : N/A (Algorithme local hors ligne sans dépendance réseau)
+// =============================================================================
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:techlink/data/services/local_ai_service.dart';
 
+/// Point d'entrée de la suite de tests unitaires pour le service IA local.
 void main() {
   group('LocalAiService.normalize', () {
     test('devrait convertir en minuscules', () {

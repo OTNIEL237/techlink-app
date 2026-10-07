@@ -1,8 +1,20 @@
+// =============================================================================
+// FICHIER : backend/src/middlewares/auth.middleware.js
+// RÔLE : Vérification du jeton JWT Supabase et injection de l'utilisateur authentifié
+// MODULE : Backend / Middlewares d'authentification
+// DÉPENDANCES : ../config/supabase
+// SÉCURITÉ / RLS : Valide le token Bearer via supabase.auth.getUser(token) et résout le rôle
+// =============================================================================
+
 const supabase = require('../config/supabase');
 
 /**
- * Middleware d'authentification
- * Vérifie le JWT envoyé dans le header Authorization: Bearer <token>
+ * Middleware d'authentification vérifiant le jeton JWT transmis dans l'en-tête `Authorization: Bearer <token>`.
+ * Récupère le compte utilisateur Supabase, vérifie son statut et synchronise son rôle applicatif.
+ *
+ * @param {import('express').Request} req - Requête HTTP Express enrichie avec `req.user` en cas de succès
+ * @param {import('express').Response} res - Réponse HTTP Express
+ * @param {import('express').NextFunction} next - Poursuit l'exécution vers le contrôleur ou middleware suivant
  */
 const requireAuth = async (req, res, next) => {
   try {
@@ -24,16 +36,21 @@ const requireAuth = async (req, res, next) => {
 
     // Injecter l'utilisateur dans la requête pour les middlewares suivants
     req.user = user;
+    req.user.role = user.user_metadata?.role || 'client';
     
-    // Récupérer le rôle de l'utilisateur dans la table users (optionnel, pour vérifications)
-    const { data: userData } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-      
-    if (userData) {
-      req.user.role = userData.role;
+    // Récupérer le rôle de l'utilisateur dans la table users avec repli sûr
+    try {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
+        
+      if (userData?.role) {
+        req.user.role = userData.role;
+      }
+    } catch (e) {
+      console.warn('Notice: user role db query fallback:', e.message);
     }
 
     next();
@@ -44,3 +61,4 @@ const requireAuth = async (req, res, next) => {
 };
 
 module.exports = requireAuth;
+

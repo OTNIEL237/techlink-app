@@ -1,7 +1,12 @@
--- ============================================================================
--- 031_calls_indexes.sql
--- Optimisation des requêtes Realtime pour le service ZegoCloud
--- ============================================================================
+-- =============================================================================
+-- FICHIER : 031_calls_indexes.sql
+-- RÔLE : Optimisation des requêtes Realtime pour le service ZEGOCLOUD :
+--         - Index sur la table 'calls' (receiver_id, caller_id, status)
+--         - Accélération des filtres de souscription en temps réel lors des appels entrants.
+-- MODULE : Schéma de base de données / Téléphonie & Realtime
+-- DÉPENDANCES : public.calls
+-- SÉCURITÉ / RLS : N/A (Indexation interne PostgreSQL).
+-- =============================================================================
 
 -- Ces index permettent à Supabase Realtime d'écouter beaucoup plus rapidement
 -- les changements d'état des appels pour un utilisateur spécifique.

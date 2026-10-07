@@ -1,5 +1,13 @@
-// On teste le service IA en mockant OpenAI
-// pour vérifier le cache, le fallback, et le chaînage
+// =============================================================================
+// FICHIER : ai.service.test.js
+// RÔLE : Tests unitaires Jest pour le service d'analyse IA (analyzeProblem) :
+//         - Tests du fallback heuristique local par mots-clés
+//         - Tests du cache en mémoire et normalisation textuelle
+//         - Tests du chaînage de résilience (Groq -> OpenAI -> Fallback).
+// MODULE : Tests / Intelligence Artificielle (Backend)
+// DÉPENDANCES : ../../../src/modules/ai/ai.service, openai, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec isolation d'environnement)
+// =============================================================================
 
 jest.mock('openai', () => {
   const mockCreate = jest.fn();

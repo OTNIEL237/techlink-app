@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : onboarding_screen.dart
+// RÔLE : Écran d'onboarding et soumission de dossier d'agrément technicien
+// MODULE : Presentation / Technician
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, image_picker, camera, kyc_camera_screen.dart
+// SÉCURITÉ / RLS : Authentification requise. Téléversement de pièces d'identité et justificatifs vers Supabase Storage, persistance dans 'technicians' et 'technician_documents'.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -7,13 +15,13 @@ import 'dart:io';
 import '../../core/constants/app_colors.dart';
 import '../shared/kyc_camera_screen.dart';
 
-// =========================================================================
-// ÉCRAN D'INSCRIPTION TECHNICIEN
-// =========================================================================
-// Gère le processus d'inscription en plusieurs étapes (spécialités, 
-// disponibilité, documents, paiement).
-
+/// Widget racine du formulaire d'onboarding pour les nouveaux techniciens.
+///
+/// Guide le prestataire à travers 5 étapes obligatoires ou recommandées :
+/// spécialités & expérience, horaires de disponibilité, KYC d'identité (CNI & selfie),
+/// diplômes ou certifications professionnelles, et coordonnées bancaires / mobile money.
 class TechnicianOnboardingScreen extends StatefulWidget {
+  /// Constructeur constant du widget [TechnicianOnboardingScreen].
   const TechnicianOnboardingScreen({super.key});
 
   @override
@@ -21,20 +29,43 @@ class TechnicianOnboardingScreen extends StatefulWidget {
       _TechnicianOnboardingScreenState();
 }
 
+/// État associé à l'écran d'onboarding technicien.
+///
+/// Gère la collecte des données saisies, le contrôle de validation étape par étape,
+/// les sélections de photos via la caméra KYC ou la galerie, et la soumission finale à Supabase.
 class _TechnicianOnboardingScreenState
     extends State<TechnicianOnboardingScreen> {
+  /// Contrôleur du champ de saisie de la biographie professionnelle.
   final _bioController = TextEditingController();
+
+  /// Contrôleur du champ de saisie des années d'expérience dans le métier.
   final _experienceController = TextEditingController();
+
+  /// Contrôleur du numéro MTN Mobile Money pour la rémunération des prestations.
   final _mtnController = TextEditingController();
+
+  /// Contrôleur du numéro Orange Money pour la rémunération des prestations.
   final _orangeController = TextEditingController();
 
+  /// Liste des compétences et spécialités sélectionnées par l'artisan.
   List<String> _selectedSpecialties = [];
+
+  /// Liste des fichiers de diplômes ou attestations sélectionnés depuis la galerie.
   List<File> _documents = [];
+
+  /// Fichier image de la pièce d'identité (CNI ou passeport) capturé via la caméra KYC.
   File? _cniDocument;
+
+  /// Fichier image du selfie avec la pièce d'identité pour la vérification faciale.
   File? _selfieDocument;
+
+  /// Indicateur de chargement actif pendant l'envoi des documents et des métadonnées.
   bool _isLoading = false;
+
+  /// Index de l'étape courante affichée dans le Stepper (0 à 4).
   int _currentStep = 0;
 
+  /// Grille des plages horaires de disponibilité par jour de la semaine.
   Map<String, String> _availability = {
     'Lundi': '08:00 - 18:00',
     'Mardi': '08:00 - 18:00',
@@ -45,12 +76,14 @@ class _TechnicianOnboardingScreenState
     'Dimanche': 'Fermé',
   };
 
+  /// Référentiel des métiers et spécialités techniques configurables sur TechLink.
   final List<String> _allSpecialties = [
     'Plomberie', 'Électricité', 'Climatisation',
     'Informatique', 'Menuiserie', 'Peinture',
     'Électroménager', 'Maçonnerie',
   ];
 
+  /// Ouvre la galerie d'images pour adjoindre un document justificatif supplémentaire.
   Future<void> _pickDocument() async {
     final picker = ImagePicker();
     final file = await picker.pickImage(source: ImageSource.gallery);
@@ -59,6 +92,10 @@ class _TechnicianOnboardingScreenState
     }
   }
 
+  /// Lance l'écran de capture KYC assistée pour photographier la CNI ou réaliser le selfie.
+  ///
+  /// [isSelfie] indique s'il s'agit de la capture du visage avec la pièce d'identité ([KycCaptureMode.selfie])
+  /// ou du recto de la pièce d'identité ([KycCaptureMode.cni]).
   Future<void> _pickKYCDocument(bool isSelfie) async {
     final XFile? photo = await Navigator.push<XFile>(
       context,
@@ -79,6 +116,13 @@ class _TechnicianOnboardingScreenState
     }
   }
 
+  /// Valide et soumet l'intégralité du dossier d'inscription technicien à Supabase.
+  ///
+  /// Procède aux vérifications préalables (spécialité, CNI, selfie, numéro de retrait),
+  /// insère ou met à jour l'enregistrement dans la table `technicians`, puis téléverse
+  /// les fichiers CNI, selfie et justificatifs dans Supabase Storage (`documents`)
+  /// avant d'enregistrer les références dans `technician_documents`.
+  /// Redirige enfin le prestataire vers `/technician/pending`.
   Future<void> _submit() async {
   if (_selectedSpecialties.isEmpty) {
     _showError('Choisissez au moins une spécialité');
@@ -240,12 +284,14 @@ class _TechnicianOnboardingScreenState
   }
 }
 
+  /// Affiche un message d'alerte ou d'erreur contextuel dans un SnackBar rouge.
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg), backgroundColor: Colors.red),
     );
   }
 
+  /// Libère les ressources des contrôleurs de texte à la destruction du widget.
   @override
   void dispose() {
     _bioController.dispose();
@@ -255,6 +301,7 @@ class _TechnicianOnboardingScreenState
     super.dispose();
   }
 
+  /// Construit l'interface du formulaire d'onboarding structurée par un [Stepper] à 5 étapes.
   @override
   Widget build(BuildContext context) {
     final tc = Theme.of(context).extension<TechLinkColors>()!;

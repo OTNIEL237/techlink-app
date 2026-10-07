@@ -1,3 +1,13 @@
+-- =============================================================================
+-- FICHIER : 013_technician_details.sql
+-- RÔLE : Enrichissement de la table 'technicians' :
+--         - Ajout conditionnel de la colonne 'bio' (présentation professionnelle)
+--         - Ajout conditionnel de la colonne 'availability' au format JSONB (planning hebdomadaire).
+-- MODULE : Schéma de base de données / Techniciens
+-- DÉPENDANCES : public.technicians
+-- SÉCURITÉ / RLS : Mise à jour par le technicien propriétaire de la fiche profil.
+-- =============================================================================
+
 DO $$ 
 BEGIN 
   -- We assume 'bio' might already exist since onboarding_screen uses it, but just in case:

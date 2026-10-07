@@ -1,8 +1,21 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : app_router.dart
+// Rôle          : Configuration centrale du routage avec GoRouter.
+//                 Gère la navigation déclarative, les transitions animées,
+//                 l'écoute réactive des sessions Supabase Auth et les Route
+//                 Guards stricts pour cloisonner les rôles (client, technicien, admin).
+// Module        : Core / Routage & Navigation
+// Dépendances   : GoRouter, Supabase, Flutter Material
+// Sécurité/RLS  : Cloisonnement strict des espaces /admin, /technician et /client
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// Import de tous les écrans
+// ── IMPORTATION DES ÉCRANS PAR DOMAINE ──
 import '../../presentation/admin/admin_home_screen.dart';
 import '../../presentation/admin/technician_detail_screen.dart';
 import '../../presentation/admin/technician_validation_screen.dart';
@@ -67,11 +80,84 @@ class GoRouterRefreshStream extends ChangeNotifier {
 }
 
 // Cache en mémoire pour le rôle utilisateur afin d'éviter de requêter Supabase à chaque changement de route
+String? _cachedUserId;
 String? _cachedUserRole;
+String? _cachedValidationStatus;
 
 class AppRouter {
+  /// Indique si l'utilisateur est actuellement en train de soumettre son inscription.
+  /// Empêche GoRouter d'interrompre le formulaire avec une redirection prématurée.
+  static bool isRegistering = false;
+
   static void clearRoleCache() {
+    _cachedUserId = null;
     _cachedUserRole = null;
+    _cachedValidationStatus = null;
+  }
+
+  static void setCachedRole(String userId, String role, {String? validationStatus}) {
+    _cachedUserId = userId;
+    _cachedUserRole = role;
+    if (validationStatus != null) {
+      _cachedValidationStatus = validationStatus;
+    }
+    debugPrint('[ROUTAGE] Mise en cache du rôle pour $userId : rôle=$role, statut=$validationStatus');
+  }
+
+  static Future<String?> resolveUserRole(SupabaseClient supabase, User user) async {
+    if (_cachedUserId == user.id && _cachedUserRole != null) {
+      debugPrint('[ROUTAGE] Rôle en cache trouvé pour ${user.id} : $_cachedUserRole');
+      return _cachedUserRole;
+    }
+
+    // 1. Métadonnées auth Supabase (disponibles immédiatement dès le signUp)
+    final metaRole = user.userMetadata?['role'] as String?;
+
+    // 2. Table users
+    try {
+      final userData = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .maybeSingle();
+      final dbRole = userData?['role'] as String?;
+      final effectiveRole = dbRole ?? metaRole ?? 'client';
+      _cachedUserId = user.id;
+      _cachedUserRole = effectiveRole;
+      debugPrint('[ROUTAGE] Rôle résolu pour ${user.id} : $effectiveRole (DB: $dbRole, Meta: $metaRole)');
+      return effectiveRole;
+    } catch (e) {
+      final effectiveRole = metaRole ?? 'client';
+      _cachedUserId = user.id;
+      _cachedUserRole = effectiveRole;
+      debugPrint('[ROUTAGE] Avertissement lecture table users ($e). Rôle de repli appliqué : $effectiveRole');
+      return effectiveRole;
+    }
+  }
+
+  static Future<String> resolveTechnicianStatus(SupabaseClient supabase, String userId) async {
+    if (_cachedUserId == userId && _cachedValidationStatus != null) {
+      debugPrint('[ROUTAGE] Statut technicien en cache pour $userId : $_cachedValidationStatus');
+      return _cachedValidationStatus!;
+    }
+    try {
+      final tech = await supabase
+          .from('technicians')
+          .select('validation_status')
+          .eq('user_id', userId)
+          .maybeSingle();
+      if (tech == null) {
+        debugPrint('[ROUTAGE] Aucun profil dans technicians pour $userId -> statut "none"');
+        return 'none';
+      }
+      final status = (tech['validation_status'] as String?) ?? 'pending';
+      _cachedValidationStatus = status;
+      debugPrint('[ROUTAGE] Statut technicien résolu pour $userId : $status');
+      return status;
+    } catch (e) {
+      debugPrint('[ROUTAGE] Erreur lecture statut technicien ($e) -> repli "pending"');
+      return 'pending';
+    }
   }
 
   static final router = GoRouter(
@@ -89,70 +175,85 @@ class AppRouter {
 
       // 1. Si NON CONNECTÉ et essaie d'accéder à une page protégée
       if (session == null) {
-        _cachedUserRole = null; // Réinitialise le cache rôle
+        clearRoleCache();
         if (!isAuthRoute) {
+          debugPrint('[ROUTAGE-GUARD] Utilisateur non connecté sur route protégée ($path) -> Redirection /login');
           return '/login'; // Redirection automatique vers login
         }
         return null;
       }
 
-      // 2. Si CONNECTÉ et sur une page auth (autre que le splash screen '/')
-      if (isAuthRoute && path != '/') {
-        if (_cachedUserRole == null) {
-          try {
-            final userData = await supabase
-                .from('users')
-                .select('role')
-                .eq('id', session.user.id)
-                .maybeSingle();
-            _cachedUserRole = userData?['role'] as String?;
-          } catch (_) {
-            _cachedUserRole = 'client';
-          }
-        }
-
-        if (_cachedUserRole == 'admin') return '/admin/home';
-        if (_cachedUserRole == 'technician') {
-          try {
-            final tech = await supabase
-                .from('technicians')
-                .select('validation_status')
-                .eq('user_id', session.user.id)
-                .maybeSingle();
-            final status = tech?['validation_status'] as String?;
-            if (status == 'approved') return '/technician/home';
-            if (status == 'pending') return '/technician/pending';
-            return '/technician/onboarding';
-          } catch (_) {
-            return '/technician/home';
-          }
-        }
-        return '/client/home';
+      // 2. Si une inscription est en cours de soumission, ne JAMAIS couper le formulaire
+      if (isRegistering) {
+        debugPrint('[ROUTAGE-GUARD] Inscription en cours, navigation autorisée sur : $path');
+        return null;
       }
 
-      // 3. Vérification du rôle pour /admin, /technician et /client
-      if (path.startsWith('/admin') || path.startsWith('/technician') || path.startsWith('/client')) {
-        if (_cachedUserRole == null) {
-          try {
-            final userData = await supabase
-                .from('users')
-                .select('role')
-                .eq('id', session.user.id)
-                .maybeSingle();
-            _cachedUserRole = userData?['role'] as String?;
-          } catch (_) {
-            _cachedUserRole = 'client';
+      // 3. Résolution du rôle
+      final role = await resolveUserRole(supabase, session.user);
+
+      // Si l'utilisateur est sur /register et que le profil est en cours de création
+      if (path == '/register') {
+        if (role == null) {
+          return null;
+        }
+      }
+
+      // 4. Si CONNECTÉ et sur une page auth (autre que le splash screen '/')
+      if (isAuthRoute && path != '/') {
+        if (role == 'admin') {
+          debugPrint('[ROUTAGE-GUARD] Connecté en tant qu\'admin sur $path -> Redirection /admin/home');
+          return '/admin/home';
+        }
+        if (role == 'technician') {
+          final status = await resolveTechnicianStatus(supabase, session.user.id);
+          debugPrint('[ROUTAGE-GUARD] Connecté en tant que technicien (statut: $status) sur $path');
+          if (status == 'approved') return '/technician/home';
+          if (status == 'pending') return '/technician/pending';
+          return '/technician/onboarding';
+        }
+        if (role == 'client') {
+          debugPrint('[ROUTAGE-GUARD] Connecté en tant que client sur $path -> Redirection /client/home');
+          return '/client/home';
+        }
+        return null;
+      }
+
+      // 5. Vérification et cloisonnement strict des rôles pour les espaces protégés
+      if (role == null) {
+        return null;
+      }
+
+      // Protection Espace ADMIN
+      if (path.startsWith('/admin')) {
+        if (role != 'admin') {
+          if (role == 'technician') {
+            final status = await resolveTechnicianStatus(supabase, session.user.id);
+            return status == 'approved' ? '/technician/home' : '/technician/pending';
+          }
+          return '/client/home';
+        }
+      }
+
+      // Protection Espace TECHNICIEN
+      if (path.startsWith('/technician')) {
+        if (role != 'technician' && role != 'admin') {
+          return '/client/home';
+        }
+        if (role == 'technician') {
+          final status = await resolveTechnicianStatus(supabase, session.user.id);
+          // Si statut pas encore approuvé et essaie d'accéder au tableau de bord des missions
+          if (path == '/technician/home' && status != 'approved') {
+            return '/technician/pending';
           }
         }
+      }
 
-        if (path.startsWith('/admin') && _cachedUserRole != 'admin') {
-          return '/client/home';
-        }
-        if (path.startsWith('/technician') && _cachedUserRole != 'technician' && _cachedUserRole != 'admin') {
-          return '/client/home';
-        }
-        if (path.startsWith('/client') && _cachedUserRole == 'technician') {
-          return '/technician/home';
+      // Protection Espace CLIENT : un technicien ne doit jamais atterrir sur le dashboard client
+      if (path.startsWith('/client')) {
+        if (role == 'technician') {
+          final status = await resolveTechnicianStatus(supabase, session.user.id);
+          return status == 'approved' ? '/technician/home' : '/technician/pending';
         }
       }
 

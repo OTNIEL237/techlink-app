@@ -1,15 +1,42 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : tracking_quote_card.dart
+// Rôle          : Carte de devis dans le suivi de mission affichant les lignes chiffrées,
+//                 les boutons d'acceptation / refus et le déclencheur de paiement.
+// Module        : Présentation Client (Widgets Suivi de Mission)
+// Dépendances   : flutter/material.dart, app_colors.dart
+// Sécurité/RLS  : Accès conditionné au client propriétaire de la mission.
+//                 Actions sécurisées d'acceptation, rejet ou paiement via RPC/API.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 
+/// Carte interactive affichant le devis émis par le technicien pour validation par le client.
 class TrackingQuoteCard extends StatelessWidget {
+  /// Données brutes de la mission associée
   final Map<String, dynamic> mission;
+
+  /// Données détaillées du devis (lignes, sous-total, statut)
   final Map<String, dynamic> quote;
+
+  /// Statut actuel de la mission (ex: 'assigned', 'in_progress', 'completed')
   final String status;
+
+  /// Callback exécuté lors de l'acceptation du devis
   final VoidCallback onAccept;
+
+  /// Callback exécuté lors du rejet du devis
   final VoidCallback onReject;
+
+  /// Callback déclenchant la redirection vers le paiement mobile money / carte
   final VoidCallback onPay;
+
+  /// Indique si une opération réseau d'acceptation est en cours de traitement
   final bool isLoading;
 
+  /// Constructeur constant de la carte de devis
   const TrackingQuoteCard({
     super.key,
     required this.mission,
@@ -187,11 +214,20 @@ class TrackingQuoteCard extends StatelessWidget {
   }
 }
 
+/// Ligne d'affichage formatée pour un libellé et une valeur monétaire du devis
 class _QuoteRow extends StatelessWidget {
+  /// Description du montant (ex: 'Total à payer')
   final String label;
+
+  /// Valeur formatée avec devise (ex: '25000 FCFA')
   final String value;
+
+  /// Applique un style gras accentué
   final bool isBold;
+
+  /// Couleur d'accentuation optionnelle
   final Color? color;
+
   const _QuoteRow(this.label, this.value,
       {this.isBold = false, this.color});
 

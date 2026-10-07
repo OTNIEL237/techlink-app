@@ -1,11 +1,15 @@
--- ============================================================================
--- 029_rls_core_tables.sql
--- Sécurisation RLS complète des tables critiques non protégées
--- À exécuter dans la console SQL du dashboard Supabase
--- ============================================================================
--- RAPPEL : Le backend Node.js utilise service_role et n'est PAS affecté par RLS.
--- Ces politiques protègent uniquement les accès depuis le client mobile (anon key + JWT).
--- ============================================================================
+-- =============================================================================
+-- FICHIER : 029_rls_core_tables.sql
+-- RÔLE : Sécurisation RLS complète et exhaustive de toutes les tables critiques :
+--         - users, technicians, missions, quotes, payments, messages, categories,
+--           notifications, calls, wallet_transactions, admin_logs
+--         - Définition stricte des règles SELECT, INSERT, UPDATE, DELETE selon le rôle
+--           (client, technician, admin) et l'identité du compte (auth.uid()).
+-- MODULE : Schéma de base de données / Sécurité Globale & Row Level Security
+-- DÉPENDANCES : Toutes les tables du schéma public Supabase
+-- SÉCURITÉ / RLS : Verrouillage total empêchant tout accès non autorisé depuis les clés anon/JWT mobile.
+--                  Le backend Node.js (service_role) conserve un bypass légitime pour les opérations serveur.
+-- =============================================================================
 
 
 -- ╔══════════════════════════════════════════════════════════════════════════╗

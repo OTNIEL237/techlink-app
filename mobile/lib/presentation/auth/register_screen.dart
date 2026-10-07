@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : register_screen.dart
+// Rôle          : Écran d'inscription complet (Clients en 1 formulaire, Techniciens en 6 étapes KYC/Spécialités).
+// Module        : Presentation / Auth
+// Dépendances   : flutter, go_router, supabase_flutter, file_picker, kyc_camera_screen.dart, app_router.dart
+// Sécurité/RLS  : Inscription Supabase Auth avec métadonnées de rôle, stockage sécurisé des pièces KYC (CNI/Selfie).
+// =============================================================================
+
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -6,23 +16,30 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/routing/app_router.dart';
 import '../../core/theme/neumorphic_styles.dart';
 import '../shared/kyc_camera_screen.dart';
 
-// =========================================================================
-// ÉCRAN D'INSCRIPTION MODERNE (Register Neumorphique & 3D Glass)
-// =========================================================================
-// Supporte l'inscription des Clients en un formulaire épuré,
-// et des Techniciens via un Stepper en 6 étapes (Infos, Spécialités, KYC CNI,
-// Documents Pro, Paiement Mobile Money, Résumé de validation).
-
+/// Écran complet d'inscription et de vérification d'identité TechLink.
+///
+/// Prend en charge deux parcours utilisateurs distincts :
+/// 1. Parcours Client : Création rapide de compte en un formulaire unique.
+/// 2. Parcours Technicien : Processus d'onboarding complet en 6 étapes :
+///    - Étape 1 : Informations personnelles (nom, email, téléphone, mot de passe).
+///    - Étape 2 : Spécialités professionnelles (métiers).
+///    - Étape 3 : Justificatifs d'identité KYC (prise de photo CNI et selfie).
+///    - Étape 4 : Justificatifs professionnels et diplômes (CV, attestations).
+///    - Étape 5 : Coordonnées de paiement Mobile Money (MTN MoMo et Orange Money).
+///    - Étape 6 : Récapitulatif et soumission pour validation.
 class RegisterScreen extends StatefulWidget {
+  /// Constructeur constant pour [RegisterScreen].
   const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
+/// État associé à l'écran [RegisterScreen] gérant la navigation du stepper et les soumissions.
 class _RegisterScreenState extends State<RegisterScreen>
     with SingleTickerProviderStateMixin {
   // ── CONTROLLERS ──
@@ -97,6 +114,9 @@ class _RegisterScreenState extends State<RegisterScreen>
   }
 
   // ── VALIDATION DU STEPPER TECHNICIEN ──
+  /// Valide les champs obligatoires de l'étape courante du formulaire technicien.
+  ///
+  /// Retourne `true` si les critères de l'étape sont satisfaits, `false` sinon avec affichage d'un message d'erreur.
   bool _validateCurrentStep() {
     switch (_currentStep) {
       case 0:
@@ -126,6 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
+  /// Passe à l'étape suivante du stepper technicien après validation.
   void _nextStep() {
     if (!_validateCurrentStep()) return;
     if (_currentStep < 5) {
@@ -135,6 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
+  /// Revient à l'étape précédente du stepper technicien.
   void _prevStep() {
     if (_currentStep > 0) {
       setState(() => _currentStep--);
@@ -143,6 +165,9 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
+  /// Ouvre l'écran caméra pour capturer un document d'identité (CNI ou selfie).
+  ///
+  /// [isSelfie] Vrai pour capturer le selfie visage + CNI, faux pour la CNI seule.
   Future<void> _pickKYCDocument(bool isSelfie) async {
     try {
       final photo = await Navigator.push(
@@ -168,6 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
+  /// Permet la sélection de documents professionnels annexes (CV, diplômes, certificats) via l'explorateur de fichiers.
   Future<void> _pickDocument() async {
     try {
       final result = await FilePicker.platform.pickFiles(
@@ -189,102 +215,260 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
+  // ── UTILITAIRES DE TRADUCTION & NETTOYAGE D'ERREURS ──
+  /// Traduit les messages d'erreur fréquents renvoyés par Supabase Auth en français clair et informatif.
+  String _translateRegisterError(String msg) {
+    final lower = msg.toLowerCase();
+    if (lower.contains('user already registered') || lower.contains('already exists')) {
+      return 'Cette adresse e-mail est déjà associée à un compte existant. Veuillez vous connecter.';
+    }
+    if (lower.contains('password should be at least 6 characters') || lower.contains('password is too short')) {
+      return 'Le mot de passe doit comporter au moins 6 caractères.';
+    }
+    if (lower.contains('invalid email') || lower.contains('invalid format') || lower.contains('unable to validate email')) {
+      return 'Le format de l\'adresse e-mail est invalide.';
+    }
+    if (lower.contains('signup requires a valid password')) {
+      return 'Veuillez saisir un mot de passe valide.';
+    }
+    if (lower.contains('rate limit') || lower.contains('too many requests')) {
+      return 'Trop de tentatives en peu de temps. Veuillez patienter quelques instants avant de réessayer.';
+    }
+    return msg;
+  }
+
+  /// Nettoie les messages d'exception bruts pour préserver une interface utilisateur propre.
+  String _cleanErrorMessage(String raw) {
+    if (raw.startsWith('Exception: ')) {
+      return raw.substring(11);
+    }
+    return raw;
+  }
+
   // ── SOUMISSION TECHNICIEN ──
+  /// Procède à la création complète du compte technicien.
+  ///
+  /// Enregistre l'utilisateur dans Supabase Auth avec métadonnées explicites `role: technician`,
+  /// synchronise les tables `users` et `technicians`, téléverse les fichiers KYC vers le bucket de stockage
+  /// et navigue vers l'écran de sélection de forfait `/subscription/select`.
   Future<void> _registerTechnician() async {
     if (_isLoading) return;
     setState(() => _isLoading = true);
+    AppRouter.isRegistering = true;
+
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final name = _nameController.text.trim();
+    final phone = '+237${_phoneController.text.trim()}';
+
+    debugPrint('════════════════════════════════════════════════════════════════');
+    debugPrint('[INSCRIPTION-TECH] Début du processus d\'inscription Technicien');
+    debugPrint('[INSCRIPTION-TECH] Nom : $name');
+    debugPrint('[INSCRIPTION-TECH] Email : $email');
+    debugPrint('[INSCRIPTION-TECH] Téléphone : $phone');
+    debugPrint('[INSCRIPTION-TECH] Spécialités : $_selectedSpecialties');
+    debugPrint('[INSCRIPTION-TECH] Expérience : ${_experienceController.text.trim()} ans');
+    debugPrint('[INSCRIPTION-TECH] MTN MoMo : ${_mtnController.text.trim()} | Orange : ${_orangeController.text.trim()}');
+    debugPrint('════════════════════════════════════════════════════════════════');
 
     try {
-      // 1. Supabase Auth
+      // 1. Supabase Auth avec métadonnées explicites (garantit le rôle technician dès la session)
+      debugPrint('[INSCRIPTION-TECH] Étape 1 : Appel Supabase Auth signUp...');
       final response = await Supabase.instance.client.auth.signUp(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+        email: email,
+        password: password,
+        data: {
+          'role': 'technician',
+          'name': name,
+          'phone': phone,
+        },
       );
 
       if (response.user == null) {
-        _showError('Erreur lors de la création du compte');
+        debugPrint('[INSCRIPTION-TECH] ÉCHEC : Aucun utilisateur retourné par Supabase.');
+        _showError('Erreur lors de la création du compte. Veuillez réessayer.');
         return;
       }
 
       final userId = response.user!.id;
+      final session = response.session;
+      debugPrint('[INSCRIPTION-TECH] Utilisateur créé avec succès dans Supabase Auth ! ID: $userId');
+      debugPrint('[INSCRIPTION-TECH] Statut de session : ${session != null ? "Active (Connecté)" : "Nulle (Confirmation par email requise)"}');
 
-      // 2. Table users
-      await Supabase.instance.client.from('users').insert({
-        'id': userId,
-        'phone': '+237${_phoneController.text.trim()}',
-        'name': _nameController.text.trim(),
-        'role': 'technician',
-      });
+      // Définir le rôle immédiatement en mémoire pour bloquer tout saut vers /client/home
+      AppRouter.setCachedRole(userId, 'technician', validationStatus: 'pending');
 
-      // 3. Table technicians
-      await Supabase.instance.client.from('technicians').insert({
-        'user_id': userId,
-        'bio': _bioController.text.trim(),
-        'experience_years': int.tryParse(_experienceController.text.trim()) ?? 0,
-        'specialties': _selectedSpecialties,
-        'payment_methods': {
-          'mtn': _mtnController.text.trim(),
-          'orange': _orangeController.text.trim(),
-        },
-        'validation_status': 'pending',
-      });
+      // Si la confirmation d'adresse email est requise sur le projet Supabase
+      if (session == null) {
+        debugPrint('[INSCRIPTION-TECH] Confirmation par email requise par Supabase. Invitation envoyée.');
+        AppRouter.isRegistering = false;
+        if (mounted) {
+          _showSuccess('Compte technicien créé avec succès ! Un e-mail de confirmation a été envoyé à $email. Veuillez vérifier vos e-mails avant de vous connecter.');
+          await Future.delayed(const Duration(milliseconds: 1500));
+          if (mounted) context.go('/login');
+        }
+        return;
+      }
+
+      // 2. Table users (upsert résilient avec repli update en cas de conflit ou RLS)
+      debugPrint('[INSCRIPTION-TECH] Étape 2 : Synchronisation de la table public.users...');
+      try {
+        await Supabase.instance.client.from('users').upsert({
+          'id': userId,
+          'phone': phone,
+          'name': name,
+          'role': 'technician',
+        });
+        debugPrint('[INSCRIPTION-TECH] Profil public.users synchronisé avec succès via upsert.');
+      } on PostgrestException catch (pe) {
+        debugPrint('[INSCRIPTION-TECH] Note upsert public.users (Code: ${pe.code}) : ${pe.message}. Tentative d\'update...');
+        try {
+          await Supabase.instance.client.from('users').update({
+            'phone': phone,
+            'name': name,
+            'role': 'technician',
+          }).eq('id', userId);
+          debugPrint('[INSCRIPTION-TECH] Profil public.users mis à jour avec succès via update.');
+        } catch (ue) {
+          debugPrint('[INSCRIPTION-TECH] Avertissement update public.users (géré par trigger SQL) : $ue');
+        }
+      } catch (e) {
+        debugPrint('[INSCRIPTION-TECH] Avertissement synchro public.users : $e');
+      }
+
+      // 3. Table technicians (colonnes conformes mtn_number et orange_number avec repli)
+      debugPrint('[INSCRIPTION-TECH] Étape 3 : Synchronisation de la table public.technicians...');
+      String technicianId = userId;
+      try {
+        final techInsert = await Supabase.instance.client.from('technicians').upsert({
+          'user_id': userId,
+          'bio': _bioController.text.trim(),
+          'experience_years': int.tryParse(_experienceController.text.trim()) ?? 0,
+          'specialties': _selectedSpecialties,
+          'mtn_number': _mtnController.text.trim(),
+          'orange_number': _orangeController.text.trim(),
+          'validation_status': 'pending',
+          'status': 'offline',
+          'is_verified': false,
+          'availability': {
+            'Lundi': '08:00 - 18:00',
+            'Mardi': '08:00 - 18:00',
+            'Mercredi': '08:00 - 18:00',
+            'Jeudi': '08:00 - 18:00',
+            'Vendredi': '08:00 - 18:00',
+            'Samedi': '09:00 - 14:00',
+            'Dimanche': 'Fermé',
+          },
+        }, onConflict: 'user_id').select('id').maybeSingle();
+
+        if (techInsert != null && techInsert['id'] != null) {
+          technicianId = techInsert['id'] as String;
+        }
+        debugPrint('[INSCRIPTION-TECH] Profil public.technicians enregistré avec succès (ID: $technicianId).');
+      } on PostgrestException catch (pe) {
+        debugPrint('[INSCRIPTION-TECH] Avertissement upsert technicians (Code: ${pe.code}) : ${pe.message}');
+        // Si colonnes manquantes (mtn_number / orange_number dans schéma ancien), tentative avec payload minimal
+        try {
+          final fallbackPayload = {
+            'user_id': userId,
+            'bio': _bioController.text.trim(),
+            'experience_years': int.tryParse(_experienceController.text.trim()) ?? 0,
+            'specialties': _selectedSpecialties,
+            'validation_status': 'pending',
+            'status': 'offline',
+          };
+          final techFallback = await Supabase.instance.client
+              .from('technicians')
+              .upsert(fallbackPayload, onConflict: 'user_id')
+              .select('id')
+              .maybeSingle();
+          if (techFallback != null && techFallback['id'] != null) {
+            technicianId = techFallback['id'] as String;
+          }
+          debugPrint('[INSCRIPTION-TECH] Profil public.technicians enregistré via payload de repli.');
+        } catch (fe) {
+          debugPrint('[INSCRIPTION-TECH] Échec repli technicians : $fe');
+        }
+      } catch (e) {
+        debugPrint('[INSCRIPTION-TECH] Avertissement synchro technicians : $e');
+      }
 
       // 4. Upload KYC Documents
-      if (_cniDocument != null && _cniDocument!.bytes != null) {
-        final path = '$userId/cni_${DateTime.now().millisecondsSinceEpoch}.jpg';
-        await Supabase.instance.client.storage.from('kyc-documents').uploadBinary(
-          path,
-          _cniDocument!.bytes!,
-          fileOptions: const FileOptions(contentType: 'image/jpeg'),
-        );
-      }
-
-      if (_selfieDocument != null && _selfieDocument!.bytes != null) {
-        final path = '$userId/selfie_${DateTime.now().millisecondsSinceEpoch}.jpg';
-        await Supabase.instance.client.storage.from('kyc-documents').uploadBinary(
-          path,
-          _selfieDocument!.bytes!,
-          fileOptions: const FileOptions(contentType: 'image/jpeg'),
-        );
-      }
-
-      // 5. Upload autres documents
-      for (final doc in _documents) {
-        if (doc.bytes != null) {
-          final ext = doc.name.split('.').last;
-          final path = '$userId/${DateTime.now().millisecondsSinceEpoch}_${doc.type}.$ext';
-          await Supabase.instance.client.storage.from('technician-documents').uploadBinary(
+      debugPrint('[INSCRIPTION-KYC] Étape 4 : Téléversement des justificatifs KYC...');
+      try {
+        if (_cniDocument != null && _cniDocument!.bytes != null) {
+          final path = '$userId/cni_${DateTime.now().millisecondsSinceEpoch}.jpg';
+          debugPrint('[INSCRIPTION-KYC] Téléversement CNI vers kyc-documents/$path...');
+          await Supabase.instance.client.storage.from('kyc-documents').uploadBinary(
             path,
-            doc.bytes!,
+            _cniDocument!.bytes!,
+            fileOptions: const FileOptions(contentType: 'image/jpeg'),
           );
+          debugPrint('[INSCRIPTION-KYC] CNI téléversée avec succès.');
         }
+
+        if (_selfieDocument != null && _selfieDocument!.bytes != null) {
+          final path = '$userId/selfie_${DateTime.now().millisecondsSinceEpoch}.jpg';
+          debugPrint('[INSCRIPTION-KYC] Téléversement Selfie CNI vers kyc-documents/$path...');
+          await Supabase.instance.client.storage.from('kyc-documents').uploadBinary(
+            path,
+            _selfieDocument!.bytes!,
+            fileOptions: const FileOptions(contentType: 'image/jpeg'),
+          );
+          debugPrint('[INSCRIPTION-KYC] Selfie CNI téléversé avec succès.');
+        }
+
+        // 5. Upload autres documents
+        for (final doc in _documents) {
+          if (doc.bytes != null) {
+            final ext = doc.name.split('.').last;
+            final path = '$userId/${DateTime.now().millisecondsSinceEpoch}_${doc.type}.$ext';
+            debugPrint('[INSCRIPTION-KYC] Téléversement document annexe (${doc.name}) vers technician-documents/$path...');
+            await Supabase.instance.client.storage.from('technician-documents').uploadBinary(
+              path,
+              doc.bytes!,
+            );
+          }
+        }
+        debugPrint('[INSCRIPTION-KYC] Tous les documents KYC ont été traités.');
+      } catch (uploadError) {
+        debugPrint('[INSCRIPTION-KYC] Avertissement stockage documents : $uploadError');
       }
 
+      debugPrint('[INSCRIPTION-TECH] Inscription réussie ! Redirection vers la sélection d\'abonnement (/subscription/select)...');
       if (mounted) {
         _showSuccess('Profil technicien créé avec succès !');
-        await Future.delayed(const Duration(milliseconds: 1200));
+        await Future.delayed(const Duration(milliseconds: 1000));
+        AppRouter.isRegistering = false;
         context.go(
           '/subscription/select',
           extra: {
-            'technicianId': userId,
-            'name': _nameController.text.trim(),
-            'email': _emailController.text.trim(),
-            'phone': '+237${_phoneController.text.trim()}',
+            'technicianId': technicianId,
+            'userId': userId,
+            'name': name,
+            'email': email,
+            'phone': phone,
           },
         );
       }
     } on AuthException catch (e) {
-      _showError(e.message);
-    } on PostgrestException catch (e) {
-      _showError('Erreur DB: ${e.message}');
+      debugPrint('[INSCRIPTION-TECH] ERREUR Supabase Auth : [${e.statusCode}] ${e.message}');
+      _showError(_translateRegisterError(e.message));
     } catch (e) {
-      _showError('Erreur: ${e.toString()}');
+      debugPrint('[INSCRIPTION-TECH] ERREUR inattendue : $e');
+      _showError('Erreur : ${_cleanErrorMessage(e.toString())}');
     } finally {
+      AppRouter.isRegistering = false;
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
   // ── SOUMISSION CLIENT ──
+  /// Procède à l'inscription d'un nouvel utilisateur avec le rôle client.
+  ///
+  /// Valide les champs obligatoires (nom, email, téléphone, mot de passe),
+  /// crée le compte Supabase Auth avec les métadonnées `role: client`,
+  /// synchronise de manière résiliente le profil dans la table `users` et redirige vers `/client/home`.
   Future<void> _registerClient() async {
     if (_nameController.text.trim().isEmpty ||
         _emailController.text.trim().isEmpty ||
@@ -303,35 +487,109 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
 
     setState(() => _isLoading = true);
+    AppRouter.isRegistering = true;
+
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final name = _nameController.text.trim();
+    final phone = '+237${_phoneController.text.trim()}';
+
+    debugPrint('════════════════════════════════════════════════════════════════');
+    debugPrint('[INSCRIPTION-CLIENT] Début du processus d\'inscription Client');
+    debugPrint('[INSCRIPTION-CLIENT] Nom : $name');
+    debugPrint('[INSCRIPTION-CLIENT] Email : $email');
+    debugPrint('[INSCRIPTION-CLIENT] Téléphone : $phone');
+    debugPrint('════════════════════════════════════════════════════════════════');
 
     try {
+      // 1. Supabase Auth avec métadonnées explicites
+      debugPrint('[INSCRIPTION-CLIENT] Étape 1 : Appel Supabase Auth signUp...');
       final response = await Supabase.instance.client.auth.signUp(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+        email: email,
+        password: password,
+        data: {
+          'role': 'client',
+          'name': name,
+          'phone': phone,
+        },
       );
 
       if (response.user == null) {
-        _showError('Erreur lors de la création du compte');
+        debugPrint('[INSCRIPTION-CLIENT] ÉCHEC : Aucun utilisateur retourné par Supabase.');
+        _showError('Erreur lors de la création du compte. Veuillez réessayer.');
         return;
       }
 
-      await Supabase.instance.client.from('users').insert({
-        'id': response.user!.id,
-        'phone': '+237${_phoneController.text.trim()}',
-        'name': _nameController.text.trim(),
-        'role': 'client',
-      });
+      final userId = response.user!.id;
+      final session = response.session;
+      debugPrint('[INSCRIPTION-CLIENT] Utilisateur créé avec succès dans Supabase Auth ! ID: $userId');
+      debugPrint('[INSCRIPTION-CLIENT] Statut de session : ${session != null ? "Active (Connecté)" : "Nulle (Confirmation par email requise)"}');
 
+      // Mise en cache immédiate du rôle client pour le routeur
+      AppRouter.setCachedRole(userId, 'client');
+
+      // Si la confirmation d'adresse email est requise sur le projet Supabase
+      if (session == null) {
+        debugPrint('[INSCRIPTION-CLIENT] Confirmation par email requise par Supabase. Invitation envoyée.');
+        AppRouter.isRegistering = false;
+        if (mounted) {
+          _showSuccess('Compte créé avec succès ! Un e-mail de confirmation a été envoyé à $email. Veuillez vérifier vos e-mails avant de vous connecter.');
+          await Future.delayed(const Duration(milliseconds: 1500));
+          if (mounted) context.go('/login');
+        }
+        return;
+      }
+
+      // 2. Synchronisation résiliente de la table public.users
+      debugPrint('[INSCRIPTION-CLIENT] Étape 2 : Synchronisation table public.users...');
+      try {
+        await Supabase.instance.client.from('users').upsert({
+          'id': userId,
+          'phone': phone,
+          'name': name,
+          'role': 'client',
+        });
+        debugPrint('[INSCRIPTION-CLIENT] Profil public.users synchronisé avec succès via upsert.');
+      } on PostgrestException catch (pe) {
+        debugPrint('[INSCRIPTION-CLIENT] Note upsert public.users (Code: ${pe.code}) : ${pe.message}. Tentative d\'update...');
+        try {
+          // Si l'upsert échoue (ex: policy INSERT restrictive), mise à jour car le trigger SQL l'a peut-être déjà inséré
+          await Supabase.instance.client.from('users').update({
+            'phone': phone,
+            'name': name,
+            'role': 'client',
+          }).eq('id', userId);
+          debugPrint('[INSCRIPTION-CLIENT] Profil public.users mis à jour avec succès via update.');
+        } catch (ue) {
+          debugPrint('[INSCRIPTION-CLIENT] Avertissement update public.users (géré par trigger SQL) : $ue');
+        }
+      } catch (e) {
+        debugPrint('[INSCRIPTION-CLIENT] Avertissement synchro public.users : $e');
+      }
+
+      // 3. Vérification de cohérence du profil en base
+      try {
+        final check = await Supabase.instance.client.from('users').select('id, role').eq('id', userId).maybeSingle();
+        debugPrint('[INSCRIPTION-CLIENT] Vérification DB : ${check != null ? "Profil confirmé en base (Rôle: ${check['role']})" : "Profil initialisé via métadonnées auth"}');
+      } catch (ce) {
+        debugPrint('[INSCRIPTION-CLIENT] Note vérification profil : $ce');
+      }
+
+      debugPrint('[INSCRIPTION-CLIENT] Inscription réussie ! Redirection vers /client/home');
       if (mounted) {
         _showSuccess('Bienvenue sur TechLink !');
         await Future.delayed(const Duration(milliseconds: 1000));
+        AppRouter.isRegistering = false;
         context.go('/client/home');
       }
     } on AuthException catch (e) {
-      _showError(e.message);
+      debugPrint('[INSCRIPTION-CLIENT] ERREUR Supabase Auth : [${e.statusCode}] ${e.message}');
+      _showError(_translateRegisterError(e.message));
     } catch (e) {
-      _showError('Erreur: ${e.toString()}');
+      debugPrint('[INSCRIPTION-CLIENT] ERREUR inattendue : $e');
+      _showError('Erreur d\'inscription : ${_cleanErrorMessage(e.toString())}');
     } finally {
+      AppRouter.isRegistering = false;
       if (mounted) setState(() => _isLoading = false);
     }
   }
@@ -1553,19 +1811,35 @@ class _RegisterScreenState extends State<RegisterScreen>
 
 // ── DATA CLASSES ──
 
+/// Modèle interne représentant un fichier ou document téléversé (KYC, diplôme, CNI).
 class _DocFile {
+  /// Nom du fichier avec son extension.
   final String name;
+
+  /// Chemin local d'accès au fichier sur l'appareil.
   final String? path;
+
+  /// Données binaires brutes du fichier (utilisées pour l'upload Supabase Storage).
   final Uint8List? bytes;
+
+  /// Catégorie ou nature du document ('cni', 'selfie_cni', 'CV', etc.).
   final String type;
 
+  /// Constructeur de [_DocFile].
   _DocFile({required this.name, this.path, this.bytes, required this.type});
 }
 
+/// Modèle d'affichage représentant une étape dans la barre de progression du stepper technicien.
 class _StepInfo {
+  /// Icône illustrative de l'étape.
   final IconData icon;
+
+  /// Titre principal de l'étape.
   final String title;
+
+  /// Sous-titre explicatif.
   final String subtitle;
 
+  /// Constructeur de [_StepInfo].
   _StepInfo({required this.icon, required this.title, required this.subtitle});
 }

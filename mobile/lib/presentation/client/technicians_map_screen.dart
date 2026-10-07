@@ -1,19 +1,32 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : technicians_map_screen.dart
+// Rôle          : Écran de recherche et sélection des techniciens qualifiés
+//                 pour une mission, triés par distance géographique (GPS).
+// Module        : Présentation Client (Missions & Matching)
+// Dépendances   : flutter/material.dart, go_router, supabase_flutter, geolocator,
+//                 app_colors.dart
+// Sécurité/RLS  : Filtrage des techniciens vérifiés, approuvés et actifs.
+//                 Assignation sécurisée de la mission via Supabase.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DE LA CARTE DES TECHNICIENS
-// =========================================================================
-// Affiche la liste des techniciens qualifiés pour la mission demandée,
-// triés par distance depuis la position GPS du client.
-
+/// Écran affichant les techniciens qualifiés et disponibles pour une mission donnée.
+/// Permet la recherche textuelle, le tri par distance GPS et l'assignation directe.
 class TechniciansMapScreen extends StatefulWidget {
+  /// Identifiant unique de la mission concernée
   final String missionId;
+
+  /// Résultat de l'analyse préliminaire par l'IA (catégorie, description, urgence)
   final Map<String, dynamic> aiResult;
 
+  /// Constructeur de l'écran des techniciens disponibles
   const TechniciansMapScreen({
     super.key,
     required this.missionId,
@@ -25,21 +38,43 @@ class TechniciansMapScreen extends StatefulWidget {
 }
 
 class _TechniciansMapScreenState extends State<TechniciansMapScreen> {
-  List<Map<String, dynamic>> _allTechs = [];          // tous les techniciens chargés
-  List<Map<String, dynamic>> _filteredTechs = [];     // après filtre texte
+  /// Liste complète de tous les techniciens chargés depuis la base de données
+  List<Map<String, dynamic>> _allTechs = [];
+
+  /// Liste des techniciens après application du filtre de recherche textuel
+  List<Map<String, dynamic>> _filteredTechs = [];
+
+  /// Indicateur de chargement initial des données
   bool _isLoading = true;
+
+  /// Coordonnées GPS actuelles de l'utilisateur client
   Position? _clientPosition;
+
+  /// Identifiant textuel de la catégorie requise pour le service
   String _categorySlug = '';
+
+  /// Nom d'affichage de la catégorie du service
   String _categoryName = '';
 
-  // Contrôleur pour la recherche
+  /// Contrôleur du champ de saisie de recherche textuelle
   final TextEditingController _searchController = TextEditingController();
+
+  /// Terme de recherche actuellement saisi par l'utilisateur
   String _searchQuery = '';
 
+  /// Contrôleur de défilement pour la pagination infinie
   final ScrollController _scrollController = ScrollController();
+
+  /// Index de décalage pour la pagination Supabase
   int _offset = 0;
+
+  /// Nombre maximal d'enregistrements récupérés par requête
   static const int _limit = 100;
+
+  /// Indique s'il reste d'autres techniciens à charger en pagination
   bool _hasMore = true;
+
+  /// Indicateur de chargement d'une page supplémentaire
   bool _isLoadingMore = false;
 
   @override
@@ -61,12 +96,14 @@ class _TechniciansMapScreenState extends State<TechniciansMapScreen> {
     super.dispose();
   }
 
+  /// Détecte lorsque le défilement approche du bas pour déclencher la pagination
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
       _loadTechnicians();
     }
   }
 
+  /// Réagit au changement de texte dans la barre de recherche
   void _onSearchChanged() {
     setState(() {
       _searchQuery = _searchController.text.trim().toLowerCase();
@@ -74,6 +111,7 @@ class _TechniciansMapScreenState extends State<TechniciansMapScreen> {
     });
   }
 
+  /// Filtre les techniciens par nom ou spécialités, en conservant le tri par proximité
   void _applyFilter() {
     if (_searchQuery.isEmpty) {
       _filteredTechs = List.from(_allTechs);
@@ -95,8 +133,12 @@ class _TechniciansMapScreenState extends State<TechniciansMapScreen> {
     });
   }
 
+  /// Message d'erreur éventuel lié à la permission ou géolocalisation GPS
   String? _gpsError;
 
+  /// Charge les techniciens depuis Supabase, calcule les distances GPS et filtre par spécialité.
+  /// 
+  /// [refresh] : Indique s'il s'agit d'une réinitialisation complète de la liste.
   Future<void> _loadTechnicians({bool refresh = false}) async {
     if (refresh) {
       _offset = 0;
@@ -200,6 +242,7 @@ class _TechniciansMapScreenState extends State<TechniciansMapScreen> {
     }
   }
 
+  /// Détermine si une spécialité textuelle correspond aux mots-clés du domaine demandé.
   bool _slugMatchesSpec(String spec) {
     // spec est déjà en minuscules et trim()
     final slug = _categorySlug.toLowerCase();
@@ -218,7 +261,7 @@ class _TechniciansMapScreenState extends State<TechniciansMapScreen> {
     return keys.any((k) => spec.contains(k));
   }
 
-  // Méthode pour ouvrir le profil et attendre le résultat
+  /// Ouvre la vue détaillée du profil du technicien sélectionné et attend un retour de confirmation.
   Future<bool?> _navigateToProfile(Map<String, dynamic> technician) async {
     final result = await context.push('/client/technician-profile', extra: {
         'technician': technician,
@@ -227,7 +270,7 @@ class _TechniciansMapScreenState extends State<TechniciansMapScreen> {
     return result as bool?;
   }
 
-  // Méthode pour sélectionner le technicien (identique à celle du profil)
+  /// Assigne le technicien sélectionné à la mission courante après confirmation de l'utilisateur.
   Future<void> _selectTechnician(Map<String, dynamic> technician) async {
   final user = technician['users'] as Map<String, dynamic>?;
   final name = user?['name'] as String? ?? 'Technicien';
@@ -577,6 +620,7 @@ class _TechniciansMapScreenState extends State<TechniciansMapScreen> {
                 ),
     );
   }
+  /// Construit la vue affichée lorsqu'aucun technicien n'est disponible pour la catégorie.
   Widget _buildEmpty() {
     final tc = Theme.of(context).extension<TechLinkColors>()!;
     return Center(
@@ -631,10 +675,15 @@ class _TechniciansMapScreenState extends State<TechniciansMapScreen> {
   }
 }
 
-// ── SECTION HEADER (réutilisé) ──
+/// En-tête de section avec icône, titre et couleur thématique (ex: Proximité, Éloigné).
 class _SectionHeader extends StatelessWidget {
+  /// Icône illustrative de la catégorie de distance
   final IconData icon;
+
+  /// Libellé du groupe de distance
   final String title;
+
+  /// Couleur d'accentuation de la section
   final Color color;
 
   const _SectionHeader({
@@ -662,11 +711,18 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-// ── CARTE TECHNICIEN (avec onViewProfile et onSelect) ──
+/// Carte interactive présentant un technicien avec ses coordonnées, note, spécialités et distance.
 class _TechnicianCard extends StatelessWidget {
+  /// Données brutes du technicien et de son utilisateur associé
   final Map<String, dynamic> technician;
+
+  /// Callback déclenché pour ouvrir le profil complet du technicien
   final Future<bool?> Function() onViewProfile;
+
+  /// Action de confirmation et d'assignation du technicien
   final VoidCallback onSelect;
+
+  /// Indique si ce technicien est mis en avant / recommandé par l'algorithme
   final bool isRecommended;
 
   const _TechnicianCard({
@@ -676,6 +732,7 @@ class _TechnicianCard extends StatelessWidget {
     this.isRecommended = false,
   });
 
+  /// Retourne la couleur représentative du palier de distance
   Color _getDistanceColor(double? dist) {
     if (dist == null) return AppColors.textSecondary;
     if (dist < 3.0) return AppColors.success;
@@ -683,6 +740,7 @@ class _TechnicianCard extends StatelessWidget {
     return AppColors.textSecondary;
   }
 
+  /// Génère le badge visuel indiquant la distance en kilomètres ou mètres
   Widget _buildDistanceBadge(double? dist) {
     if (dist == null) {
       return Container(

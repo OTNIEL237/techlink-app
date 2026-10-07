@@ -1,18 +1,46 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : camerpay_service.dart
+// Rôle          : Service de gestion des paiements Mobile Money (Orange Money, MTN MoMo) et abonnements.
+// Module        : Data / Services
+// Dépendances   : supabase_flutter, api_service.dart, app_error_handler.dart
+// Sécurité/RLS  : Opérations financières acheminées via l'API sécurisée du backend.
+// =============================================================================
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'api_service.dart';
 import '../../core/utils/app_error_handler.dart';
 
+/// Service gérant l'orchestration des flux financiers dans l'application.
+///
+/// Prend en charge deux grands types de transactions :
+/// 1. Le règlement des missions d'intervention technique par les clients.
+/// 2. La souscription, le renouvellement et l'essai gratuit des abonnements pour les techniciens.
+/// Inclut également la gestion des paiements manuels directs (espèces ou transfert direct).
 class CamerPayService {
+  /// Identifiant du type de paiement pour les interventions/missions.
   static const String paymentTypeMission = 'mission';
+
+  /// Identifiant du type de paiement pour les abonnements techniciens.
   static const String paymentTypeSubscription = 'subscription';
 
-  static const double monthlyPrice = 2000.0; // Prix par mois
-  static const double yearlyPrice = 20000.0; // Prix par an
-  static const int trialDays = 30;           // Période d'essai gratuite en jours
+  /// Tarif de l'abonnement mensuel pour technicien en Francs CFA (2 000 XAF).
+  static const double monthlyPrice = 2000.0;
 
+  /// Tarif de l'abonnement annuel pour technicien en Francs CFA (20 000 XAF).
+  static const double yearlyPrice = 20000.0;
+
+  /// Durée de la période d'essai gratuit accordée aux nouveaux techniciens (30 jours).
+  static const int trialDays = 30;
+
+  /// Client Supabase pour les opérations directes si nécessaire.
   final SupabaseClient supabase;
+
+  /// Client API HTTP utilisé pour interagir avec le backend TechLink.
   final ApiService _apiService;
 
+  /// Constructeur injectant les instances de client Supabase et d'API HTTP.
   CamerPayService({
     SupabaseClient? supabaseClient,
     ApiService? apiService,
@@ -23,6 +51,15 @@ class CamerPayService {
   // 1. PAIEMENT DES MISSIONS (Client -> Technicien)
   // =========================================================================
   
+  /// Initialise une transaction de paiement pour une mission spécifique.
+  ///
+  /// [missionId] Identifiant unique de la mission.
+  /// [amount] Montant total de la prestation.
+  /// [clientId] Identifiant unique du client payeur.
+  /// [clientPhone] Numéro de téléphone Mobile Money du client.
+  /// [clientEmail] Adresse e-mail du client pour le reçu.
+  /// [description] Description du motif de paiement.
+  /// Retourne un dictionnaire avec le statut de l'opération et l'URL de paiement ou la référence.
   Future<Map<String, dynamic>> initializeMissionPayment({
     required String missionId,
     required double amount,
@@ -32,7 +69,7 @@ class CamerPayService {
     required String description,
   }) async {
     try {
-      // Si le montant est supérieur à 20 FCFA, prélever 20 FCFA
+      // Si le montant est supérieur à 20 FCFA, prélever 20 FCFA (seuil de test)
       final chargeAmount = amount > 20 ? 20 : amount.toInt();
 
       final response = await _apiService.post('/payments/initialize', {
@@ -67,6 +104,14 @@ class CamerPayService {
   // 2. ABONNEMENTS DES TECHNICIENS
   // =========================================================================
 
+  /// Initialise le règlement d'un forfait d'abonnement pour un technicien.
+  ///
+  /// [technicianId] Identifiant unique du technicien.
+  /// [subscriptionType] Type de forfait ('monthly' ou 'yearly').
+  /// [technicianName] Nom complet du technicien.
+  /// [technicianPhone] Numéro Mobile Money utilisé pour le prélèvement.
+  /// [technicianEmail] Adresse e-mail de facturation.
+  /// Retourne les données d'initialisation de paiement transmises par le backend.
   Future<Map<String, dynamic>> initializeSubscriptionPayment({
     required String technicianId,
     required String subscriptionType,
@@ -108,6 +153,11 @@ class CamerPayService {
   // 3. VÉRIFICATION DES TRANSACTIONS
   // =========================================================================
 
+  /// Vérifie le statut d'une transaction auprès de la passerelle de paiement.
+  ///
+  /// [reference] Numéro de référence unique de la transaction.
+  /// [type] Nature du paiement ('mission' ou 'subscription').
+  /// Retourne l'état courant de la transaction ('pending', 'successful', 'failed').
   Future<Map<String, dynamic>> verifyTransaction({
     required String reference,
     required String type, // 'mission' ou 'subscription'
@@ -139,6 +189,10 @@ class CamerPayService {
     }
   }
 
+  /// Récupère l'état d'abonnement actif d'un technicien.
+  ///
+  /// [technicianId] Identifiant unique du technicien.
+  /// Retourne le statut, la date d'expiration et la validité du forfait.
   Future<Map<String, dynamic>> getSubscriptionStatus({
     required String technicianId,
   }) async {
@@ -164,6 +218,10 @@ class CamerPayService {
     }
   }
 
+  /// Active la période d'essai gratuit de 30 jours pour un nouveau technicien validé.
+  ///
+  /// [technicianId] Identifiant unique du technicien.
+  /// Retourne le résultat d'activation avec la nouvelle date limite d'essai.
   Future<Map<String, dynamic>> startFreeTrial({
     required String technicianId,
   }) async {
@@ -191,6 +249,12 @@ class CamerPayService {
     }
   }
 
+  /// Initie le renouvellement d'un abonnement expiré pour un technicien.
+  ///
+  /// [technicianId] Identifiant du technicien.
+  /// [technicianName] Nom complet.
+  /// [technicianPhone] Numéro de téléphone.
+  /// [technicianEmail] Adresse e-mail.
   Future<Map<String, dynamic>> renewSubscription({
     required String technicianId,
     required String technicianName,
@@ -225,6 +289,9 @@ class CamerPayService {
     }
   }
 
+  /// Résilie ou annule l'abonnement automatique en cours d'un technicien.
+  ///
+  /// [technicianId] Identifiant unique du technicien.
   Future<Map<String, dynamic>> cancelSubscription({
     required String technicianId,
   }) async {
@@ -254,6 +321,13 @@ class CamerPayService {
   // 4. PAIEMENTS MANUELS (De Main à Main ou P2P)
   // =========================================================================
 
+  /// Déclare l'initialisation d'un paiement manuel direct (espèces ou transfert P2P).
+  ///
+  /// [missionId] Identifiant de la mission concernée.
+  /// [amount] Montant en Francs CFA versé.
+  /// [clientId] Identifiant du client.
+  /// [method] Méthode utilisée (ex: 'cash', 'direct_transfer').
+  /// [senderPhone] Numéro de l'émetteur pour vérification.
   Future<Map<String, dynamic>> initializeManualPayment({
     required String missionId,
     required double amount,
@@ -289,6 +363,9 @@ class CamerPayService {
     }
   }
 
+  /// Valide et confirme la bonne réception d'un paiement manuel par le technicien.
+  ///
+  /// [missionId] Identifiant unique de la mission réglée.
   Future<Map<String, dynamic>> confirmManualPayment({
     required String missionId,
   }) async {

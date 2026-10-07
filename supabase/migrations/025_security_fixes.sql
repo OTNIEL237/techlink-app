@@ -1,4 +1,14 @@
--- 025_security_fixes.sql
+-- =============================================================================
+-- FICHIER : 025_security_fixes.sql
+-- RÔLE : Durcissement de la sécurité RLS sur les tables sensibles :
+--         - Verrouillage strict de 'technician_documents' (seuls le technicien propriétaire
+--           et les admins peuvent voir/insérer/modifier les pièces KYC)
+--         - Verrouillage strict de 'technician_subscriptions' (seuls les admins ou le service backend
+--           peuvent insérer ou valider un abonnement ; fermeture de la faille de gratuité frauduleuse).
+-- MODULE : Schéma de base de données / Sécurité & Corrections RLS
+-- DÉPENDANCES : public.technician_documents, public.technician_subscriptions, public.technicians, public.users
+-- SÉCURITÉ / RLS : Élimination des accès publics et contrôle strict par auth.uid() et rôle admin.
+-- =============================================================================
 
 -- 1. CORRECTION DE LA SÉCURITÉ DES DOCUMENTS (KYC)
 -- On modifie les règles de la table pour que seuls les admins et le technicien propriétaire puissent y toucher.

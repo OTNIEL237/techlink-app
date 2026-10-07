@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : technician_edit_profile_screen.dart
+// RÔLE : Gestion et édition du profil professionnel de l'artisan / technicien
+// MODULE : Presentation / Technician / Profile
+// DÉPENDANCES : flutter/material.dart, go_router, image_picker, supabase_flutter, cached_network_image, app_colors.dart
+// SÉCURITÉ / RLS : Authentification technicien requise. Mise à jour de 'users' et 'technicians', upload d'avatar vers Supabase Storage.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -6,31 +14,70 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/constants/app_colors.dart';
 
+/// Écran complet d'édition des paramètres professionnels du technicien.
+///
+/// Permet la gestion de l'avatar photo, du nom, du numéro de contact, de la biographie,
+/// des années d'expérience, du tarif horaire indicatif, des spécialités métiers
+/// et des numéros de compte Mobile Money (MTN et Orange) pour les encaissements.
 class TechnicianEditProfileScreen extends StatefulWidget {
+  /// Constructeur constant du widget [TechnicianEditProfileScreen].
   const TechnicianEditProfileScreen({super.key});
 
   @override
   State<TechnicianEditProfileScreen> createState() => _TechnicianEditProfileScreenState();
 }
 
+/// État associé à l'écran d'édition du profil artisan.
+///
+/// Gère la synchronisation bidirectionnelle des informations de profil
+/// entre les tables `users` et `technicians`, ainsi que le téléversement de photos de profil.
 class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScreen> {
+  /// Contrôleur du champ de saisie du nom complet de l'artisan.
   final _nameController = TextEditingController();
+
+  /// Contrôleur du champ de saisie du numéro de téléphone principal.
   final _phoneController = TextEditingController();
+
+  /// Contrôleur du champ de saisie de la description / biographie professionnelle.
   final _bioController = TextEditingController();
+
+  /// Contrôleur du champ de saisie des années d'expérience.
   final _experienceController = TextEditingController();
+
+  /// Contrôleur du champ de saisie du taux horaire indicatif en FCFA.
   final _hourlyRateController = TextEditingController();
+
+  /// Contrôleur du numéro MTN Mobile Money pour les versements.
   final _mtnController = TextEditingController();
+
+  /// Contrôleur du numéro Orange Money pour les versements.
   final _orangeController = TextEditingController();
 
+  /// URL publique de la photo de profil hébergée sur Supabase Storage.
   String? _avatarUrl;
+
+  /// Statut de conformité du compte ('pending', 'approved', 'rejected').
   String _validationStatus = 'pending';
+
+  /// Nombre total d'interventions clôturées avec succès.
   int _totalMissions = 0;
+
+  /// Moyenne des évaluations clients obtenues (sur 5 étoiles).
   double _rating = 0.0;
+
+  /// Indicateur de chargement initial des données depuis Supabase.
   bool _isLoading = true;
+
+  /// Indicateur de sauvegarde en cours vers la base de données.
   bool _isSaving = false;
+
+  /// Indicateur d'envoi d'une nouvelle photo vers le bucket Storage avatars.
   bool _isUploadingPhoto = false;
 
+  /// Spécialités actuellement associées au profil du prestataire.
   List<String> _selectedSpecialties = [];
+
+  /// Catalogue exhaustif des spécialités techniques disponibles sur TechLink.
   final List<String> _allSpecialties = [
     'Plomberie',
     'Électricité',
@@ -52,6 +99,7 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
     _loadProfileData();
   }
 
+  /// Libère les ressources des contrôleurs de champs de texte lors du démontage du widget.
   @override
   void dispose() {
     _nameController.dispose();
@@ -64,6 +112,7 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
     super.dispose();
   }
 
+  /// Nettoie et extrait les chiffres du numéro sans l'indicatif international camerounais '+237' ou '237'.
   String _cleanPhonePrefix(String? raw) {
     if (raw == null) return '';
     var p = raw.trim();
@@ -72,6 +121,7 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
     return p;
   }
 
+  /// Charge les données combinées des tables `users` et `technicians` pour pré-remplir le formulaire.
   Future<void> _loadProfileData() async {
     try {
       final user = Supabase.instance.client.auth.currentUser;
@@ -124,6 +174,9 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
     }
   }
 
+  /// Ouvre la galerie photo, compresse l'image sélectionnée et l'envoie dans le bucket 'avatars'.
+  ///
+  /// Met à jour de façon synchronisée `users.avatar_url` et `technicians.photo_url`.
   Future<void> _pickAndUploadImage() async {
     try {
       final picker = ImagePicker();
@@ -193,6 +246,9 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
     }
   }
 
+  /// Valide et sauvegarde les modifications du profil dans la base de données Supabase.
+  ///
+  /// Met à jour les coordonnées dans `users` et les caractéristiques métier dans `technicians`.
   Future<void> _saveProfile() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
@@ -277,6 +333,7 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
     }
   }
 
+  /// Affiche une notification d'erreur stylisée sous forme de SnackBar flottant.
   void _showToast(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -288,6 +345,7 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
     );
   }
 
+  /// Construit l'interface utilisateur d'édition de profil avec sections thématiques.
   @override
   Widget build(BuildContext context) {
     final tc = Theme.of(context).extension<TechLinkColors>() ?? TechLinkColors.light;
@@ -675,6 +733,7 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
     );
   }
 
+  /// Génère un libellé d'en-tête de section typographié.
   Widget _buildSectionTitle(String title, TechLinkColors tc) {
     return Text(
       title,
@@ -687,6 +746,7 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
     );
   }
 
+  /// Construit un champ de saisie textuel stylisé avec icône, indicateur et suffixe optionnel.
   Widget _buildTextField({
     required String label,
     required TextEditingController controller,
@@ -744,6 +804,7 @@ class _TechnicianEditProfileScreenState extends State<TechnicianEditProfileScree
     );
   }
 
+  /// Construit un champ de saisie de numéro téléphonique avec préfixe national (+237) et badge opérateur.
   Widget _buildPhoneField({
     required String label,
     required TextEditingController controller,

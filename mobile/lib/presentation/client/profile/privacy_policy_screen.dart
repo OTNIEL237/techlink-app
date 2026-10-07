@@ -1,7 +1,20 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : privacy_policy_screen.dart
+// Rôle          : Écran d'affichage des mentions légales et politique de
+//                 confidentialité concernant le traitement des données personnelles.
+// Module        : Présentation Client (Profil / Confidentialité)
+// Dépendances   : flutter/material.dart, app_colors.dart
+// Sécurité/RLS  : Accès public informatif sans exigence d'authentification.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 
+/// Écran présentant la politique de confidentialité et la gestion des données personnelles.
 class PrivacyPolicyScreen extends StatelessWidget {
+  /// Constructeur constant de l'écran de politique de confidentialité
   const PrivacyPolicyScreen({super.key});
 
   @override
@@ -39,6 +52,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
+  /// Construit une section titrée contenant les clauses et paragraphes d'information
   Widget _buildSection(String title, String content) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

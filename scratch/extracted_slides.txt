@@ -1,0 +1,548 @@
+﻿=== SLIDE 1 ===
+BIENVENUE ! 
+ Yōkoso · Bienvenue 
+   ·  ÉPISODE SPÉCIAL : LA SOUTENANCE 
+ SOUTENANCE DE STAGE ACADÉMIQUE 
+ Institut Africain d’Informatique 
+ FEUNOU FOSSO Otniel 
+ Année académique 2025 / 2026
+
+=== SLIDE 2 ===
+VALIDATION DE RAPPORT DE STAGE ACADÉMIQUE 
+ Institut Africain d’Informatique  ·  SANGOTECH SARL 
+ MISE EN PLACE D’UNE PLATEFORME INTELLIGENTE D’ASSISTANCE AU DÉPANNAGE ET DE MISE EN RELATION AVEC DES TECHNICIENS 
+ Stage effectué du 06 juillet au 30 septembre 2026 en vue de l’obtention du Diplôme d’Ingénieur des Travaux Informatiques, option Génie Logiciel 
+ Présenté par : 
+ FEUNOU FOSSO Otniel 
+ Sous l’encadrement 
+ Académique de : 
+ Mme MAGNE Prudence 
+ Professionnel de : 
+ M. NSANGOU Ghislain 
+ ANNÉE ACADÉMIQUE 2025 / 2026
+
+=== SLIDE 3 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ SOMMAIRE 
+ Plan de 
+ présentation 
+ 01 
+ Introduction 
+ Le quotidien face aux pannes 
+ 02 
+ Présentation de l’entreprise 
+ SANGOTECH SARL, notre structure d’accueil 
+ 03 
+ Contexte et problématique 
+ Constats, question centrale et solution proposée 
+ 04 
+ Méthodologie 
+ UML, processus 2TUP et conception du système 
+ 05 
+ Résultats et commentaires 
+ Démonstration, fonctionnalités et avancement 
+ 06 
+ Conclusion et perspectives 
+ Bilan du travail et évolutions futures 
+ FEUNOU FOSSO Otniel 
+    03
+
+=== SLIDE 4 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 01 · INTRODUCTION 
+ Quand une panne survient, chaque minute compte 
+ UN CONSTAT 
+ Des pannes fréquentes, des solutions lentes 
+ Électricité, plomberie, froid, électroménager ou informatique : trouver rapidement un technicien fiable reste un vrai parcours du combattant. 
+ UNE OPPORTUNITÉ 
+ Le smartphone et l’IA à portée de main 
+ La généralisation du mobile, du paiement mobile et de l’intelligence artificielle ouvre la voie à une assistance plus rapide et mieux ciblée. 
+ NOTRE RÉPONSE 
+ Une plateforme qui guide et connecte 
+ Pré-diagnostiquer la panne grâce à l’IA, puis mettre le client en relation avec le technicien qualifié le plus proche. 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    04
+
+=== SLIDE 5 ===
+PARTIE 
+ 02 
+ Présentation de l’entreprise 
+ SANGOTECH SARL · notre structure d’accueil 
+ FEUNOU FOSSO Otniel 
+    05
+
+=== SLIDE 6 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 02 · PRÉSENTATION DE L’ENTREPRISE 
+ SANGOTECH SARL, notre structure d’accueil 
+ RAISON SOCIALE 
+ SANGOTECH SARL 
+ FORME JURIDIQUE 
+ SARL 
+ SIÈGE 
+ Rue Pau, Akwa – Douala 
+ Historique 
+ créé en mars 2026 
+ Vision et missions 
+ Proposé des technologie innovante au particulier  
+ Services 
+ Conception des solution  
+ numerique 
+ Services de  
+ geolocalisation 
+  
+ gps 
+  pour les  
+ vehicule 
+ Jeux en  
+ ligne 
+ Plan de localisation 
+ PÉRIODE DE STAGE 
+ 06 juillet → 30 septembre 2026 
+ Encadrement : M. NSANGOU Ghislain 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    06
+
+=== SLIDE 7 ===
+PARTIE 
+ 03 
+ Contexte et problématique 
+ Constats de terrain · Question centrale · Solution proposée 
+ FEUNOU FOSSO Otniel 
+    07
+
+=== SLIDE 8 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 03 · CONTEXTE 
+ Trouver un bon technicien : un vrai défi 
+ Des pannes fréquentes et urgentes 
+ Électricité, plomberie, froid, électroménager, informatique : les pannes du quotidien n’attendent pas. 
+ Une recherche informelle et lente 
+ Bouche-à-oreille, contacts personnels, affichettes : trouver un technicien disponible prend souvent des heures, voire des jours. 
+ Un manque de confiance 
+ Compétences non vérifiées, tarifs opaques, aucun recours en cas de litige : le client avance à l’aveugle. 
+ Aucun diagnostic préalable 
+ Le client peine à décrire sa panne ; le technicien se déplace sans savoir quoi prévoir. 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    08
+
+=== SLIDE 9 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 03 · PROBLÉMATIQUE 
+ La question centrale 
+ Comment concevoir une plateforme permettant d’optimiser la mise en relation entre particuliers et techniciens de dépannage de manière  
+ rapide, fiable et assistée par l’intelligence artificielle ? 
+ Rapidité 
+ Fiabilité 
+ Intelligence artificielle 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    09
+
+=== SLIDE 10 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 03 · SOLUTION PROPOSÉE 
+ Notre réponse : une plateforme intelligente 
+ LA SOLUTION 
+ Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ De la description de la panne jusqu’au paiement et à l’évaluation du technicien, tout se fait dans une seule application. 
+ Diagnostic assisté par IA 
+ L’IA (Groq) analyse la description de la panne et propose un pré-diagnostic. 
+ Mise en relation géolocalisée 
+ Le client trouve le technicien qualifié le plus proche, selon sa spécialité et sa zone. 
+ Devis et paiement mobile 
+ Devis en ligne et paiement sécurisé via Orange Money et MTN Mobile Money. 
+ Confiance et suivi 
+ Évaluations, gestion des litiges, messagerie, appels et notifications intégrés. 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    10
+
+=== SLIDE 11 ===
+PARTIE 
+ 04 
+ Méthodologie 
+ UML · Processus 2TUP · Acteurs · Diagrammes · Architecture 
+ FEUNOU FOSSO Otniel 
+    11
+
+=== SLIDE 12 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 04 · LANGAGE DE MODÉLISATION 
+ UML, le langage de modélisation retenu 
+ OUTIL DE MODÉLISATION 
+ PowerAMC 
+ Orienté objet 
+ Il représente le système sous forme de classes, d’objets et de relations, au plus près du code. 
+ Formel et normalisé 
+ Standard de l’OMG : une notation précise, reconnue et partagée par tous. 
+ Support de communication performant 
+ Ses diagrammes facilitent les échanges entre développeurs, encadreurs et utilisateurs. 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    12
+
+=== SLIDE 13 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 04 · PROCESSUS DE DÉVELOPPEMENT 
+ 2TUP : un processus en Y 
+ BRANCHE FONCTIONNELLE 
+ BRANCHE TECHNIQUE 
+ Capture des besoins fonctionnels 
+ Analyse 
+ Capture des besoins techniques 
+ Conception générique 
+ Conception préliminaire 
+ Conception détaillée 
+ Codage et tests 
+ Recette 
+ POURQUOI 2TUP ? 
+ Itératif et incrémental 
+ Piloté par les risques 
+ Centré sur l’architecture 
+ Sépare le fonctionnel et le technique 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    13
+
+=== SLIDE 14 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 04 · ANALYSE DES BESOINS 
+ Les acteurs du système 
+ ACTEURS PRINCIPAUX 
+ Visiteur 
+ Consulte la plateforme et crée son compte. 
+ Client 
+ Soumet sa demande, trouve un technicien, paie et évalue. 
+ Technicien 
+ Gère ses missions, propose des devis et s’abonne. 
+ Administrateur 
+ Gère les utilisateurs, les litiges et vérifie les documents. 
+ ACTEURS SECONDAIRES · SYSTÈMES EXTERNES 
+ Groq IA 
+ Pré-diagnostic des pannes 
+ ZegoCloud 
+ Appels intégrés 
+ API de paiement 
+ Orange Money · MTN MoMo 
+ API de notification 
+ Alertes en temps réel 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    14
+
+=== SLIDE 15 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 04 · DIAGRAMME DE CAS D’UTILISATION 
+ Ce que chaque acteur peut faire 
+ Client 
+ Soumettre une demande · Trouver un technicien · Gérer ses missions 
+ Technicien 
+ Gérer ses missions attribuées · S’abonner · Effectuer un paiement 
+ Administrateur 
+ Gérer les utilisateurs · Gérer les litiges · Contacter les utilisateurs 
+ Tout utilisateur 
+ S’authentifier · Contacter (message, appel) · Signaler un litige · Notifications · Historique de paiement 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    15
+
+=== SLIDE 16 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 04 · DIAGRAMME DE SÉQUENCE 
+ Scénario « Créer une mission » avec l’IA 
+ 1 
+ Le client décrit son besoin 
+ Il saisit la description du problème puis clique sur « Analyser avec l’IA ». 
+ 2 
+ Le système vérifie la saisie 
+ Si la description est incomplète, il invite le client à la détailler. 
+ 3 
+ L’IA établit un pré-diagnostic 
+ La description lui est envoyée via une requête API sécurisée. 
+ 4 
+ Solution IA ou reformulation 
+ Problème pertinent : la solution s’affiche. Sinon : le client reformule. 
+ 5 
+ Création de la mission 
+ « Trouver un technicien proche » enregistre la mission en base. 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    16
+
+=== SLIDE 17 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 04 · DIAGRAMME DE CLASSES 
+ La structure statique du système 
+ 16 
+ classes pour modéliser tout le système 
+ UTILISATEURS 
+ Utilisateur (abstraite) · Client · Technicien · Administrateur 
+ CŒUR MÉTIER 
+ Mission · DemandeMission · Catégorie · Devis 
+ FINANCES 
+ Paiement · AbonnementTechnicien · HistoriqueVersement 
+ QUALITÉ ET ÉCHANGES 
+ Évaluation · Litige · Message · Appel · Notification 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    17
+
+=== SLIDE 18 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 04 · ARCHITECTURE 
+ Une architecture physique 4-tiers 
+ COUCHE 1 · PRÉSENTATION 
+ Application client 
+ Interfaces du client, du technicien et de l’administrateur 
+ COUCHE 2 · LOGIQUE MÉTIER 
+ Serveur applicatif 
+ API sécurisée, règles métier, orchestration des services 
+ COUCHE 3 · DONNÉES 
+ Base de données 
+ Utilisateurs, missions, devis, paiements, évaluations… 
+ COUCHE 4 .  
+ SERVICES EXTERNES CONNECTÉS AU SERVEUR 
+ Groq IA 
+ Pré-diagnostic 
+ ZegoCloud 
+ Appels 
+ Orange · MTN 
+ Paiement mobile 
+ Notifications 
+ Alertes push 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO Otniel 
+    18
+
+=== SLIDE 19 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 04 · ARCHITECTURE 
+ Une architecture logique du frontend 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO  
+ Otniel 
+    19
+
+=== SLIDE 20 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 04 · ARCHITECTURE 
+ Une architecture logique du backend 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO  
+ Otniel 
+    20
+
+=== SLIDE 21 ===
+PARTIE 
+ 05 
+ Résultats et commentaires 
+ Démonstration · Fonctionnalités · État d’avancement 
+ FEUNOU FOSSO  
+ Otniel 
+    21
+
+=== SLIDE 22 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 05 · DÉMONSTRATION 
+ Place à la démonstration 
+ 1 
+ S’authentifier 
+ Création de compte et connexion sécurisée 
+ 2 
+ Décrire la panne 
+ Pré-diagnostic instantané par l’IA 
+ 3 
+ Trouver un technicien 
+ Le technicien qualifié le plus proche 
+ 4 
+ Devis et paiement 
+ Orange Money · MTN Mobile Money 
+ 5 
+ Suivre et évaluer 
+ Messagerie, appel et notation du technicien 
+ EN DIRECT 
+ sur smartphone 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO  
+ Otniel 
+    22
+
+=== SLIDE 23 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 05 · RÉSULTATS 
+ Les fonctionnalités de la plateforme 
+ Client 
+ Demande avec diagnostic IA 
+ Trouver un technicien proche 
+ Accepter un devis et payer 
+ Évaluer le technicien 
+ Technicien 
+ Recevoir et accepter des missions 
+ Proposer des devis 
+ S’abonner à la plateforme 
+ Suivre ses versements 
+ Administrateur 
+ Gérer les utilisateurs 
+ Vérifier les documents des techniciens 
+ Résoudre les litiges 
+ Contacter les utilisateurs 
+ POUR TOUS LES UTILISATEURS 
+ Messagerie 
+ Appels intégrés 
+ Notifications 
+ Gestion du profil 
+ Historique des paiements 
+ Signalement de litige 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO  
+ Otniel 
+    23
+
+=== SLIDE 24 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 05 · COMMENTAIRES 
+ État d’avancement du projet 
+ Cahier des charges 
+ 100 % 
+ Analyse et conception 
+ 90 % 
+ Réalisation 
+ 80 % 
+ Les modules essentiels sont opérationnels ; les efforts restants portent sur les derniers tests et l’optimisation. 
+ 90 % 
+ AVANCEMENT GLOBAL 
+ moyenne des trois phases 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO  
+ Otniel 
+    24
+
+=== SLIDE 25 ===
+PARTIE 
+ 06 
+ Conclusion et perspectives 
+ Bilan du travail · Évolutions futures 
+ FEUNOU FOSSO  
+ Otniel 
+    24
+
+=== SLIDE 26 ===
+Mise en place d’une plateforme intelligente d’assistance au dépannage et de mise en relation avec des techniciens 
+ 06 · CONCLUSION ET PERSPECTIVES 
+ Bilan et perspectives 
+ CONCLUSION 
+ Ce stage chez SANGOTECH SARL nous a permis de concevoir et de réaliser une plateforme qui simplifie le dépannage : l’IA pré-diagnostique la panne, puis le client est mis en relation avec un technicien qualifié et proche, avec devis, paiement mobile et suivi intégrés. 
+ Ce projet a aussi renforcé nos compétences en analyse et conception UML, en développement et en intégration de services externes (IA, paiement, appels). 
+ PERSPECTIVES 
+ Publier l’application sur Google Play et l’App Store 
+ Diagnostic IA à partir de photos de la panne 
+ Suivi du technicien en temps réel sur la carte 
+ Étendre le service à d’autres villes du Cameroun 
+ Tableau de bord statistique pour l’administrateur 
+ Introduction 
+ Entreprise 
+ Contexte 
+ Méthodologie 
+ Résultats 
+ Conclusion 
+ FEUNOU FOSSO  
+ Otniel 
+    26
+
+=== SLIDE 27 ===
+MERCI ! 
+ Merci 
+   FIN DE L’ÉPISODE 
+ Merci pour votre aimable attention 
+ Place à vos questions et suggestions 
+ FEUNOU FOSSO Otniel · 2025 / 2026
+

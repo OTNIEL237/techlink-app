@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : notifications_screen.dart
+// Rôle          : Centre de notifications (alertes personnelles, statuts de missions et annonces broadcasts).
+// Module        : Presentation / Shared
+// Dépendances   : flutter, go_router, supabase_flutter, timeago, app_colors.dart, theme_provider.dart
+// Sécurité/RLS  : Interroge les tables 'notifications' (par user_id) et 'broadcasts' (par public cible).
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -6,21 +16,33 @@ import 'package:timeago/timeago.dart' as timeago;
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/theme_provider.dart';
 
-// =========================================================================
-// ÉCRAN MODERNE DES NOTIFICATIONS (Personnel & Broadcasts)
-// =========================================================================
-
+/// Centre de notifications consolidant les alertes de l'utilisateur et les messages généraux.
+///
+/// Permet de :
+/// - Visualiser les alertes d'avancement de mission, de paiement et de chat.
+/// - Lire les annonces administratives globales (broadcasts) ciblées selon le rôle.
+/// - Filtrer par catégorie ('Toutes', 'Non lues', 'Missions', 'Messages').
+/// - Marquer individuellement ou globalement les notifications comme lues.
 class NotificationsScreen extends StatefulWidget {
+  /// Constructeur constant pour [NotificationsScreen].
   const NotificationsScreen({super.key});
 
   @override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
+/// État associé à l'écran [NotificationsScreen] gérant le chargement, le filtrage et les actions.
 class _NotificationsScreenState extends State<NotificationsScreen> {
+  /// Indicateur d'état de chargement lors de la récupération des alertes.
   bool _isLoading = true;
+
+  /// Liste combinée et triée des notifications personnelles et annonces publiques.
   List<Map<String, dynamic>> _notifications = [];
+
+  /// Index du filtre actuellement sélectionné (0 à 3).
   int _selectedFilterIndex = 0;
+
+  /// Libellés des onglets de filtrage.
   final List<String> _filters = ['Toutes', 'Non lues', 'Missions', 'Messages'];
 
   @override

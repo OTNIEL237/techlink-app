@@ -1,13 +1,21 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : mission_active_screen.dart
+// Rôle          : Écran d'affichage des archives de missions pour le technicien
+//                 (missions terminées ou annulées) avec pagination infinie.
+// Module        : Présentation Technicien (Missions & Historique)
+// Dépendances   : flutter/material.dart, supabase_flutter, app_colors.dart
+// Sécurité/RLS  : Filtrage par `technician_id` correspondant à l'utilisateur connecté.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DES MISSIONS ARCHIVÉES
-// =========================================================================
-// Affiche l'historique des missions terminées ou annulées pour le technicien.
-
+/// Écran listant les missions passées (achevées ou annulées) avec pagination.
 class MissionArchiveScreen extends StatefulWidget {
+  /// Constructeur constant de l'écran d'archives de missions
   const MissionArchiveScreen({super.key});
 
   @override
@@ -15,14 +23,25 @@ class MissionArchiveScreen extends StatefulWidget {
 }
 
 class _MissionArchiveScreenState extends State<MissionArchiveScreen> {
+  /// Liste des enregistrements de missions archivées
   List<Map<String, dynamic>> _missions = [];
+
+  /// Indicateur de chargement initial des archives
   bool _isLoading = true;
 
-  // État de la pagination
+  /// Contrôleur de défilement pour la pagination infinie
   final ScrollController _scrollController = ScrollController();
+
+  /// Indicateur de chargement d'une page supplémentaire d'archives
   bool _isLoadingMore = false;
+
+  /// Indique si d'autres archives sont disponibles sur le serveur
   bool _hasMore = true;
+
+  /// Numéro de la page courante
   int _page = 0;
+
+  /// Nombre d'archives chargées par page
   final int _pageSize = 10;
 
   @override
@@ -38,6 +57,7 @@ class _MissionArchiveScreenState extends State<MissionArchiveScreen> {
     super.dispose();
   }
 
+  /// Détecte lorsque le défilement atteint le bas pour charger la page suivante
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 &&
         !_isLoadingMore &&
@@ -46,6 +66,7 @@ class _MissionArchiveScreenState extends State<MissionArchiveScreen> {
     }
   }
 
+  /// Charge le premier lot de missions archivées depuis Supabase
   Future<void> _loadArchives() async {
     setState(() {
       _isLoading = true;
@@ -75,6 +96,7 @@ class _MissionArchiveScreenState extends State<MissionArchiveScreen> {
     }
   }
 
+  /// Charge le lot suivant de missions archivées pour la pagination infinie
   Future<void> _loadMoreArchives() async {
     if (_isLoadingMore || !_hasMore) return;
     setState(() => _isLoadingMore = true);

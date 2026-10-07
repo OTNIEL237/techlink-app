@@ -1,5 +1,18 @@
+// =============================================================================
+// FICHIER : backend/src/config/camerpay.js
+// RÔLE : Configuration de la passerelle de paiement CamerPay et des forfaits d'abonnement
+// MODULE : Backend / Configuration Paiements
+// DÉPENDANCES : dotenv
+// SÉCURITÉ / RLS : Utilisation de variables d'environnement pour clés d'API et secrets webhook
+// =============================================================================
+
 require('dotenv').config();
 
+/**
+ * Objet de configuration globale pour l'intégration de la passerelle CamerPay.
+ * Comprend les clés API, les URL d'environnement, les forfaits d'abonnement (mensuel/annuel/essai)
+ * et les événements de webhook supportés.
+ */
 const CAMERPAY_CONFIG = {
   // API Configuration
   apiKey: process.env.CAMERPAY_API_KEY,
@@ -55,7 +68,11 @@ const CAMERPAY_CONFIG = {
   logLevel: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
 };
 
-// Validate required environment variables
+/**
+ * Valide la présence des variables d'environnement requises pour le bon fonctionnement de CamerPay.
+ * Affiche des avertissements en console en cas de variables manquantes.
+ * @returns {{isValid: boolean, missing: string[]}} Statut de validation et liste des variables absentes
+ */
 function validateConfig() {
   const required = ['CAMERPAY_API_KEY', 'CAMERPAY_SECRET_KEY'];
   const missing = required.filter(key => !process.env[key]);
@@ -75,3 +92,4 @@ module.exports = {
   CAMERPAY_CONFIG,
   validateConfig,
 };
+

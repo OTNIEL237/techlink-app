@@ -1,7 +1,18 @@
+// =============================================================================
+// FICHIER : app_colors_test.dart
+// RÔLE : Tests unitaires de validation de la palette chromatique TechLink
+//         (AppColors statiques, thèmes TechLinkColors clair/sombre, méthodes copyWith, lerp,
+//         ratios de contraste et accessibilité WCAG).
+// MODULE : Tests / Thème & Design System (Mobile Flutter)
+// DÉPENDANCES : package:flutter/material.dart, package:flutter_test/flutter_test.dart, package:techlink/core/constants/app_colors.dart
+// SÉCURITÉ / RLS : N/A (Tests unitaires de design tokens)
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:techlink/core/constants/app_colors.dart';
 
+/// Point d'entrée des tests unitaires de la palette de couleurs.
 void main() {
   group('AppColors - Couleurs statiques', () {
     test('primary devrait être violet (#7C3AED)', () {

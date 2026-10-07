@@ -1,0 +1,13 @@
+-- =============================================================================
+-- FICHIER : 002_technicians.sql
+-- RÔLE : Migration initiale - Définition de la table 'technicians'
+--         (profil professionnel, spécialités, coordonnées géographiques GPS,
+--         statut de validation KYC/documents, abonnements et solde de portefeuille).
+-- MODULE : Schéma de base de données / Techniciens
+-- DÉPENDANCES : public.users
+-- SÉCURITÉ / RLS : RLS activé. Visibilité publique des techniciens validés et disponibles ;
+--                  mise à jour restreinte au technicien propriétaire.
+-- =============================================================================
+
+-- Table 'technicians' : extension professionnelle liée à 'users'
+-- (Consulter 'power.sql' pour le schéma DDL consolidé de l'environnement de production).

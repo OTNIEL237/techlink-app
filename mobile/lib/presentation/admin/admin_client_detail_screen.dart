@@ -1,26 +1,45 @@
+// =============================================================================
+// FICHIER : admin_client_detail_screen.dart
+// RÔLE : Fiche détaillée d'un utilisateur client, historique des commandes et gestion de compte (bannissement/édition)
+// MODULE : Presentation / Admin
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, app_colors.dart
+// SÉCURITÉ / RLS : Rôle administrateur requis. Lecture et modification des enregistrements dans `users` et `missions`.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DE DÉTAILS D'UN CLIENT (ADMIN)
-// =========================================================================
-// Affiche les informations complètes d'un client, son historique de missions,
-// et permet de le modifier ou de le bannir de la plateforme.
-
+/// Écran d'administration présentant le dossier complet d'un client.
+///
+/// Affiche les coordonnées, les statistiques d'usage, l'historique complet des demandes
+/// de mission avec les techniciens assignés, et permet l'édition ou le bannissement du compte.
 class AdminClientDetailScreen extends StatefulWidget {
+  /// Données initiales du profil client sélectionné.
   final Map<String, dynamic> client;
 
+  /// Constructeur constant du widget [AdminClientDetailScreen].
   const AdminClientDetailScreen({super.key, required this.client});
 
   @override
   State<AdminClientDetailScreen> createState() => _AdminClientDetailScreenState();
 }
 
+/// État associé à l'écran de consultation et gestion du profil client.
+///
+/// Gère le chargement des missions passées, l'inversion du statut de bannissement (`is_banned`),
+/// et l'édition directe des informations nominatives.
 class _AdminClientDetailScreenState extends State<AdminClientDetailScreen> {
+  /// Liste des interventions commandées par le client.
   List<Map<String, dynamic>> _missions = [];
+
+  /// Indicateur de chargement asynchrone des données.
   bool _isLoading = true;
+
+  /// Statut de bannissement actuel du client sur la plateforme.
   bool _isBanned = false;
+
+  /// Données mutables du client synchronisées localement.
   late Map<String, dynamic> _client;
 
   @override
@@ -31,6 +50,7 @@ class _AdminClientDetailScreenState extends State<AdminClientDetailScreen> {
     _loadClientHistory();
   }
 
+  /// Charge l'historique de toutes les missions passées du client avec les relations métier associées.
   Future<void> _loadClientHistory() async {
     try {
       final data = await Supabase.instance.client
@@ -51,6 +71,7 @@ class _AdminClientDetailScreenState extends State<AdminClientDetailScreen> {
     }
   }
 
+  /// Bascule le statut de bannissement du client (`is_banned`) dans la table `users`.
   Future<void> _toggleBan() async {
     final newStatus = !_isBanned;
     try {
@@ -77,6 +98,7 @@ class _AdminClientDetailScreenState extends State<AdminClientDetailScreen> {
     }
   }
 
+  /// Construit la fiche client avec résumé d'identité, actions de modération et historique d'interventions.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -193,6 +215,7 @@ class _AdminClientDetailScreenState extends State<AdminClientDetailScreen> {
     );
   }
 
+  /// Ouvre un dialogue modal permettant à l'administrateur de rectifier le nom ou le numéro de téléphone du client.
   Future<void> _showEditClientDialog() async {
     final nameController = TextEditingController(text: _client['name'] ?? '');
     final phoneController = TextEditingController(text: _client['phone'] ?? '');

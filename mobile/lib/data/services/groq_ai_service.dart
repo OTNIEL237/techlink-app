@@ -1,15 +1,32 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : groq_ai_service.dart
+// Rôle          : Service d'analyse ultrarapide de pannes techniques via le moteur Groq / LLaMA.
+// Module        : Data / Services
+// Dépendances   : api_service.dart, local_ai_service.dart
+// Sécurité/RLS  : Requêtes déléguées au backend pour protéger les clés de chiffrement et d'API.
+// =============================================================================
+
 import 'dart:convert';
 import 'local_ai_service.dart';
 import 'api_service.dart';
 
+/// Service d'intelligence artificielle haute performance basé sur l'infrastructure Groq.
+///
+/// Permet une détection instantanée de la pertinence de la demande, la classification
+/// causale (électricité, plomberie, serrurerie, etc.), l'identification des dangers critiques
+/// et la formulation de conseils de mise en sécurité d'urgence.
 class GroqAiService {
-  // =========================================================================
-  // SERVICE D'INTELLIGENCE ARTIFICIELLE (GROQ / OPENAI)
-  // =========================================================================
-  // Similaire à Gemini, ce service utilise Groq (qui est très rapide) ou OpenAI 
-  // en cas de secours pour analyser le problème du client et catégoriser la panne.
-  
-  /// Analyse un problème technique avec l'IA via le backend
+  /// Analyse une panne technique via l'API backend connectée à Groq.
+  ///
+  /// Prend en compte la possibilité de forcer manuellement une catégorie [forcedCategorySlug].
+  /// En cas de défaillance réseau ou de réponse non conforme, active la version heuristique hors ligne.
+  ///
+  /// [problem] Texte brut saisi par l'utilisateur.
+  /// [photoCount] Nombre de photos jointes.
+  /// [forcedCategorySlug] Slug de catégorie forcé par l'interface si l'utilisateur a pré-sélectionné un métier.
+  /// Retourne un dictionnaire normalisé contenant le diagnostic, l'urgence et les consignes de sécurité.
   static Future<Map<String, dynamic>> analyze(String problem, {int photoCount = 0, String? forcedCategorySlug}) async {
     try {
       final apiService = ApiService();
@@ -31,6 +48,7 @@ class GroqAiService {
     }
   }
 
+  /// Invite de consignes système (System Prompt) injectée dans le modèle LLaMA/Groq.
   static const String _systemPrompt = '''
 Tu es l'assistant IA expert en diagnostic de pannes de TechLink, une application camerounaise de mise en relation pour des réparations domestiques et techniques.
 Ton rôle est d'analyser la description utilisateur (qui peut contenir des fautes d'orthographe, du langage familier ou des détails imprécis) et de retourner un objet JSON structuré contenant le diagnostic et les conseils.
@@ -89,8 +107,7 @@ Si une panne implique plusieurs domaines, fusionne-les dans `category` (ex: "Él
 }
 ''';
 
-
-  /// Normalise et valide la réponse de l'IA
+  /// Normalise, assainit et applique les règles de forçage sur la réponse de l'IA.
   static Map<String, dynamic> _normalizeResponse(
       Map<String, dynamic> raw, String problem, int photoCount, {String? forcedCategorySlug}) {
     
@@ -147,7 +164,7 @@ Si une panne implique plusieurs domaines, fusionne-les dans `category` (ex: "Él
     };
   }
 
-  /// Analyse de secours (sans API) — version améliorée du LocalAiService
+  /// Procédure de secours locale enrichie (fallback hors ligne avec analyse de mots-clés).
   static Map<String, dynamic> _fallbackAnalysis(String problem, int photoCount, {String? forcedCategorySlug}) {
     final text = LocalAiService.normalize(problem);
 

@@ -1,3 +1,14 @@
+// =============================================================================
+// FICHIER : payment.webhook.js
+// RÔLE : Traitement des webhooks et redirections HTTP de la passerelle de paiement
+//         CamerPay (validation des signatures HMAC, confirmation RPC des missions,
+//         activation des abonnements techniciens, redirection navigateur succès/annulation).
+// MODULE : Paiements / Passerelle Webhook (Backend Express)
+// DÉPENDANCES : express, supabase, camerpay.service, technician.helper
+// SÉCURITÉ / RLS : Validation obligatoire de la signature 'x-camerpay-signature',
+//                  exécution atomique via procédure stockée PostgreSQL 'confirm_mission_payment'.
+// =============================================================================
+
 const express = require('express');
 const router = express.Router();
 const supabase = require('../../config/supabase');
@@ -6,7 +17,12 @@ const { findTechnician } = require('../../utils/technician.helper');
 
 /**
  * POST /camerpay/webhook
- * Receive payment notifications from CamerPay
+ * Réception et traitement asynchrone des notifications de paiement (webhooks) émises par CamerPay.
+ * Valide la signature cryptographique de la requête, puis met à jour l'état de la mission ou de l'abonnement technicien.
+ * 
+ * @route POST /camerpay/webhook
+ * @param {express.Request} req - Requête webhook contenant les en-têtes et le corps de l'événement CamerPay
+ * @param {express.Response} res - Réponse HTTP accusant réception du webhook
  */
 router.post('/camerpay/webhook', async (req, res) => {
   try {
@@ -112,7 +128,12 @@ router.post('/camerpay/webhook', async (req, res) => {
 
 /**
  * GET /camerpay/callback
- * Browser redirect after payment
+ * Point de retour navigateur après redirection depuis la passerelle CamerPay.
+ * Oriente l'utilisateur vers la page de succès ou d'annulation selon le statut de la transaction.
+ * 
+ * @route GET /camerpay/callback
+ * @param {express.Request} req - Requête contenant les query params 'reference' et 'status'
+ * @param {express.Response} res - Redirection vers /payment/success ou /payment/cancel
  */
 router.get('/camerpay/callback', async (req, res) => {
   try {
@@ -133,7 +154,11 @@ router.get('/camerpay/callback', async (req, res) => {
 
 /**
  * GET /camerpay/cancel
- * Handle payment cancellation
+ * Page HTML affichée lorsque l'utilisateur abandonne ou annule la transaction sur CamerPay.
+ * 
+ * @route GET /camerpay/cancel
+ * @param {express.Request} req - Requête HTTP
+ * @param {express.Response} res - Page HTML avec message explicatif et bouton de retour
  */
 router.get('/camerpay/cancel', (req, res) => {
   res.send(`
@@ -212,7 +237,11 @@ router.get('/camerpay/cancel', (req, res) => {
 
 /**
  * GET /payment/success
- * Success page displayed after payment
+ * Page HTML confirmant le bon dénouement du paiement en ligne.
+ * 
+ * @route GET /payment/success
+ * @param {express.Request} req - Requête HTTP
+ * @param {express.Response} res - Page HTML avec icône de confirmation et bouton de retour
  */
 router.get('/payment/success', (req, res) => {
   res.send(`
@@ -291,7 +320,11 @@ router.get('/payment/success', (req, res) => {
 
 /**
  * GET /payment/cancel
- * Cancel page displayed if payment cancelled
+ * Page HTML générique affichée lors de l'abandon de la session de paiement par l'utilisateur.
+ * 
+ * @route GET /payment/cancel
+ * @param {express.Request} req - Requête HTTP
+ * @param {express.Response} res - Page HTML informant de l'annulation avec lien de redirection
  */
 router.get('/payment/cancel', (req, res) => {
   res.send(`

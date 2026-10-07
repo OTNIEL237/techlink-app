@@ -1,13 +1,41 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : techlink_button.dart
+// Rôle          : Bouton standard réutilisable (supporte styles plein, contour, icône et indicateur de chargement).
+// Module        : Presentation / Shared / Widgets
+// Dépendances   : flutter
+// Sécurité/RLS  : Composant UI stateless générique.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 
+/// Composant bouton principal de l'application TechLink.
+///
+/// Encapsule le design system pour les actions interactives :
+/// - Supporte les variantes pleines ([ElevatedButton]) et contour ([OutlinedButton]).
+/// - Affiche un indicateur circulaire de chargement lorsque [isLoading] est vrai.
+/// - Permet l'ajout d'une icône indicative à gauche du texte.
 class TechLinkButton extends StatelessWidget {
+  /// Libellé affiché sur le bouton.
   final String text;
+
+  /// Fonction de rappel déclenchée au clic (désactivée si nul ou si [isLoading] est vrai).
   final VoidCallback? onPressed;
+
+  /// Indique si une opération asynchrone est en cours d'exécution.
   final bool isLoading;
+
+  /// Si vrai, applique un style avec bordure et fond transparent.
   final bool isOutlined;
+
+  /// Icône optionnelle positionnée avant le libellé textuel.
   final IconData? icon;
+
+  /// Couleur d'accentuation personnalisée pour le fond ou la bordure.
   final Color? color;
 
+  /// Constructeur de [TechLinkButton].
   const TechLinkButton({
     super.key,
     required this.text,
@@ -47,6 +75,7 @@ class TechLinkButton extends StatelessWidget {
     );
   }
 
+  /// Construit le contenu interne du bouton (indicateur de chargement, icône + texte, ou texte seul).
   Widget _buildChild({required bool isOutlined, required BuildContext context}) {
     if (isLoading) {
       return SizedBox(

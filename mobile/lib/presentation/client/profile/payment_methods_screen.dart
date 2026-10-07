@@ -1,8 +1,21 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : payment_methods_screen.dart
+// Rôle          : Écran répertoriant les moyens de paiement enregistrés (PayPal,
+//                 Google Pay, Apple Pay, Cartes bancaires) et redirection d'ajout.
+// Module        : Présentation Client (Profil / Moyens de paiement)
+// Dépendances   : flutter/material.dart, go_router, app_colors.dart
+// Sécurité/RLS  : Accès sécurisé aux modes de paiement associés au client.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 
+/// Écran d'affichage et de sélection des méthodes de paiement du client.
 class PaymentMethodsScreen extends StatelessWidget {
+  /// Constructeur constant de l'écran des méthodes de paiement
   const PaymentMethodsScreen({super.key});
 
   @override
@@ -53,6 +66,7 @@ class PaymentMethodsScreen extends StatelessWidget {
     );
   }
 
+  /// Construit une tuile d'affichage pour une méthode de paiement avec son statut
   Widget _buildPaymentOption(String title, String status, {bool isConnected = false, Color iconColor = Colors.grey}) {
     return Container(
       padding: const EdgeInsets.all(16),

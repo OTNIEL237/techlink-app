@@ -1,22 +1,49 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : app_colors.dart
+// Rôle          : Palette de couleurs fondamentale et charte graphique TechLink.
+//                 Définit les teintes statiques de la marque, les couleurs de
+//                 rôles (client, technicien, admin) et l'extension de thème
+//                 dynamique [TechLinkColors] supportant les modes clair et sombre.
+// Module        : Core / Thèmes & Design System
+// Dépendances   : Flutter Material
+// Sécurité/RLS  : Public / UI
+// =============================================================================
+
 import 'package:flutter/material.dart';
 
-/// Couleurs statiques de la marque (ne changent jamais)
+/// [AppColors]
+///
+/// Définition statique de toutes les couleurs et nuances graphiques de l'application.
+/// Centralise les tokens de design pour garantir la cohérence visuelle.
 class AppColors {
-  // Couleurs principales (identiques en clair/sombre)
+  // ── COULEURS PRINCIPALES DE LA MARQUE ──
+  /// Teinte primaire violette principale de l'application.
   static const Color primary = Color(0xFF7C3AED);
+  /// Variante sombre de la teinte primaire (pour les dégradés et ombrages).
   static const Color primaryDark = Color(0xFF6D28D9);
+  /// Variante claire de la teinte primaire (fonds et badges).
   static const Color primaryLight = Color(0xFFF5F3FF);
 
-  // Accents
+  // ── COULEURS DE STATUTS SYSTÈME ──
+  /// Vert de succès (validation, paiements réussis, technicien en ligne).
   static const Color success = Color(0xFF16A34A);
+  /// Orange d'avertissement (en attente, validation CNI requise).
   static const Color warning = Color(0xFFF59E0B);
+  /// Rouge d'erreur (rejet, échec de transaction, champs invalides).
   static const Color error = Color(0xFFDC2626);
 
-  // Spécifiques
+  // ── COULEURS SPÉCIFIQUES AUX RÔLES ET OPÉRATEURS ──
+  /// Couleur turquoise identifiant les techniciens certifiés.
   static const Color technicianColor = Color(0xFF0891B2);
+  /// Couleur violette identifiant les clients.
   static const Color clientColor = Color(0xFF7C3AED);
+  /// Couleur sombre identifiant l'administration système.
   static const Color adminColor = Color(0xFF111827);
+  /// Jaune officiel MTN Mobile Money Cameroun.
   static const Color mtnColor = Color(0xFFFFCC00);
+  /// Orange officiel Orange Money Cameroun.
   static const Color orangeColor = Color(0xFFFF6600);
 
   // ── Mode Clair (Blanc professionnel) ──

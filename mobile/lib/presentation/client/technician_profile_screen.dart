@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : technician_profile_screen.dart
+// Rôle          : Profil public complet de l'artisan (compétences, horaires, avis)
+// Module        : Présentation / Client / Découverte Artisans
+// Dépendances   : Supabase Flutter, GoRouter, ZegoCallService, AppColors
+// Sécurité/RLS  : Consultation autorisée aux clients pour l'évaluation et l'assignation
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -5,14 +15,14 @@ import '../../core/constants/app_colors.dart';
 import '../../data/services/zego_call_service.dart';
 import '../shared/responsive_web_wrapper.dart';
 
-// =========================================================================
-// ÉCRAN DE PROFIL DU TECHNICIEN
-// =========================================================================
-// Affiche les informations complètes d'un technicien (À propos, Horaires, 
-// Expérience, Avis). Permet de l'assigner à la mission en cours.
-
+/// [TechnicianProfileScreen] offre une vue 360° sur le profil d'un technicien certifié :
+/// photo grand format, statistiques (années d'expérience, note, missions terminées),
+/// biographie, horaires d'ouverture hebdomadaires, spécialités et avis clients récents.
 class TechnicianProfileScreen extends StatefulWidget {
+  /// Métadonnées détaillées du technicien et de son utilisateur.
   final Map<String, dynamic> technician;
+
+  /// Identifiant de la mission pour laquelle l'artisan est consulté.
   final String missionId;
 
   const TechnicianProfileScreen({
@@ -25,6 +35,7 @@ class TechnicianProfileScreen extends StatefulWidget {
   State<TechnicianProfileScreen> createState() => _TechnicianProfileScreenState();
 }
 
+/// État interne gérant l'affichage par onglets et les boutons de contact direct.
 class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -96,6 +107,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Barre supérieure personnalisée affichant le retour, le nom, la spécialité et la distance kilométrique.
   Widget _buildTopAppBar(String name, String specialty, double? distanceKm, TechLinkColors tc, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
@@ -168,6 +180,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Photo principale du technicien et bandeau de statistiques (note, années d'expérience, missions).
   Widget _buildImageAndStats(String name, String? avatarUrl, int experience, double rating, int missions, TechLinkColors tc, bool isDark) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -217,6 +230,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Bloc unitaire présentant une métrique chiffrée avec son icône thématique.
   Widget _buildStatBox(String value, String label, IconData icon, Color bgColor, Color iconColor, TechLinkColors tc, bool isDark) {
     return Container(
       width: 95,
@@ -237,6 +251,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Construit la barre de navigation à onglets horizontaux (À propos, Disponibilité, Expérience, Avis).
   Widget _buildTabBar(TechLinkColors tc, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(top: 45, bottom: 8, left: 8, right: 8),
@@ -272,6 +287,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Onglet biographie, présentation personnelle et boutons d'appel direct audio/vidéo Zego.
   Widget _buildAboutTab(String name, String specialty, String bio, String phone, String? avatarUrl, TechLinkColors tc, bool isDark) {
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -343,6 +359,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Onglet des créneaux d'ouverture et disponibilités journalières du technicien.
   Widget _buildAvailabilityTab(Map<String, dynamic>? availability, TechLinkColors tc, bool isDark) {
     // Valeurs par défaut si le technicien n'a pas configuré sa disponibilité
     final Map<String, dynamic> schedule = availability ?? {
@@ -373,6 +390,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Ligne individuelle associant un jour de la semaine à sa plage horaire ou mention 'Fermé'.
   Widget _buildDayRow(String day, String hours, TechLinkColors tc, {bool isClosed = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -399,6 +417,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Onglet récapitulant les années d'exercice et les badges de compétences techniques.
   Widget _buildExperienceTab(int experience, List<String> specialties, TechLinkColors tc, bool isDark) {
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -440,6 +459,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Onglet d'affichage de la note globale sur 5 et des derniers témoignages clients.
   Widget _buildReviewsTab(double rating, int missions, TechLinkColors tc, bool isDark) {
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -492,6 +512,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Vignette d'un avis client avec auteur, note en étoiles et commentaire.
   Widget _buildReviewItem(String author, String text, double rating, TechLinkColors tc, bool isDark) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -524,6 +545,7 @@ class _TechnicianProfileScreenState extends State<TechnicianProfileScreen> with 
     );
   }
 
+  /// Barre inférieure persistante contenant le bouton d'assignation du technicien à la mission.
   Widget _buildBottomBar(TechLinkColors tc, bool isDark) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),

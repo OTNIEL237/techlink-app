@@ -1,16 +1,30 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : theme_provider.dart
+// Rôle          : Gestionnaire réactif Riverpod de l'état du thème (Clair / Sombre).
+//                 Diffuse instantanément les modifications de mode visuel à
+//                 travers l'arbre de widgets.
+// Module        : Core / Thèmes & Gestion d'état
+// Dépendances   : Flutter Material, flutter_riverpod
+// Sécurité/RLS  : Public / UI
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Provider global pour le mode du thème (Clair ou Sombre)
-// Utilise Riverpod (StateNotifierProvider) pour écouter et diffuser les changements 
-// de thème à travers toute l'application instantanément sans avoir à utiliser setState.
+/// Provider global pour le mode du thème (Clair ou Sombre).
+///
+/// Diffuse les changements de thème à toute l'application via Riverpod.
 final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
   return ThemeModeNotifier();
 });
 
-// Classe qui gère l'état actuel du thème
+/// [ThemeModeNotifier]
+///
+/// Gestionnaire d'état mutable du mode de thème actuel ([ThemeMode]).
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  // Par défaut, l'application démarre en thème clair (ThemeMode.light)
+  /// Démarre l'application par défaut en thème clair ([ThemeMode.light]).
   ThemeModeNotifier() : super(ThemeMode.light);
 
   // Fonction pour forcer un thème spécifique (clair, sombre ou système)

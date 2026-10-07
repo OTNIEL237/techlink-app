@@ -1,7 +1,20 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : customer_service_screen.dart
+// Rôle          : Écran d'assistance et de discussion directe avec le service client.
+//                 Offre une messagerie interactive en temps réel avec le support.
+// Module        : Présentation Client (Profil / Support Client)
+// Dépendances   : flutter/material.dart, app_colors.dart
+// Sécurité/RLS  : Échanges sécurisés entre le compte client et le support TechLink.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 
+/// Écran d'échange par messagerie instantanée avec le support client TechLink.
 class CustomerServiceScreen extends StatelessWidget {
+  /// Constructeur constant de l'écran du service client
   const CustomerServiceScreen({super.key});
 
   @override
@@ -87,6 +100,7 @@ class CustomerServiceScreen extends StatelessWidget {
     );
   }
 
+  /// Construit une bulle de message avec distinction visuelle émetteur / récepteur
   Widget _buildMessageRow(String text, bool isReceived) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 24),

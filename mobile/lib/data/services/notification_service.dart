@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : notification_service.dart
+// Rôle          : Service centralisé des notifications système, permissions et bannières in-app.
+// Module        : Data / Services
+// Dépendances   : go_router, permission_handler, shared_preferences, supabase_flutter, app_colors.dart
+// Sécurité/RLS  : Écoute en temps réel Supabase Realtime Postgres Changes filtrée par user_id.
+// =============================================================================
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -6,17 +16,41 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 
-/// Service centralisé de gestion des notifications TechLink
+/// Service singleton orchestrant l'écoute, les autorisations et l'affichage des notifications.
+///
+/// Intègre :
+/// - La demande progressive des autorisations du système d'exploitation (Android 13+ et iOS).
+/// - L'abonnement aux événements en temps réel via Supabase Realtime (`notifications` table).
+/// - L'affichage de bannières flottantes in-app (Heads-up banner) personnalisées.
+/// - La navigation contextuelle au toucher d'une alerte (vers le chat, le tracking ou l'historique).
 class NotificationService {
+  /// Instance unique du singleton.
   static final NotificationService _instance = NotificationService._internal();
+
+  /// Constructeur usine renvoyant l'instance partagée.
   factory NotificationService() => _instance;
+
+  /// Constructeur interne privé.
   NotificationService._internal();
 
+  /// Clé globale de navigation permettant d'accéder au contexte applicatif depuis n'importe où.
   GlobalKey<NavigatorState>? _navigatorKey;
+
+  /// Canal Supabase Realtime actif pour les notifications de l'utilisateur.
   RealtimeChannel? _notificationsChannel;
+
+  /// Souscription au flux d'authentification pour attacher/détacher l'écouteur.
   StreamSubscription<AuthState>? _authSubscription;
+
+  /// Indicateur d'écoute active pour éviter les abonnements en doublon.
   bool _isListening = false;
 
+  /// Initialise le service avec la clé de navigation globale de l'application.
+  ///
+  /// Met en place l'observation des sessions de connexion pour souscrire automatiquement
+  /// aux notifications dès qu'un utilisateur est authentifié.
+  ///
+  /// [navigatorKey] Clé globale associée au [GoRouter] ou [Navigator].
   void initialize(GlobalKey<NavigatorState> navigatorKey) {
     _navigatorKey = navigatorKey;
 
@@ -44,12 +78,19 @@ class NotificationService {
     }
   }
 
+  /// Libère les ressources, ferme les flux et désabonne les canaux temps réel.
   void dispose() {
     _authSubscription?.cancel();
     _unsubscribeFromNotifications();
   }
 
-  /// Demande la permission système des notifications
+  /// Vérifie et sollicite poliment l'autorisation système d'afficher des notifications.
+  ///
+  /// Sauvegarde le refus dans [SharedPreferences] pour ne pas importuner l'utilisateur à répétition,
+  /// sauf si [forcePrompt] est explicite (ex: clic sur un bouton d'activation dans les paramètres).
+  ///
+  /// [forcePrompt] Force l'affichage ou l'invitation à ouvrir les réglages système.
+  /// Retourne vrai si l'autorisation est accordée.
   Future<bool> checkAndRequestPermission({bool forcePrompt = false}) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -79,7 +120,7 @@ class NotificationService {
     }
   }
 
-  /// Vérifie si les notifications sont actuellement autorisées
+  /// Détermine si l'application possède actuellement la permission système d'envoyer des notifications.
   Future<bool> isPermissionGranted() async {
     try {
       return await Permission.notification.isGranted;
@@ -88,7 +129,7 @@ class NotificationService {
     }
   }
 
-  /// Affiche une boîte de dialogue invitant à ouvrir les réglages système
+  /// Affiche une boîte de dialogue incitant l'utilisateur à activer les notifications dans les réglages système.
   void _showOpenSettingsDialog() {
     final context = _navigatorKey?.currentContext;
     if (context == null) return;
@@ -120,7 +161,9 @@ class NotificationService {
     );
   }
 
-  /// S'abonne aux notifications Supabase en temps réel
+  /// Établit une souscription WebSocket temps réel à la table `notifications` pour un utilisateur donné.
+  ///
+  /// [userId] Identifiant de l'utilisateur concerné.
   void _subscribeToNotifications(String userId) {
     if (_isListening) return;
     _unsubscribeFromNotifications();
@@ -157,13 +200,22 @@ class NotificationService {
         .subscribe();
   }
 
+  /// Annule la souscription active au canal de notifications.
   void _unsubscribeFromNotifications() {
     _notificationsChannel?.unsubscribe();
     _notificationsChannel = null;
     _isListening = false;
   }
 
-  /// Affiche une bannière flottante élégante (Heads-up banner) dans l'application
+  /// Génère une bannière flottante élégante (Overlay Entry) en haut de l'écran.
+  ///
+  /// La bannière s'efface automatiquement après 4 secondes ou au toucher,
+  /// et déclenche la navigation appropriée via [_handleNotificationTap].
+  ///
+  /// [title] Titre de la notification.
+  /// [body] Message succinct.
+  /// [type] Catégorie de notification ('mission', 'message', 'warning', 'system').
+  /// [data] Métadonnées associées à la charge utile.
   void showInAppNotification({
     required String title,
     required String body,
@@ -283,6 +335,7 @@ class NotificationService {
     });
   }
 
+  /// Gère l'action de redirection lorsqu'une notification est touchée par l'utilisateur.
   void _handleNotificationTap(String type, Map<String, dynamic>? data) {
     final context = _navigatorKey?.currentContext;
     if (context == null) return;
@@ -301,7 +354,7 @@ class NotificationService {
     }
   }
 
-  /// Déclenche une notification de test immédiate
+  /// Déclenche une notification de test immédiate pour valider le bon fonctionnement de l'interface.
   void triggerTestNotification() {
     showInAppNotification(
       title: '🔔 Test TechLink',

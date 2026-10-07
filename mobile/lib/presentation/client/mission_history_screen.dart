@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : mission_history_screen.dart
+// Rôle          : Historique et statut en direct des missions du client
+// Module        : Présentation / Client / Missions
+// Dépendances   : Supabase Flutter, GoRouter, CachedNetworkImage, AppColors
+// Sécurité/RLS  : Accès réservé aux interventions créées par le client authentifié
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -7,10 +17,8 @@ import '../../core/constants/app_colors.dart';
 import '../../core/theme/theme_provider.dart';
 import '../../core/theme/neumorphic_styles.dart';
 
-// =========================================================================
-// ÉCRAN MODERNE D'HISTORIQUE DES MISSIONS CLIENT (Ex « Mes Réservations »)
-// =========================================================================
-
+/// [MissionHistoryScreen] présente les demandes d'intervention du client réparties
+/// par onglets (En cours, Terminées, Annulées), avec recherche textuelle et suivi temps réel.
 class MissionHistoryScreen extends StatefulWidget {
   const MissionHistoryScreen({super.key});
 
@@ -18,6 +26,7 @@ class MissionHistoryScreen extends StatefulWidget {
   State<MissionHistoryScreen> createState() => _MissionHistoryScreenState();
 }
 
+/// État interne gérant la pagination et le filtrage des interventions client par statut.
 class _MissionHistoryScreenState extends State<MissionHistoryScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
@@ -49,12 +58,14 @@ class _MissionHistoryScreenState extends State<MissionHistoryScreen>
     super.dispose();
   }
 
+  /// Déclenche le chargement de la page suivante lorsque l'utilisateur approche du bas de la liste.
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
       _loadMissions();
     }
   }
 
+  /// Charge les missions associées au client avec pagination et jointure sur les catégories et artisans.
   Future<void> _loadMissions({bool refresh = false}) async {
     if (refresh) {
       _offset = 0;
@@ -117,6 +128,7 @@ class _MissionHistoryScreenState extends State<MissionHistoryScreen>
     }
   }
 
+  /// Filtre les missions locales selon l'onglet courant (En cours, Terminées, Annulées) et le mot-clé recherché.
   List<Map<String, dynamic>> _filterMissions(String tab) {
     List<Map<String, dynamic>> list;
     switch (tab) {
@@ -311,6 +323,7 @@ class _MissionHistoryScreenState extends State<MissionHistoryScreen>
     );
   }
 
+  /// Construit la vue d'état vide adaptée selon l'onglet courant (En cours, Terminées, Annulées).
   Widget _buildEmpty(String tab, TechLinkColors tc, bool isDark) {
     String message;
     IconData icon;
@@ -381,16 +394,15 @@ class _MissionHistoryScreenState extends State<MissionHistoryScreen>
   }
 }
 
-// =========================================================================
-// CARTE MISSION MODERNE & DÉTAILLÉE
-// =========================================================================
-
+/// Carte récapitulative d'une mission affichant la catégorie, la date, la description,
+/// l'artisan associé et les boutons d'action (Annulation ou Suivi en direct).
 class _MissionCard extends StatelessWidget {
   final Map<String, dynamic> mission;
   final VoidCallback onMissionUpdated;
 
   const _MissionCard({required this.mission, required this.onMissionUpdated});
 
+  /// Affiche une boîte de dialogue de confirmation et procède à l'annulation de la mission dans Supabase.
   Future<void> _cancelMission(BuildContext context) async {
     final bool? confirm = await showDialog<bool>(
       context: context,

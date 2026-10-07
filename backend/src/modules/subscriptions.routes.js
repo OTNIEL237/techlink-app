@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : backend/src/modules/subscriptions.routes.js
+// RÔLE : Définition des routes de l'API pour les abonnements et essais gratuits techniciens
+// MODULE : Backend / Module Abonnements (Routes)
+// DÉPENDANCES : express, ./subscriptionController, requireAuth
+// SÉCURITÉ / RLS : Toutes les routes requièrent une authentification JWT via requireAuth
+// =============================================================================
+
 const express = require('express');
 const SubscriptionController = require('./subscriptionController');
 const requireAuth = require('../middlewares/auth.middleware');
@@ -7,8 +15,9 @@ const router = express.Router();
 router.use(requireAuth);
 
 /**
- * POST /api/subscriptions/start-trial
- * Start 1-month free trial for newly registered technician
+ * @route POST /api/subscriptions/start-trial
+ * @desc Déclenche la période d'essai gratuit de 30 jours pour un technicien
+ * @access Privé
  */
 router.post('/start-trial', async (req, res) => {
   try {

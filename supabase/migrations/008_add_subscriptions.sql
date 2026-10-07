@@ -1,3 +1,14 @@
+-- =============================================================================
+-- FICHIER : 008_add_subscriptions.sql
+-- RÔLE : Migration du modèle économique vers le forfait/abonnement sans commission :
+--         - Ajout des colonnes de gestion d'abonnements dans 'technicians'
+--         - Création de la table 'technician_subscriptions' (historique des abonnements)
+--         - Adaptation des tables 'payments' et 'quotes' (suppression commission 5% / forfait).
+-- MODULE : Schéma de base de données / Abonnements & Paiements
+-- DÉPENDANCES : public.technicians, public.payments, public.quotes
+-- SÉCURITÉ / RLS : Les colonnes d'abonnement conditionnent l'accès aux missions pour les techniciens.
+-- =============================================================================
+
 -- Add subscription columns to technicians table
 ALTER TABLE technicians ADD COLUMN IF NOT EXISTS subscription_type TEXT DEFAULT 'none' CHECK (subscription_type IN ('none', 'monthly', 'yearly', 'trial'));
 ALTER TABLE technicians ADD COLUMN IF NOT EXISTS subscription_status TEXT DEFAULT 'inactive' CHECK (subscription_status IN ('active', 'inactive', 'expired', 'cancelled'));

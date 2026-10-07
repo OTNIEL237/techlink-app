@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : ai.controller.test.js
+// RÔLE : Tests unitaires Jest pour le contrôleur d'intelligence artificielle analyzeProblem
+//         (validation de la longueur de description, retour d'erreurs 400, mode secours/fallback).
+// MODULE : Tests / Intelligence Artificielle (Backend)
+// DÉPENDANCES : ../../../src/modules/ai/ai.service, ../../../src/modules/ai/ai.controller, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec mocks LLM)
+// =============================================================================
+
 const aiService = require('../../../src/modules/ai/ai.service');
 
 // Mock complet de l'API OpenAI

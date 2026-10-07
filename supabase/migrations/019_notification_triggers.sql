@@ -1,3 +1,15 @@
+-- =============================================================================
+-- FICHIER : 019_notification_triggers.sql
+-- RÔLE : Déclencheurs automatiques de notifications :
+--         - 'handle_mission_status_notification()' : génère une notification in-app
+--           lorsque le statut d'une mission évolue (quote_sent, quote_accepted, en_route, completed, etc.)
+--         - 'handle_new_message_notification()' : alerte le destinataire lors de la réception
+--           d'un nouveau message de tchat lié à la mission.
+-- MODULE : Schéma de base de données / Triggers & Notifications
+-- DÉPENDANCES : public.missions, public.messages, public.notifications
+-- SÉCURITÉ / RLS : Fonctions définies en SECURITY DEFINER pour insérer dans la table notifications.
+-- =============================================================================
+
 -- Trigger function for mission status changes
 CREATE OR REPLACE FUNCTION handle_mission_status_notification()
 RETURNS TRIGGER AS $$

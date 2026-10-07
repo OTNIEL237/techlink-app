@@ -1,14 +1,30 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : techlink_ai_service.dart
+// Rôle          : Point d'entrée unifié pour l'analyse IA déléguée au backend TechLink.
+// Module        : Data / Services
+// Dépendances   : api_service.dart, local_ai_service.dart
+// Sécurité/RLS  : Fait transiter toutes les requêtes par le backend avec cache et fallback local.
+// =============================================================================
+
 import 'api_service.dart';
 import 'local_ai_service.dart';
 
+/// Service unifié d'orchestration de l'intelligence artificielle pour TechLink.
+///
+/// Encapsule l'appel vers le microservice backend (qui arbitre dynamiquement
+/// entre Groq, OpenAI et les résultats mis en cache) tout en assurant un basculement
+/// automatique vers le moteur heuristique local [LocalAiService] en cas de coupure réseau.
 class TechLinkAiService {
-  // =========================================================================
-  // SERVICE UNIQUE D'INTELLIGENCE ARTIFICIELLE (VIA BACKEND)
-  // =========================================================================
-  // Ce service appelle le backend de TechLink qui se charge de contacter
-  // le service d'IA le plus rapide disponible (Groq > OpenAI > Cache).
-  
-  /// Analyse un problème technique via le backend
+  /// Analyse un problème technique soumis par le client.
+  ///
+  /// Interroge en priorité le serveur backend TechLink. En cas d'erreur de communication
+  /// ou d'indisponibilité du serveur, bascule en mode autonome hors-ligne via [LocalAiService].
+  ///
+  /// [problem] Texte descriptif de la panne.
+  /// [photoCount] Nombre de clichés photographiques annexés.
+  /// Retourne un dictionnaire normalisé avec catégorie, urgence, solutions temporaires et durée d'intervention.
   static Future<Map<String, dynamic>> analyze(String problem, {int photoCount = 0}) async {
     try {
       final apiService = ApiService();
@@ -31,7 +47,7 @@ class TechLinkAiService {
     }
   }
 
-  /// S'assure que la réponse renvoyée par le backend est valide et sécurisée
+  /// S'assure que la structure de données renvoyée par le backend est complète et sécurisée.
   static Map<String, dynamic> _normalizeResponse(Map<String, dynamic> raw, String problem, int photoCount) {
     final isRelevant = raw['is_relevant'] as bool? ?? true;
 
@@ -63,7 +79,7 @@ class TechLinkAiService {
     };
   }
 
-  /// Analyse locale de secours si le téléphone n'a pas internet ou si le backend est HS
+  /// Analyse locale de secours exécutée si le smartphone n'a pas accès à internet.
   static Map<String, dynamic> _fallbackAnalysis(String problem, int photoCount) {
     final localResult = LocalAiService.analyze(problem, photoCount: photoCount);
 

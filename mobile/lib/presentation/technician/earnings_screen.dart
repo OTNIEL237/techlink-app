@@ -1,15 +1,23 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : earnings_screen.dart
+// Rôle          : Écran récapitulatif des revenus et gains générés par le technicien
+//                 avec historique chronologique des paiements reçus.
+// Module        : Présentation Technicien (Finances & Revenus)
+// Dépendances   : flutter/material.dart, supabase_flutter, app_colors.dart,
+//                 responsive_web_wrapper.dart
+// Sécurité/RLS  : Filtrage strict des paiements par identifiant technicien connecté.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../shared/responsive_web_wrapper.dart';
 
-// =========================================================================
-// ÉCRAN DES REVENUS
-// =========================================================================
-// Affiche les revenus totaux générés par le technicien via la plateforme
-// ainsi que l'historique des paiements reçus.
-
+/// Écran présentant le montant total des gains et les transactions de paiement du technicien.
 class EarningsScreen extends StatefulWidget {
+  /// Constructeur constant de l'écran des revenus
   const EarningsScreen({super.key});
 
   @override
@@ -17,10 +25,19 @@ class EarningsScreen extends StatefulWidget {
 }
 
 class _EarningsScreenState extends State<EarningsScreen> {
+  /// Liste des enregistrements de paiements perçus par le technicien
   List<Map<String, dynamic>> _payments = [];
+
+  /// Montant total cumulé des gains générés via la plateforme en FCFA
   double _totalEarnings = 0;
+
+  /// Montant des revenus en attente de versement
   double _pendingEarnings = 0;
+
+  /// Indicateur de chargement initial des données financières
   bool _isLoading = true;
+
+  /// Détermine si l'intégralité de l'historique ou seulement un aperçu est affiché
   bool _showAllHistory = false;
 
   @override
@@ -29,6 +46,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
     _loadEarnings();
   }
 
+  /// Récupère la liste des paiements associés au compte technicien et calcule le total des gains
   Future<void> _loadEarnings() async {
     try {
       final userId = Supabase.instance.client.auth.currentUser!.id;
@@ -193,9 +211,15 @@ class _EarningsScreenState extends State<EarningsScreen> {
   }
 }
 
+/// Carte présentant le récapitulatif d'une transaction de paiement perçue par le technicien
 class _PaymentCard extends StatelessWidget {
+  /// Données détaillées de la transaction de paiement
   final Map<String, dynamic> payment;
+
+  /// Thème de couleurs de l'application
   final TechLinkColors tc;
+
+  /// Indique si l'affichage est en mode sombre
   final bool isDark;
 
   const _PaymentCard({required this.payment, required this.tc, required this.isDark});

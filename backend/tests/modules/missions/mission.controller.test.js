@@ -1,8 +1,20 @@
+// =============================================================================
+// FICHIER : mission.controller.test.js
+// RÔLE : Tests unitaires Jest pour le contrôleur de missions
+//         (createMission, getClientMissions, getMissionById, updateMissionStatus).
+// MODULE : Tests / Missions (Backend)
+// DÉPENDANCES : ../../../src/modules/missions/mission.controller, ../../../src/modules/missions/mission.service, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec mocks de service)
+// =============================================================================
+
 const missionController = require('../../../src/modules/missions/mission.controller');
 const missionService = require('../../../src/modules/missions/mission.service');
 
 jest.mock('../../../src/modules/missions/mission.service');
 
+/**
+ * Suite de tests unitaires pour le contrôleur de missions.
+ */
 describe('Mission Controller', () => {
   let req, res;
 

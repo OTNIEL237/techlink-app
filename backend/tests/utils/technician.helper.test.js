@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : technician.helper.test.js
+// RÔLE : Tests unitaires Jest pour la fonction utilitaire findTechnician
+//         (résolution par user_id en priorité, fallback par id de ligne, extraction des soldes).
+// MODULE : Tests / Utilitaires Technicien (Backend)
+// DÉPENDANCES : ../../src/config/supabase, ../../src/utils/technician.helper, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec simulation Supabase)
+// =============================================================================
+
 const supabase = require('../../src/config/supabase');
 
 // Mock complet de Supabase

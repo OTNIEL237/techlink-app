@@ -1,6 +1,18 @@
+// =============================================================================
+// FICHIER : test-email.js
+// RÔLE : Script de tests unitaires pour la validation des formats d'adresses e-mail.
+// MODULE : Tests / Outils de développement (Backend)
+// DÉPENDANCES : assert
+// SÉCURITÉ / RLS : N/A (Script de test autonome)
+// =============================================================================
+
 const assert = require('assert');
 
-// 1. La fonction à tester (Validation d'email)
+/**
+ * Valide le format syntaxique d'une adresse e-mail par expression régulière.
+ * @param {string} email - L'adresse e-mail à vérifier
+ * @returns {boolean} True si valide, false sinon
+ */
 function validateEmail(email) {
   if (!email) return false;
   // Regex standard pour valider la structure d'un e-mail

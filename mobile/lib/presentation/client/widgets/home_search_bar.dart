@@ -1,11 +1,24 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : home_search_bar.dart
+// Rôle          : Barre de recherche interactive intégrée sur l'écran d'accueil
+//                 avec saisie instantanée, effacement et déclencheur vocal.
+// Module        : Présentation Client (Widgets Accueil)
+// Dépendances   : flutter/material.dart, go_router, app_localizations.dart,
+//                 neumorphic_styles.dart
+// Sécurité/RLS  : Widget de présentation client sans restriction d'accès.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:techlink/l10n/app_localizations.dart';
 import '../../../../core/theme/neumorphic_styles.dart';
 
-/// Barre de recherche active avec clavier instantané 0ms directement sur l'écran d'accueil
+/// Barre de recherche active avec saisie textuelle ou déclenchement vocal direct.
 class ClientHomeSearchBar extends StatefulWidget {
+  /// Constructeur constant de la barre de recherche d'accueil
   const ClientHomeSearchBar({super.key});
 
   @override
@@ -13,8 +26,13 @@ class ClientHomeSearchBar extends StatefulWidget {
 }
 
 class _ClientHomeSearchBarState extends State<ClientHomeSearchBar> {
+  /// Contrôleur du champ texte de la barre de recherche
   final TextEditingController _controller = TextEditingController();
+
+  /// Nœud de focus pour la gestion de l'interaction clavier
   final FocusNode _focusNode = FocusNode();
+
+  /// Indique si du texte est actuellement présent dans le champ de recherche
   bool _hasText = false;
 
   @override
@@ -35,6 +53,7 @@ class _ClientHomeSearchBarState extends State<ClientHomeSearchBar> {
     super.dispose();
   }
 
+  /// Soumet le texte saisi et redirige vers l'écran de déclaration de problème
   void _submitSearch(String query) {
     final text = query.trim();
     if (text.isEmpty) return;

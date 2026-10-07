@@ -1,23 +1,43 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : chat_screen.dart
+// Rôle          : Messagerie instantanée en temps réel entre client et technicien pour une mission.
+// Module        : Presentation / Shared
+// Dépendances   : flutter, supabase_flutter, url_launcher, app_colors.dart, zego_call_service.dart
+// Sécurité/RLS  : Écoute Supabase Realtime sur la table 'messages' filtrée par mission_id.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/services/zego_call_service.dart';
 
-// =========================================================================
-// ÉCRAN DE CHAT (Partagé)
-// =========================================================================
-// Écran de messagerie instantanée utilisé par les clients et les techniciens.
-// Il utilise Supabase Realtime pour recevoir les messages en direct,
-// et intègre ZegoCloud pour lancer des appels audio/vidéo directement depuis le chat.
-
+/// Écran de discussion instantanée rattaché à une mission d'intervention spécifique.
+///
+/// Permet l'échange de messages textuels en direct entre le client et le technicien affecté.
+/// Intègre :
+/// - La réception en temps réel via Supabase Realtime (`messages` table).
+/// - L'appel direct (voix ou vidéo) via [ZegoCallService].
+/// - La composition d'appel téléphonique cellulaire classique via [url_launcher].
 class ChatScreen extends StatefulWidget {
+  /// Identifiant unique de la mission associée à la conversation.
   final String missionId;
+
+  /// Identifiant de l'utilisateur actuellement connecté.
   final String currentUserId;
-  final String currentUserRole; // 'client' ou 'technician'
+
+  /// Rôle de l'utilisateur connecté ('client' ou 'technician').
+  final String currentUserRole;
+
+  /// Nom complet de l'interlocuteur affiché dans la barre d'en-tête.
   final String otherUserName;
+
+  /// Numéro de téléphone de l'interlocuteur.
   final String otherUserPhone;
 
+  /// Constructeur de [ChatScreen].
   const ChatScreen({
     super.key,
     required this.missionId,
@@ -31,6 +51,7 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
+/// État associé à l'écran de messagerie instantanée [ChatScreen].
 class _ChatScreenState extends State<ChatScreen> {
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();

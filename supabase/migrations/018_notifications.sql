@@ -1,3 +1,14 @@
+-- =============================================================================
+-- FICHIER : 018_notifications.sql
+-- RÔLE : Gestion des notifications in-app utilisateurs :
+--         - Définition de la table 'notifications' (titre, message, type, lecture, payload JSONB)
+--         - Index de performance sur 'user_id' et 'is_read'
+--         - Politiques RLS (lecture/mise à jour par le destinataire, émission/vision par les admins).
+-- MODULE : Schéma de base de données / Notifications
+-- DÉPENDANCES : public.users
+-- SÉCURITÉ / RLS : RLS activé. Isolation stricte par user_id pour les utilisateurs standards.
+-- =============================================================================
+
 -- Create notifications table
 CREATE TABLE IF NOT EXISTS public.notifications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

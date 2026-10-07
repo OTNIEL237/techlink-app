@@ -1,20 +1,36 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : support_chat_screen.dart
+// Rôle          : Messagerie d'assistance directe entre un utilisateur et l'équipe administrative TechLink.
+// Module        : Presentation / Shared
+// Dépendances   : flutter, supabase_flutter, app_colors.dart
+// Sécurité/RLS  : Écoute et insertions sur la table 'admin_messages' avec contrôle RLS par user_id ou rôle admin.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DE CHAT SUPPORT
-// =========================================================================
-// Permet à un utilisateur (Client ou Technicien) de discuter avec l'équipe
-// d'administration TechLink. Les messages sont stockés dans la table
-// `admin_messages` et écoutés via Supabase Realtime.
-
+/// Interface de communication bilatérale dédiée au service client et au support technique.
+///
+/// Permet à un utilisateur (client ou technicien) de converser en direct avec un administrateur.
+/// Les messages sont stockés dans la table `admin_messages` et synchronisés en continu
+/// via Supabase Realtime avec mécanisme de secours par scrutation régulière (polling).
 class SupportChatScreen extends StatefulWidget {
-  final String conversationUserId; // L'ID du client ou technicien
-  final String currentUserId;
-  final String currentUserRole;
-  final String otherUserName; // "Support Admin" ou le nom du client
+  /// Identifiant unique du compte utilisateur au cœur de la discussion d'assistance.
+  final String conversationUserId;
 
+  /// Identifiant de l'utilisateur actuellement connecté.
+  final String currentUserId;
+
+  /// Rôle de l'utilisateur connecté ('client', 'technician' ou 'admin').
+  final String currentUserRole;
+
+  /// Nom affiché pour le correspondant (ex: "Support TechLink" ou le nom du client).
+  final String otherUserName;
+
+  /// Constructeur de [SupportChatScreen].
   const SupportChatScreen({
     super.key,
     required this.conversationUserId,
@@ -27,6 +43,7 @@ class SupportChatScreen extends StatefulWidget {
   State<SupportChatScreen> createState() => _SupportChatScreenState();
 }
 
+/// État associé à l'écran de support [SupportChatScreen].
 class _SupportChatScreenState extends State<SupportChatScreen> {
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();

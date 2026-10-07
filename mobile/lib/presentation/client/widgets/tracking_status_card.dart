@@ -1,9 +1,24 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : tracking_status_card.dart
+// Rôle          : Carte affichant le statut actuel de la mission avec icône d'état
+//                 et frise chronologique (timeline) dynamique à 5 étapes.
+// Module        : Présentation Client (Widgets Suivi de Mission)
+// Dépendances   : flutter/material.dart, app_localizations.dart, app_colors.dart
+// Sécurité/RLS  : Widget de présentation client sans restriction d'accès.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:techlink/l10n/app_localizations.dart';
 import '../../../../core/constants/app_colors.dart';
 
+/// Carte présentant l'état d'avancement actuel de la mission et sa chronologie étape par étape.
 class TrackingStatusCard extends StatelessWidget {
+  /// Code textuel du statut de la mission (ex: 'accepted', 'in_progress', 'completed')
   final String status;
+
+  /// Constructeur constant de la carte de statut de suivi
   const TrackingStatusCard({super.key, required this.status});
 
   @override
@@ -12,6 +27,7 @@ class TrackingStatusCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
 
+    // Définition des 5 étapes séquentielles de la mission
     final steps = [
       ('Acceptée', 'accepted', Icons.check_circle_outline),
       ('En route', 'technician_enroute', Icons.directions_car_outlined),
@@ -20,6 +36,7 @@ class TrackingStatusCard extends StatelessWidget {
       ('Terminée', 'completed', Icons.verified_outlined),
     ];
 
+    // Dictionnaire des libellés, couleurs et icônes pour chaque statut possible
     final statusLabels = {
       'searching': ('Recherche technicien...', AppColors.warning, Icons.search),
       'accepted': ('Technicien assigné !', AppColors.primary, Icons.check_circle),

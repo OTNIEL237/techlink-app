@@ -1,10 +1,24 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : availability_toggle_screen.dart
+// Rôle          : Écran de gestion du statut de disponibilité en temps réel
+//                 (En ligne / Hors ligne) et des horaires de travail hebdomadaires.
+// Module        : Présentation Technicien (Disponibilité & Statut)
+// Dépendances   : flutter/material.dart, go_router, supabase_flutter, app_colors.dart
+// Sécurité/RLS  : Mise à jour sécurisée de la table `technicians` restreinte
+//                 au compte technicien connecté (`user_id`).
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 
+/// Écran permettant au technicien d'ajuster son statut en ligne et ses plages de travail.
 class AvailabilityToggleScreen extends StatefulWidget {
+  /// Constructeur constant de l'écran de bascule de disponibilité
   const AvailabilityToggleScreen({super.key});
 
   @override
@@ -12,11 +26,19 @@ class AvailabilityToggleScreen extends StatefulWidget {
 }
 
 class _AvailabilityToggleScreenState extends State<AvailabilityToggleScreen> {
+  /// Indicateur de chargement initial des données
   bool _isLoading = true;
+
+  /// Indicateur de sauvegarde en cours des modifications
   bool _isSaving = false;
+
+  /// État actuel de disponibilité immédiate pour recevoir des missions
   bool _isAvailable = true;
+
+  /// Données brutes de la fiche technicien extraites de Supabase
   Map<String, dynamic>? _technicianData;
 
+  /// Grille des horaires de travail habituels par jour de la semaine
   final Map<String, String> _weeklySchedule = {
     'Lundi': '08:00 - 18:00',
     'Mardi': '08:00 - 18:00',
@@ -33,6 +55,7 @@ class _AvailabilityToggleScreenState extends State<AvailabilityToggleScreen> {
     _loadAvailability();
   }
 
+  /// Charge depuis Supabase le statut actuel et le dictionnaire d'horaires hebdomadaires
   Future<void> _loadAvailability() async {
     try {
       final userId = Supabase.instance.client.auth.currentUser?.id;
@@ -75,6 +98,7 @@ class _AvailabilityToggleScreenState extends State<AvailabilityToggleScreen> {
     }
   }
 
+  /// Bascule instantanément le statut en direct (visible / masqué) avec retour haptique
   Future<void> _toggleLiveAvailability(bool newValue) async {
     HapticFeedback.heavyImpact();
     setState(() => _isAvailable = newValue);
@@ -124,6 +148,7 @@ class _AvailabilityToggleScreenState extends State<AvailabilityToggleScreen> {
     }
   }
 
+  /// Enregistre l'ensemble des réglages (statut et calendrier hebdomadaire) dans Supabase
   Future<void> _saveAllSettings() async {
     if (_isSaving) return;
     setState(() => _isSaving = true);
@@ -170,6 +195,7 @@ class _AvailabilityToggleScreenState extends State<AvailabilityToggleScreen> {
     }
   }
 
+  /// Ouvre une feuille modale pour éditer la plage horaire d'un jour particulier
   void _editDayHours(String day) {
     final current = _weeklySchedule[day] ?? '08:00 - 18:00';
     final controller = TextEditingController(text: current);

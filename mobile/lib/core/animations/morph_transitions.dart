@@ -1,3 +1,16 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : morph_transitions.dart
+// Rôle          : Moteur d'animations cinématiques et transitions de pages.
+//                 Implémente l'effet Morphose style PowerPoint (zoom doux,
+//                 fondu enchaîné, retour tactile Spring) et les conteneurs
+//                 interactifs [MorphingCard] et [KeepAliveTab].
+// Module        : Core / Animations & Expérience Utilisateur
+// Dépendances   : Flutter Material, GoRouter
+// Sécurité/RLS  : Public / UI
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -7,11 +20,10 @@ import 'dart:math' as math;
 // EFFET MORPHOSE STYLE POWERPOINT & ANIMATIONS FLUIDES PINTEREST (RhinoGraph)
 // =========================================================================
 
-/// Arrière-plan fluide et organique inspiré des animations Pinterest ✨
-/// Les bulles et sphères lumineuses respirent et flottent avec des mouvements continus et doux.
-/// Arrière-plan épuré et professionnel sans animation
-/// Mode clair : Blanc pur professionnel (#FFFFFF)
-/// Mode sombre : Noir VS Code professionnel (#1E1E1E)
+/// [PinterestFluidBackground]
+///
+/// Arrière-plan épuré et reposant conçu pour maximiser le confort visuel.
+/// Neutralise tout éblouissement et s'adapte automatiquement au thème clair/sombre.
 class PinterestFluidBackground extends StatelessWidget {
   final Widget child;
   final bool showSpheres;

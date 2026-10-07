@@ -1,9 +1,22 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : security_screen.dart
+// Rôle          : Écran de configuration de la sécurité du compte utilisateur.
+//                 Permet la mise à jour du mot de passe avec validation et Supabase Auth.
+// Module        : Présentation Client (Profil / Sécurité)
+// Dépendances   : flutter/material.dart, go_router, supabase_flutter, app_colors.dart
+// Sécurité/RLS  : Mise à jour sécurisée du mot de passe via Supabase Auth `updateUser`.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 
+/// Écran permettant à l'utilisateur de gérer les paramètres de sécurité de son compte.
 class SecurityScreen extends StatefulWidget {
+  /// Constructeur constant de l'écran de sécurité
   const SecurityScreen({super.key});
 
   @override
@@ -11,8 +24,13 @@ class SecurityScreen extends StatefulWidget {
 }
 
 class _SecurityScreenState extends State<SecurityScreen> {
+  /// Contrôleur de saisie pour le nouveau mot de passe
   final _passwordController = TextEditingController();
+
+  /// Contrôleur de confirmation du nouveau mot de passe
   final _confirmPasswordController = TextEditingController();
+
+  /// Indicateur de traitement en cours lors de la mise à jour
   bool _isLoading = false;
 
   @override
@@ -22,6 +40,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
     super.dispose();
   }
 
+  /// Met à jour le mot de passe de l'utilisateur dans Supabase Auth après validations
   Future<void> _changePassword() async {
     if (_passwordController.text.isEmpty || _passwordController.text.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -47,7 +66,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
       );
 
       if (mounted) {
-        context.pop(); // Close dialog
+        context.pop(); // Ferme la boîte de dialogue
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Mot de passe mis à jour avec succès !'),
@@ -72,6 +91,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
     }
   }
 
+  /// Affiche la boîte de dialogue modale pour la saisie du nouveau mot de passe
   void _showPasswordDialog(TechLinkColors tc, bool isDark) {
     _passwordController.clear();
     _confirmPasswordController.clear();

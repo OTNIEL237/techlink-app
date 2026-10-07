@@ -1,26 +1,43 @@
+// =============================================================================
+// FICHIER : quote_builder_screen.dart
+// RÔLE : Éditeur et générateur de devis d'intervention par le technicien
+// MODULE : Presentation / Technician
+// DÉPENDANCES : flutter/material.dart, go_router, supabase_flutter, app_colors.dart
+// SÉCURITÉ / RLS : Authentification technicien requise. Insertion sécurisée dans 'quotes' et transition d'état de 'missions' vers 'quote_sent'.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 
-// =========================================================================
-// ÉCRAN DE CRÉATION DE DEVIS
-// =========================================================================
-// Permet au technicien de créer et d'envoyer un devis au client 
-// avec les détails des coûts (main d'œuvre, pièces, déplacement).
-
+/// Écran permettant au technicien de formaliser et chiffrer un devis d'intervention.
+///
+/// Permet de détailler les coûts par type (main d'œuvre, pièces détachées, frais de déplacement),
+/// d'ajuster les quantités et montants unitaires, et de soumettre la proposition financière au client.
 class QuoteBuilderScreen extends StatefulWidget {
+  /// Données complètes de la mission ciblée par le devis.
   final Map<String, dynamic> mission;
+
+  /// Constructeur constant du widget [QuoteBuilderScreen].
   const QuoteBuilderScreen({super.key, required this.mission});
 
   @override
   State<QuoteBuilderScreen> createState() => _QuoteBuilderScreenState();
 }
 
+/// État associé à l'éditeur de devis technicien.
+///
+/// Gère la collection des lignes tarifaires, le calcul en temps réel du sous-total
+/// et du net artisan, ainsi que l'enregistrement du devis dans Supabase.
 class _QuoteBuilderScreenState extends State<QuoteBuilderScreen> {
+  /// Liste des postes de dépenses / prestations composant le devis.
   final List<Map<String, dynamic>> _lines = [];
+
+  /// Indicateur d'opération asynchrone d'envoi en cours.
   bool _isSending = false;
 
+  /// Ajoute une nouvelle ligne vierge de type main d'œuvre au devis.
   void _addLine() {
     setState(() => _lines.add({
       'description': '',
@@ -30,18 +47,25 @@ class _QuoteBuilderScreenState extends State<QuoteBuilderScreen> {
     }));
   }
 
+  /// Supprime la ligne de devis située à l'index [index].
   void _removeLine(int index) {
     setState(() => _lines.removeAt(index));
   }
 
+  /// Calcule la somme totale de l'ensemble des lignes du devis en FCFA.
   double get _subtotal => _lines.fold(0, (sum, line) {
     final qty = (line['quantity'] as num?)?.toDouble() ?? 1;
     final price = (line['unit_price'] as num?)?.toDouble() ?? 0;
     return sum + (qty * price);
   });
 
+  /// Calcule le montant net reversé au technicien (hors commissions plateforme éventuelles).
   double get _netTechnician => _subtotal;
 
+  /// Valide et transmet le devis au client via Supabase.
+  ///
+  /// Contrôle que les descriptions sont non-vides, insère l'entrée dans la table `quotes`,
+  /// et bascule le statut de la mission associée à `'quote_sent'`.
   Future<void> _sendQuote() async {
     if (_lines.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -129,6 +153,7 @@ class _QuoteBuilderScreenState extends State<QuoteBuilderScreen> {
     }
   }
 
+  /// Construit la vue d'édition de devis avec la liste dynamique des postes et le bouton d'envoi.
   @override
   Widget build(BuildContext context) {
     final tc = Theme.of(context).extension<TechLinkColors>()!;
@@ -311,13 +336,24 @@ class _QuoteBuilderScreenState extends State<QuoteBuilderScreen> {
   }
 }
 
+/// Carte de saisie d'un poste de devis individuel (type, libellé, quantité, prix unitaire).
 class _QuoteLine extends StatelessWidget {
+  /// Position ordinale de la ligne dans le devis (0-indexée).
   final int index;
+
+  /// Données brutes représentant la ligne tarifaire.
   final Map<String, dynamic> line;
+
+  /// Callback invoqué lors de la suppression de la ligne.
   final VoidCallback onRemove;
+
+  /// Callback invoqué lors de la modification des attributs de la ligne.
   final Function(Map<String, dynamic>) onChanged;
+
+  /// Palette des couleurs personnalisées de l'application TechLink.
   final TechLinkColors tc;
 
+  /// Constructeur constant du widget [_QuoteLine].
   const _QuoteLine({
     required this.index, required this.line,
     required this.onRemove, required this.onChanged,
@@ -449,12 +485,24 @@ class _QuoteLine extends StatelessWidget {
   }
 }
 
+/// Ligne de récapitulatif financier affichant un intitulé et un montant chiffré.
 class _SummaryRow extends StatelessWidget {
+  /// Libellé descriptif (ex: Sous-total, Total client).
   final String label;
+
+  /// Montant formaté en FCFA.
   final String value;
+
+  /// Indique si la ligne doit être rendue en gras avec une taille de police accrue.
   final bool isBold;
+
+  /// Couleur personnalisée optionnelle appliquée au texte.
   final Color? color;
+
+  /// Palette de couleurs du thème actif.
   final TechLinkColors tc;
+
+  /// Constructeur constant de la ligne récapitulative [_SummaryRow].
   const _SummaryRow(this.label, this.value,
       {this.isBold = false, this.color, required this.tc});
 

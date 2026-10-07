@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : test-req.js
+// RÔLE : Script de test d'appel HTTP direct vers l'endpoint local d'initialisation
+//         d'abonnement technicien (/api/subscriptions/initialize).
+// MODULE : Tests / Outils de développement (Backend)
+// DÉPENDANCES : http
+// SÉCURITÉ / RLS : Script utilitaire de test local.
+// =============================================================================
+
 const http = require('http');
 
 const data = JSON.stringify({

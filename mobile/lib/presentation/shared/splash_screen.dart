@@ -1,24 +1,39 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : splash_screen.dart
+// Rôle          : Écran d'accueil animé (Splash screen) avec vérification de session et routage par rôle.
+// Module        : Presentation / Shared
+// Dépendances   : flutter, go_router, supabase_flutter, app_router.dart, neumorphic_styles.dart
+// Sécurité/RLS  : Détecte la session active, interroge la table 'users', résout le rôle et initialise le cache.
+// =============================================================================
+
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../core/routing/app_router.dart';
 import '../../core/theme/neumorphic_styles.dart';
 
-// =========================================================================
-// ÉCRAN DE DÉMARRAGE MODERNE (Splash Screen 3D Neumorphique)
-// =========================================================================
-// S'affiche à l'ouverture de l'application TechLink.
-// Anime l'emblème 3D en relief avec un effet de respiration glassmorphique,
-// vérifie la session Supabase active et oriente automatiquement l'utilisateur
-// selon son rôle (Client, Technicien vérifié/en attente, ou Administrateur).
-
+/// Écran de lancement et d'initialisation de l'application TechLink.
+///
+/// Assure :
+/// - L'animation 3D neumorphique du logo avec respiration et halo lumineux.
+/// - L'interrogation de la session Supabase active.
+/// - L'orientation automatique vers le bon univers applicatif :
+///   - `/login` si non authentifié.
+///   - `/client/home` si rôle client.
+///   - `/admin/home` si rôle admin.
+///   - `/technician/home` si technicien approuvé ou `/technician/pending` si en cours de validation.
 class SplashScreen extends StatefulWidget {
+  /// Constructeur constant pour [SplashScreen].
   const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
+/// État associé à [SplashScreen] coordonnant les animations et l'aiguillage applicatif.
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _scaleAnimation;
@@ -88,14 +103,21 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
       if (!mounted) return;
 
-      if (userResponse == null || userResponse['role'] == null) {
+      var role = userResponse?['role'] as String?;
+      if (role == null) {
+        // Repli sur les métadonnées auth
+        role = session.user.userMetadata?['role'] as String?;
+      }
+
+      if (role == null) {
         // Profil incomplet -> Déconnexion de sécurité
         await Supabase.instance.client.auth.signOut();
+        AppRouter.clearRoleCache();
         if (mounted) context.go('/login');
         return;
       }
 
-      final role = userResponse['role'] as String;
+      AppRouter.setCachedRole(session.user.id, role);
 
       if (role == 'client') {
         context.go('/client/home');
@@ -111,21 +133,24 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
           if (tech == null) {
             context.go('/technician/onboarding');
-          } else if (tech['validation_status'] == 'approved') {
-            context.go('/technician/home');
-          } else if (tech['validation_status'] == 'pending') {
-            context.go('/technician/pending');
           } else {
-            context.go('/technician/onboarding');
+            final valStatus = (tech['validation_status'] as String?) ?? 'pending';
+            AppRouter.setCachedRole(session.user.id, 'technician', validationStatus: valStatus);
+            if (valStatus == 'approved') {
+              context.go('/technician/home');
+            } else {
+              context.go('/technician/pending');
+            }
           }
         } catch (e) {
           debugPrint('Erreur vérification technicien: $e');
-          if (mounted) context.go('/technician/onboarding');
+          if (mounted) context.go('/technician/pending');
         }
       } else if (role == 'admin') {
         context.go('/admin/home');
       } else {
         await Supabase.instance.client.auth.signOut();
+        AppRouter.clearRoleCache();
         if (mounted) context.go('/login');
       }
     } catch (e) {

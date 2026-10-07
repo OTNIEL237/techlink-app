@@ -1,7 +1,18 @@
+// =============================================================================
+// FICHIER : incoming_call_screen_test.dart
+// RÔLE : Tests de widgets Flutter pour l'écran IncomingCallScreen (appels ZEGOCLOUD)
+//         (différenciation audio vs vidéo, affichage du correspondant,
+//         présence des boutons d'acceptation et de rejet d'appel).
+// MODULE : Tests / Widgets Téléphonie (Mobile Flutter)
+// DÉPENDANCES : package:flutter_test/flutter_test.dart, package:techlink/presentation/shared/incoming_call_screen.dart
+// SÉCURITÉ / RLS : N/A (Tests unitaires de widgets)
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:techlink/presentation/shared/incoming_call_screen.dart';
 
+/// Point d'entrée des tests de widget pour l'écran d'appel entrant.
 void main() {
   Widget createWidgetUnderTest({required String callType}) {
     return MaterialApp(

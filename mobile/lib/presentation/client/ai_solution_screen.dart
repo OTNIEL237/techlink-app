@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : ai_solution_screen.dart
+// Rôle          : Affichage des solutions et recommandations générées par l'IA
+// Module        : Présentation / Client / Diagnostic IA
+// Dépendances   : flutter_tts, geolocator, supabase_flutter, go_router
+// Sécurité/RLS  : Accès réservé aux clients authentifiés créant une mission
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
@@ -7,15 +17,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import '../shared/responsive_web_wrapper.dart';
 
-// =========================================================================
-// ÉCRAN DE SOLUTION IA
-// =========================================================================
-// Affiche les résultats de l'analyse IA (urgence, catégorie, résumé, 
-// solution temporaire) et permet de lancer la recherche de technicien.
-
+/// [AiSolutionScreen] présente les résultats détaillés du diagnostic d'intelligence artificielle :
+/// niveau d'urgence, consignes de sécurité, solution de dépannage temporaire,
+/// synthèse vocale (TTS) et bouton de recherche d'artisans à proximité.
 class AiSolutionScreen extends StatefulWidget {
+  /// Description brute du problème renseignée par l'utilisateur.
   final String problem;
+
+  /// Photos justificatives capturées par le client.
   final List<File> photos;
+
+  /// Métadonnées d'analyse structurées renvoyées par le service d'IA (urgence, conseils, etc.).
   final Map<String, dynamic> aiResult;
 
   const AiSolutionScreen({
@@ -29,6 +41,8 @@ class AiSolutionScreen extends StatefulWidget {
   State<AiSolutionScreen> createState() => _AiSolutionScreenState();
 }
 
+/// État interne de [AiSolutionScreen] gérant la synthèse vocale (FlutterTts)
+/// et la persistance de la nouvelle mission dans la table Supabase `missions`.
 class _AiSolutionScreenState extends State<AiSolutionScreen> {
   final FlutterTts _tts = FlutterTts();
   bool _isSpeaking = false;
@@ -42,6 +56,7 @@ class _AiSolutionScreenState extends State<AiSolutionScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _speakResult());
   }
 
+  /// Initialise le moteur Text-to-Speech (voix française, débit et tonalité).
   Future<void> _initTts() async {
     await _tts.setLanguage('fr-FR');
     await _tts.setSpeechRate(0.5);
@@ -52,6 +67,7 @@ class _AiSolutionScreenState extends State<AiSolutionScreen> {
     });
   }
 
+  /// Synthétise vocalement l'ensemble des résultats d'analyse de l'IA (urgence, catégorie, consignes).
   Future<void> _speakResult() async {
     final urgencyLabel = widget.aiResult['urgency_label'] ?? '';
     final category = widget.aiResult['category'] ?? '';
@@ -74,6 +90,7 @@ class _AiSolutionScreenState extends State<AiSolutionScreen> {
     await _tts.speak(text);
   }
 
+  /// Active ou coupe la lecture vocale du diagnostic.
   Future<void> _toggleSpeak() async {
     if (_isSpeaking) {
       await _tts.stop();
@@ -83,6 +100,8 @@ class _AiSolutionScreenState extends State<AiSolutionScreen> {
     }
   }
 
+  /// Crée un enregistrement de mission dans Supabase avec la géolocalisation actuelle du client
+  /// puis redirige vers la carte de recherche des techniciens disponibles.
   Future<void> _createMissionAndNavigate() async {
   setState(() => _isSavingMission = true);
 
@@ -163,6 +182,7 @@ class _AiSolutionScreenState extends State<AiSolutionScreen> {
     super.dispose();
   }
 
+  /// Retourne le code couleur sémantique associé au niveau d'urgence.
   Color _urgencyColor(String urgency) {
     switch (urgency) {
       case 'urgent':
@@ -174,6 +194,7 @@ class _AiSolutionScreenState extends State<AiSolutionScreen> {
     }
   }
 
+  /// Retourne l'icône représentative du degré d'urgence de l'intervention.
   IconData _urgencyIcon(String urgency) {
     switch (urgency) {
       case 'urgent':
@@ -424,6 +445,7 @@ class _AiSolutionScreenState extends State<AiSolutionScreen> {
   }
 }
 
+/// Pastille compacte affichant un attribut clé (urgence, catégorie, durée estimée).
 class _InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -479,6 +501,7 @@ class _InfoChip extends StatelessWidget {
   }
 }
 
+/// Carte de présentation d'une section analytique (ex: Problème détecté, Solution temporaire).
 class _SectionCard extends StatelessWidget {
   final IconData icon;
   final String title;

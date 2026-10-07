@@ -1,0 +1,13 @@
+-- =============================================================================
+-- FICHIER : 007_messages.sql
+-- RÔLE : Migration initiale - Définition de la table 'messages'
+--         (messagerie instantanée en temps réel liée à une mission, pièces jointes,
+--         statut de distribution et indicateur d'acquittement de lecture).
+-- MODULE : Schéma de base de données / Messagerie
+-- DÉPENDANCES : public.missions, public.users
+-- SÉCURITÉ / RLS : RLS activé. Visibilité strictement limitée à l'expéditeur,
+--                  au destinataire et à la mission concernée.
+-- =============================================================================
+
+-- Table 'messages' : messagerie bidirectionnelle client-technicien
+-- (Consulter 'power.sql' pour le schéma DDL consolidé de l'environnement de production).

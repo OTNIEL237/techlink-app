@@ -1,10 +1,25 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : notification_settings_screen.dart
+// Rôle          : Écran de configuration des permissions et canaux de notifications
+//                 (alertes missions, messages chat, sons, vibreur et test).
+// Module        : Présentation Client (Profil / Notifications)
+// Dépendances   : flutter/material.dart, permission_handler, shared_preferences,
+//                 app_colors.dart, notification_service.dart
+// Sécurité/RLS  : Gestion locale sécurisée des préférences utilisateur et
+//                 des autorisations au niveau du système d'exploitation.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/services/notification_service.dart';
 
+/// Écran permettant d'activer/désactiver les permissions système et préférences d'alertes.
 class NotificationSettingsScreen extends StatefulWidget {
+  /// Constructeur constant de l'écran des paramètres de notifications
   const NotificationSettingsScreen({super.key});
 
   @override
@@ -12,9 +27,13 @@ class NotificationSettingsScreen extends StatefulWidget {
 }
 
 class _NotificationSettingsScreenState extends State<NotificationSettingsScreen> with WidgetsBindingObserver {
+  /// Indique si la permission de notifications au niveau OS est accordée
   bool _isPermissionGranted = false;
+
+  /// Indicateur de chargement des réglages sauvegardés
   bool _isLoading = true;
 
+  /// Carte des options de notifications configurables par l'utilisateur
   final Map<String, bool> _settings = {
     'Alertes de missions': true,
     'Messages et Chat': true,
@@ -42,6 +61,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     }
   }
 
+  /// Charge l'état des permissions système et les préférences depuis SharedPreferences
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final isGranted = await Permission.notification.isGranted;
@@ -55,6 +75,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     });
   }
 
+  /// Vérifie le statut de la permission OS lors de la reprise de l'application
   Future<void> _checkPermissionStatus() async {
     final isGranted = await Permission.notification.isGranted;
     if (mounted) {
@@ -64,6 +85,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     }
   }
 
+  /// Met à jour une préférence individuelle dans le stockage local SharedPreferences
   Future<void> _toggleSetting(String key, bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('notif_setting_$key', value);
@@ -72,6 +94,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     });
   }
 
+  /// Sollicite la permission auprès de l'utilisateur ou ouvre les paramètres de l'appareil
   Future<void> _requestOrOpenSettings() async {
     final status = await Permission.notification.status;
     if (status.isPermanentlyDenied) {

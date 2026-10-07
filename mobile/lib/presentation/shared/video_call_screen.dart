@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : video_call_screen.dart
+// Rôle          : Écran d'appel visio pair-à-pair avec caméra, sonnerie et intégration ZegoCloud UIKit.
+// Module        : Presentation / Shared
+// Dépendances   : flutter, go_router, supabase_flutter, zego_uikit_prebuilt_call, zego_config.dart
+// Sécurité/RLS  : Synchronise l'état de l'appel visio via Supabase Realtime et gère la fermeture de flux vidéo.
+// =============================================================================
+
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,29 +18,43 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/zego_config.dart';
 import '../../data/services/zego_call_service.dart';
 
-// =========================================================================
-// ÉCRAN D'APPEL VIDÉO (Sortant / En cours)
-// =========================================================================
-// Gère l'interface d'appel vidéo (ZegoUIKitPrebuiltCall). Si c'est l'appelant,
-// affiche d'abord l'écran d'attente (sonnerie). Dès que le correspondant accepte,
-// bascule sur l'interface ZegoCloud.
-
+/// Écran complet gérant l'expérience d'appel vidéo (one-on-one video call).
+///
+/// Si l'utilisateur est l'appelant ([_isCaller]), affiche d'abord l'écran d'attente
+/// avec sonnerie sortante. Dès que l'interlocuteur répond (`accepted`),
+/// initialise le flux vidéo et audio bidirectionnel via [ZegoUIKitPrebuiltCall].
 class VideoCallScreen extends StatefulWidget {
+  /// Constructeur constant pour [VideoCallScreen].
   const VideoCallScreen({super.key});
 
   @override
   State<VideoCallScreen> createState() => _VideoCallScreenState();
 }
 
+/// État associé à l'écran [VideoCallScreen] gérant la caméra et la synchronisation.
 class _VideoCallScreenState extends State<VideoCallScreen> {
+  /// Identifiant unique de la ligne dans la table `calls`.
   late String _callRowId;
+
+  /// Identifiant de la session d'appel ZegoCloud.
   late String _callId;
+
+  /// Nom de l'interlocuteur affiché à l'écran.
   late String _otherUserName;
+
+  /// Indique si l'utilisateur local est l'émetteur de l'appel.
   late bool _isCaller;
 
+  /// Statut de l'appel ('ringing', 'accepted', 'declined', 'ended', 'missed').
   String _status = 'ringing';
+
+  /// Nom de l'utilisateur connecté pour l'étiquette visio.
   String _currentUserName = 'Utilisateur';
+
+  /// Empêche la réinitialisation multiple des arguments de route.
   bool _isInitialized = false;
+
+  /// Souscription au flux d'état émis par [ZegoCallService].
   StreamSubscription<String>? _statusSubscription;
 
   @override

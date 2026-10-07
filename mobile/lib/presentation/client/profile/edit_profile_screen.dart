@@ -1,3 +1,16 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : edit_profile_screen.dart
+// Rôle          : Écran d'édition des données personnelles du profil utilisateur
+//                 (nom, numéro de téléphone, avatar photo avec upload Supabase).
+// Module        : Présentation Client (Profil / Édition)
+// Dépendances   : flutter/material.dart, image_picker, supabase_flutter,
+//                 app_colors.dart, go_router
+// Sécurité/RLS  : Accès restreint à l'utilisateur authentifié (table `users` et
+//                 bucket de stockage `avatars`).
+// =============================================================================
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -5,7 +18,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 
+/// Écran permettant à un utilisateur de modifier son profil et sa photo d'avatar.
 class EditProfileScreen extends StatefulWidget {
+  /// Constructeur constant de l'écran d'édition de profil
   const EditProfileScreen({super.key});
 
   @override
@@ -13,11 +28,19 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  /// Contrôleur de saisie pour le nom complet
   final _nameController = TextEditingController();
+
+  /// Contrôleur de saisie pour le numéro de téléphone
   final _phoneController = TextEditingController();
   
+  /// URL publique de l'image de profil actuelle
   String? _avatarUrl;
+
+  /// Indicateur de chargement initial des informations
   bool _isLoading = true;
+
+  /// Indicateur de sauvegarde en cours dans la base de données
   bool _isSaving = false;
 
   @override
@@ -26,6 +49,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _loadProfileData();
   }
 
+  /// Récupère les données du profil de l'utilisateur connecté depuis Supabase
   Future<void> _loadProfileData() async {
     try {
       final user = Supabase.instance.client.auth.currentUser;
@@ -53,6 +77,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  /// Permet à l'utilisateur de choisir une image dans la galerie et l'envoie vers Supabase Storage
   Future<void> _pickAndUploadImage() async {
     try {
       final ImagePicker picker = ImagePicker();
@@ -110,6 +135,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  /// Enregistre les modifications apportées au profil (nom, téléphone) dans Supabase
   Future<void> _saveProfile() async {
     setState(() => _isSaving = true);
     try {
@@ -236,6 +262,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+  /// Construit un champ de formulaire textuel ou téléphonique avec mise en forme personnalisée
   Widget _buildTextField(String label, TextEditingController controller, TechLinkColors tc, bool isDark, {IconData? icon, bool isPhone = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : mission_tracking_screen.dart
+// Rôle          : Suivi en temps réel de l'avancement d'une intervention client
+// Module        : Présentation / Client / Suivi de Mission
+// Dépendances   : Supabase Flutter, GoRouter, ZegoCallService, UrlLauncher
+// Sécurité/RLS  : Accès réservé au client propriétaire de la mission en cours
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:techlink/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -13,20 +23,21 @@ import 'widgets/tracking_quote_card.dart';
 import 'widgets/tracking_info_card.dart';
 import 'widgets/tracking_review_card.dart';
 
-// =========================================================================
-// ÉCRAN DE SUIVI DE MISSION
-// =========================================================================
-// Écran complet de suivi pour le client : affiche le statut, les infos du 
-// technicien, le devis à valider, permet l'appel et le paiement final.
-
+/// [MissionTrackingScreen] est l'écran central de suivi d'intervention pour le client :
+/// progression des étapes (recherche, artisan en route, diagnostic, devis, paiement),
+/// appels audio/vidéo Zego, validation/rejet de devis, notation et signalement de litiges.
 class MissionTrackingScreen extends StatefulWidget {
+  /// Données de la mission courante (identifiant, statut, description, coordonnées).
   final Map<String, dynamic> mission;
+
   const MissionTrackingScreen({super.key, required this.mission});
 
   @override
   State<MissionTrackingScreen> createState() => _MissionTrackingScreenState();
 }
 
+/// État interne orchestrant le polling de rafraîchissement périodique (10s),
+/// la gestion du devis et les interactions multimédia avec l'artisan.
 class _MissionTrackingScreenState extends State<MissionTrackingScreen> {
   late Map<String, dynamic> _mission;
   Map<String, dynamic>? _technicianData;
@@ -44,6 +55,7 @@ class _MissionTrackingScreenState extends State<MissionTrackingScreen> {
     _startPolling();
   }
 
+  /// Lance une boucle de rafraîchissement d'état toutes les 10 secondes tant que l'écran est affiché.
   void _startPolling() {
     Future.doWhile(() async {
       await Future.delayed(const Duration(seconds: 10));
@@ -53,6 +65,7 @@ class _MissionTrackingScreenState extends State<MissionTrackingScreen> {
     });
   }
 
+  /// Récupère l'état à jour de la mission, du profil technicien, du devis et de l'évaluation éventuelle.
   Future<void> _loadDetails() async {
     try {
       // Recharger la mission
@@ -120,6 +133,7 @@ class _MissionTrackingScreenState extends State<MissionTrackingScreen> {
     }
   }
 
+  /// Démarre un appel audio ou vidéo ZegoCloud avec l'artisan en charge de la mission.
   void _callTechnician(String callType) {
     final techId = _technicianData?['id'] as String?;
     final name = _technicianData?['name'] as String? ?? 'Technicien';
@@ -132,6 +146,7 @@ class _MissionTrackingScreenState extends State<MissionTrackingScreen> {
     );
   }
 
+  /// Valide et accepte le devis proposé par l'artisan, passant la mission au statut 'quote_accepted'.
   Future<void> _acceptQuote() async {
     if (_quoteData == null) return;
     setState(() => _isAcceptingQuote = true);
@@ -168,6 +183,7 @@ class _MissionTrackingScreenState extends State<MissionTrackingScreen> {
     }
   }
 
+  /// Refuse le devis proposé et replace la mission en cours pour ajustement éventuel.
   Future<void> _rejectQuote() async {
     if (_quoteData == null) return;
     try {
@@ -194,6 +210,7 @@ class _MissionTrackingScreenState extends State<MissionTrackingScreen> {
     } catch (_) {}
   }
 
+  /// Ouvre le formulaire de réclamation pour déclarer un litige (technicien absent, surfacturation, etc.).
   void _showDisputeDialog() {
     final descriptionController = TextEditingController();
     String selectedReason = 'Travail mal fait';

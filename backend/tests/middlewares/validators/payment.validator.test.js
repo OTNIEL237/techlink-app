@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : payment.validator.test.js
+// RÔLE : Tests unitaires Jest & Supertest pour les validateurs de paiement
+//         (initiatePaymentValidator, verifyPaymentValidator).
+// MODULE : Tests / Validateurs (Backend)
+// DÉPENDANCES : express, supertest, ../../../src/middlewares/validators/payment.validator
+// SÉCURITÉ / RLS : N/A (Tests d'intégrité de schéma financier)
+// =============================================================================
+
 const express = require('express');
 const request = require('supertest');
 const { initiatePaymentValidator, verifyPaymentValidator } = require('../../../src/middlewares/validators/payment.validator');

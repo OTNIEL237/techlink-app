@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : admin_settings_screen.dart
+// RÔLE : Configuration administrative des paramètres globaux de la plateforme
+// MODULE : Présentation Administrateur (Admin Settings)
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, app_colors.dart, theme_provider.dart, techlink_button.dart, techlink_card.dart, techlink_input.dart
+// SÉCURITÉ / RLS : Réservé aux administrateurs (rôle admin requis)
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
@@ -6,24 +14,33 @@ import '../shared/widgets/techlink_button.dart';
 import '../shared/widgets/techlink_card.dart';
 import '../shared/widgets/techlink_input.dart';
 
-// =========================================================================
-// ÉCRAN DES PARAMÈTRES (ADMIN)
-// =========================================================================
-// Permet de configurer les variables globales de la plateforme (commission,
-// prix des abonnements, etc.).
-
+/// Écran de gestion des variables de configuration globale de la plateforme TechLink.
+///
+/// Permet aux administrateurs de consulter et modifier les paramètres financiers
+/// tels que le pourcentage de commission prélevé et le tarif de l'abonnement mensuel.
 class AdminSettingsScreen extends StatefulWidget {
+  /// Constructeur par défaut de [AdminSettingsScreen].
   const AdminSettingsScreen({super.key});
 
   @override
   State<AdminSettingsScreen> createState() => _AdminSettingsScreenState();
 }
 
+/// État associé à l'écran [AdminSettingsScreen].
 class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
+  /// Contrôleur de champ texte pour le pourcentage de commission plateforme.
   final _feeController = TextEditingController();
+
+  /// Contrôleur de champ texte pour le prix de l'abonnement mensuel technicien.
   final _subPriceController = TextEditingController();
+
+  /// Indicateur de chargement initial des réglages depuis Supabase.
   bool _isLoading = true;
+
+  /// Indicateur d'enregistrement en cours des modifications.
   bool _isSaving = false;
+
+  /// Identifiant unique de la ligne de configuration dans la table `platform_settings`.
   int? _settingsId;
 
   @override
@@ -32,6 +49,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
     _loadSettings();
   }
 
+  /// Charge les paramètres actuels depuis la table `platform_settings` de Supabase.
   Future<void> _loadSettings() async {
     try {
       final data = await Supabase.instance.client
@@ -51,6 +69,8 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
     }
   }
 
+  /// Enregistre les modifications de configuration financière dans `platform_settings`
+  /// (mise à jour de l'enregistrement existant ou insertion s'il n'existe pas encore).
   Future<void> _saveSettings() async {
     setState(() => _isSaving = true);
     try {
@@ -153,3 +173,4 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
     );
   }
 }
+

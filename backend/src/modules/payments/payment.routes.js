@@ -1,3 +1,16 @@
+// =============================================================================
+// FICHIER : payment.routes.js
+// RÔLE : Définition des routes Express de gestion des paiements de missions
+//         (initialisation gateway CamerPay, vérification des transactions,
+//         enregistrement et confirmation des paiements manuels directs P2P,
+//         historique des transactions financières pour les clients).
+// MODULE : Paiements (Backend Express)
+// DÉPENDANCES : express, supabase, technician.helper, camerpay.service, auth.middleware, payment.validator
+// SÉCURITÉ / RLS : Authentification JWT obligatoire (requireAuth), validation de schéma
+//                  Joi/express-validator, protection anti-race condition sur l'état
+//                  des paiements, mécanisme de séquestre (escrow) sans versement direct.
+// =============================================================================
+
 const express = require('express');
 const supabase = require('../../config/supabase');
 const { findTechnician } = require('../../utils/technician.helper');
@@ -6,14 +19,24 @@ const { CAMERPAY_CONFIG } = require('../../config/camerpay');
 const requireAuth = require('../../middlewares/auth.middleware');
 const { initiatePaymentValidator, verifyPaymentValidator } = require('../../middlewares/validators/payment.validator');
 
+/**
+ * Routeur Express pour les points d'entrée de paiement.
+ * @type {import('express').Router}
+ */
 const router = express.Router();
 
+// Application globale du middleware d'authentification sur toutes les routes de paiement
 router.use(requireAuth);
 
 /**
  * POST /api/payments/initialize
- * Initialize a mission payment (client pays technician)
- * No commission deducted (100% goes to technician)
+ * Initialisation d'un paiement en ligne de mission via la passerelle CamerPay.
+ * Le client règle la prestation du technicien.
+ * Comporte un contrôle anti-collision (race condition) pour empêcher les doubles paiements.
+ * 
+ * @route POST /api/payments/initialize
+ * @param {express.Request} req - Requête contenant missionId, amount, clientId, clientPhone, clientEmail, description
+ * @param {express.Response} res - Réponse HTTP avec l'URL de paiement CamerPay et les références
  */
 router.post('/initialize', initiatePaymentValidator, async (req, res) => {
   try {
@@ -143,7 +166,13 @@ router.post('/initialize', initiatePaymentValidator, async (req, res) => {
 
 /**
  * POST /api/payments/verify/:reference
- * Verify a payment transaction
+ * Vérification de l'état d'une transaction de paiement CamerPay.
+ * Interroge l'API CamerPay, met à jour le statut du paiement en base
+ * et bascule la mission à l'état 'paid' en cas de succès (fonds sous séquestre).
+ * 
+ * @route POST /api/payments/verify/:reference
+ * @param {express.Request} req - Requête contenant le paramètre d'URL reference
+ * @param {express.Response} res - Réponse HTTP avec le statut consolidé du paiement
  */
 router.post('/verify/:reference', verifyPaymentValidator, async (req, res) => {
   try {
@@ -235,7 +264,12 @@ router.post('/verify/:reference', verifyPaymentValidator, async (req, res) => {
 
 /**
  * POST /api/payments/manual/initialize
- * Initialize a manual direct P2P payment (client to technician)
+ * Initialisation d'un paiement manuel de gré à gré (P2P direct client-technicien : Orange Money / MTN MoMo).
+ * Crée un enregistrement de paiement au statut 'pending' et bascule la mission vers 'quote_accepted'.
+ * 
+ * @route POST /api/payments/manual/initialize
+ * @param {express.Request} req - Requête contenant missionId, clientId, method, senderPhone, amount
+ * @param {express.Response} res - Réponse HTTP confirmant la création du paiement manuel
  */
 router.post('/manual/initialize', initiatePaymentValidator, async (req, res) => {
   try {
@@ -343,7 +377,13 @@ router.post('/manual/initialize', initiatePaymentValidator, async (req, res) => 
 
 /**
  * POST /api/payments/manual/confirm
- * Confirm a manual payment by technician (technician confirms receipt)
+ * Confirmation de réception des fonds par le technicien pour un paiement manuel direct.
+ * Met à jour le statut du paiement en 'success', bascule la mission en 'paid'
+ * et incrémente les statistiques du technicien (total_earnings et total_missions) sans créditer le wallet applicatif.
+ * 
+ * @route POST /api/payments/manual/confirm
+ * @param {express.Request} req - Requête contenant missionId
+ * @param {express.Response} res - Réponse HTTP confirmant la validation
  */
 router.post('/manual/confirm', async (req, res) => {
   try {
@@ -471,7 +511,12 @@ router.post('/manual/confirm', async (req, res) => {
 
 /**
  * GET /api/payments/client/:clientId
- * Obtenir l'historique des transactions d'un client
+ * Récupération de l'historique de toutes les transactions et paiements associés à un client,
+ * incluant les détails des missions reliées.
+ * 
+ * @route GET /api/payments/client/:clientId
+ * @param {express.Request} req - Requête contenant le paramètre clientId
+ * @param {express.Response} res - Réponse JSON contenant la liste des paiements avec relations missions
  */
 router.get('/client/:clientId', async (req, res) => {
   try {

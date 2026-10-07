@@ -1,3 +1,12 @@
+// =============================================================================
+// FICHIER : payment.webhook.test.js
+// RÔLE : Tests d'intégration Jest & Supertest pour le webhook CamerPay
+//         (vérification de signature HMAC, validation de référence, appel RPC confirm_mission_payment).
+// MODULE : Tests / Passerelle Paiements (Backend)
+// DÉPENDANCES : supertest, express, ../../../src/modules/payments/payment.webhook, jest
+// SÉCURITÉ / RLS : N/A (Tests de validation cryptographique et d'intégrité webhook)
+// =============================================================================
+
 const request = require('supertest');
 const express = require('express');
 const webhookRoutes = require('../../../src/modules/payments/payment.webhook');

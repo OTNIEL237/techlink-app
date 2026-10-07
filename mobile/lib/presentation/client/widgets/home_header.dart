@@ -1,3 +1,15 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : home_header.dart
+// Rôle          : En-tête personnalisé de l'écran d'accueil client affichant l'avatar,
+//                 la salutation avec le nom et la cloche de notification temps réel.
+// Module        : Présentation Client (Widgets Accueil)
+// Dépendances   : flutter/material.dart, cached_network_image, supabase_flutter,
+//                 go_router, app_colors.dart, theme_provider.dart
+// Sécurité/RLS  : Écoute en temps réel du flux de notifications filtré par RLS.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -6,11 +18,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/theme_provider.dart';
 
+/// En-tête supérieur affichant le profil de l'utilisateur et l'accès aux notifications.
 class ClientHomeHeader extends StatelessWidget {
+  /// Données du profil utilisateur (nom, avatar, etc.)
   final Map<String, dynamic>? userData;
+
+  /// Thème de couleurs personnalisé de l'application
   final TechLinkColors tc;
+
+  /// Indique si l'application est en mode sombre
   final bool isDark;
 
+  /// Constructeur constant de l'en-tête d'accueil client
   const ClientHomeHeader({
     super.key,
     required this.userData,

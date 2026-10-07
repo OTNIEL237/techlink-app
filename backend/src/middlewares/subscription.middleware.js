@@ -1,8 +1,20 @@
+// =============================================================================
+// FICHIER : backend/src/middlewares/subscription.middleware.js
+// RÔLE : Vérification du statut d'abonnement ou de période d'essai pour les techniciens
+// MODULE : Backend / Middlewares Métier Abonnements
+// DÉPENDANCES : ../config/supabase
+// SÉCURITÉ / RLS : Bloque l'acceptation de missions (403) si abonnement expiré
+// =============================================================================
+
 const supabase = require('../config/supabase');
 
 /**
- * Middleware pour vérifier qu'un technicien a un abonnement actif ou un essai gratuit
- * Utilisé pour autoriser les techniciens à accepter des missions
+ * Middleware bloquant vérifiant la validité de l'abonnement ou de la période d'essai d'un technicien.
+ * Utilisé pour restreindre les actions critiques (ex: acceptation de nouvelles missions, accès aux devis).
+ *
+ * @param {import('express').Request} req - Requête contenant `technicianId` en paramètre ou corps
+ * @param {import('express').Response} res - Réponse HTTP Express
+ * @param {import('express').NextFunction} next - Passe au middleware suivant si l'abonnement est actif
  */
 const checkSubscriptionStatus = async (req, res, next) => {
   try {
@@ -85,7 +97,12 @@ const checkSubscriptionStatus = async (req, res, next) => {
 };
 
 /**
- * Middleware optionnel - Ajoute les infos d'abonnement à la requête (sans bloquer)
+ * Middleware informatif non bloquant qui attache les métadonnées d'abonnement à `req.subscription`.
+ * Ne rejette jamais la requête en cas d'expiration ou d'absence d'abonnement.
+ *
+ * @param {import('express').Request} req - Requête HTTP Express
+ * @param {import('express').Response} res - Réponse HTTP Express
+ * @param {import('express').NextFunction} next - Fonction de rappel
  */
 const attachSubscriptionInfo = async (req, res, next) => {
   try {
@@ -150,3 +167,4 @@ module.exports = {
   checkSubscriptionStatus,
   attachSubscriptionInfo,
 };
+

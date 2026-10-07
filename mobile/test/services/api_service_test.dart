@@ -1,12 +1,25 @@
+// =============================================================================
+// FICHIER : api_service_test.dart
+// RÔLE : Tests unitaires pour le client HTTP ApiService
+//         (requêtes POST, GET avec query parameters, sérialisation des réponses,
+//         gestion des erreurs DioException et conversion en ApiException).
+// MODULE : Tests / Services Réseau (Mobile Flutter)
+// DÉPENDANCES : package:flutter_test/flutter_test.dart, package:mocktail/mocktail.dart, package:dio/dio.dart, package:techlink/data/services/api_service.dart
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec isolation Dio mocké)
+// =============================================================================
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:dio/dio.dart';
 import 'package:techlink/data/services/api_service.dart';
 
-// Création des Mocks
+/// Mock de l'instance du client réseau Dio.
 class MockDio extends Mock implements Dio {}
+
+/// Mock de l'adaptateur HTTP sous-jacent.
 class MockHttpClientAdapter extends Mock implements HttpClientAdapter {}
 
+/// Point d'entrée de la suite de tests unitaires pour ApiService.
 void main() {
   late ApiService apiService;
   late MockDio mockDio;

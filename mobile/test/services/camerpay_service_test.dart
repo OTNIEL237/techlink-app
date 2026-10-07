@@ -1,12 +1,26 @@
+// =============================================================================
+// FICHIER : camerpay_service_test.dart
+// RÔLE : Tests unitaires pour le service de paiement CamerPayService
+//         (initialisation des paiements de mission, règle de test à 20 FCFA,
+//         démarrage d'essai gratuit technicien, vérification des transactions d'abonnement).
+// MODULE : Tests / Services Paiements (Mobile Flutter)
+// DÉPENDANCES : package:flutter_test/flutter_test.dart, package:mocktail/mocktail.dart, package:techlink/data/services/camerpay_service.dart
+// SÉCURITÉ / RLS : N/A (Tests unitaires avec isolation ApiService mocké)
+// =============================================================================
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:techlink/data/services/api_service.dart';
 import 'package:techlink/data/services/camerpay_service.dart';
 
+/// Mock du service client HTTP ApiService.
 class MockApiService extends Mock implements ApiService {}
+
+/// Mock du client SupabaseClient.
 class MockSupabaseClient extends Mock implements SupabaseClient {}
 
+/// Point d'entrée de la suite de tests unitaires pour CamerPayService.
 void main() {
   late CamerPayService camerPayService;
   late MockApiService mockApiService;

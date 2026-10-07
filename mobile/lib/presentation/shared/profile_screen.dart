@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : profile_screen.dart
+// Rôle          : Écran de profil utilisateur universel (paramètres, statistiques, abonnement et déconnexion).
+// Module        : Presentation / Shared
+// Dépendances   : flutter_riverpod, go_router, supabase_flutter, cached_network_image, theme_provider.dart
+// Sécurité/RLS  : Charge et modifie le profil personnel 'users' et 'technicians' lié à auth.uid().
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -9,17 +19,23 @@ import '../../core/theme/theme_provider.dart';
 import '../../core/theme/neumorphic_styles.dart';
 import 'support_chat_screen.dart';
 
-// =========================================================================
-// ÉCRAN DE PROFIL PREMIUM & PERSONNALISÉ POUR CLIENT, TECHNICIEN & ADMIN
-// =========================================================================
-
+/// Écran complet de gestion du profil personnel adapté aux clients, techniciens et administrateurs.
+///
+/// Présente :
+/// - Les coordonnées de l'utilisateur (nom, email, téléphone, avatar).
+/// - Les métriques d'activité (missions terminées, avis, note moyenne).
+/// - Les paramètres d'abonnement (forfait actif, renouvellement) pour les techniciens.
+/// - Les options d'accessibilité (mode sombre / clair, langue).
+/// - L'accès au support client et la déconnexion sécurisée.
 class ProfileScreen extends ConsumerStatefulWidget {
+  /// Constructeur constant pour [ProfileScreen].
   const ProfileScreen({super.key});
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
+/// État associé à [ProfileScreen] assurant le chargement des données utilisateur et technicien.
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Map<String, dynamic>? _userData;
   Map<String, dynamic>? _techData;

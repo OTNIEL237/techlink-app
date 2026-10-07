@@ -1,6 +1,17 @@
+// =============================================================================
+// FICHIER : app_router_test.dart
+// RÔLE : Tests unitaires de validation pour le routeur GoRouter (AppRouter)
+//         (route initiale, routes d'authentification, partagées, client, technicien,
+//         administrateur et gestion du cache de rôle/inscription).
+// MODULE : Tests / Routage & Navigation (Mobile Flutter)
+// DÉPENDANCES : package:flutter_test/flutter_test.dart, package:techlink/core/routing/app_router.dart
+// SÉCURITÉ / RLS : N/A (Tests de configuration de routes applicatives)
+// =============================================================================
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:techlink/core/routing/app_router.dart';
 
+/// Point d'entrée des tests unitaires de configuration du routage.
 void main() {
   group('AppRouter Configuration', () {
     test('devrait définir la route initiale à /', () {
@@ -46,6 +57,19 @@ void main() {
       expect(routes, contains('/admin/home'));
       expect(routes, contains('/admin/users'));
       expect(routes, contains('/admin/missions'));
+    });
+
+    test('devrait gérer le cache de rôle et l\'état d\'inscription', () {
+      AppRouter.clearRoleCache();
+      expect(AppRouter.isRegistering, isFalse);
+
+      AppRouter.setCachedRole('user-1', 'technician', validationStatus: 'pending');
+      AppRouter.isRegistering = true;
+      expect(AppRouter.isRegistering, isTrue);
+
+      AppRouter.clearRoleCache();
+      AppRouter.isRegistering = false;
+      expect(AppRouter.isRegistering, isFalse);
     });
   });
 }

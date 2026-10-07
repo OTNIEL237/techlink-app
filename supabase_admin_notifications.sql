@@ -1,3 +1,15 @@
+-- =============================================================================
+-- FICHIER : supabase_admin_notifications.sql
+-- RÔLE : Fonctions et déclencheurs de notifications automatisées pour les administrateurs :
+--         - 'notify_admins()' : diffusion d'alertes in-app à tous les profils 'admin'
+--         - Trigger sur inscription technicien (alerte validation KYC requise)
+--         - Trigger sur activation d'abonnement (alerte nouveau forfait payé)
+--         - Trigger sur signalement de litige sur une mission (alerte intervention requise).
+-- MODULE : Schéma de base de données / Notifications Système Administrateur
+-- DÉPENDANCES : public.users, public.technicians, public.technician_subscriptions, public.missions, public.notifications
+-- SÉCURITÉ / RLS : Fonctions plpgsql exécutées sur le serveur PostgreSQL.
+-- =============================================================================
+
 -- Fonction utilitaire pour envoyer une notification à tous les administrateurs
 CREATE OR REPLACE FUNCTION notify_admins(
   p_title VARCHAR,

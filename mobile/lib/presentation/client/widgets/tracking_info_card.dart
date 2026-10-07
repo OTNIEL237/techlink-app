@@ -1,11 +1,35 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : tracking_info_card.dart
+// Rôle          : Carte générique réutilisable pour regrouper des informations
+//                 de suivi de mission avec icône, titre et contenu personnalisé.
+// Module        : Présentation Client (Widgets Suivi de Mission)
+// Dépendances   : flutter/material.dart, app_colors.dart
+// Sécurité/RLS  : Composant d'affichage sans restriction d'accès.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 
+/// Carte conteneur d'informations pour les écrans de suivi de mission.
 class TrackingInfoCard extends StatelessWidget {
+  /// Titre de la section informative
   final String title;
+
+  /// Icône illustrative affichée à côté du titre
   final IconData icon;
+
+  /// Widget enfant contenant le corps de l'information
   final Widget child;
-  const TrackingInfoCard({super.key, required this.title, required this.icon, required this.child});
+
+  /// Constructeur constant de la carte d'information de suivi
+  const TrackingInfoCard({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {

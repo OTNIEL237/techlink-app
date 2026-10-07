@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : login_screen.dart
+// Rôle          : Écran d'authentification utilisateur (Connexion email/mot de passe avec style neumorphique).
+// Module        : Presentation / Auth
+// Dépendances   : flutter_riverpod, go_router, supabase_flutter, neumorphic_styles.dart, auth_provider.dart
+// Sécurité/RLS  : Authentifie l'utilisateur via Supabase Auth et purge le cache des rôles.
+// =============================================================================
+
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,35 +17,62 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/theme/neumorphic_styles.dart';
 import '../../core/theme/theme_provider.dart';
 import '../../core/animations/morph_transitions.dart';
+import '../../core/routing/app_router.dart';
 import '../../providers/auth_provider.dart';
 
-// =========================================================================
-// ÉCRAN DE CONNEXION MODERNE (Login Neumorphique & Animations Pinterest)
-// =========================================================================
-// Animation d'entrée en cascade (staggered animation), arrière-plan fluide
-// Pinterest respirant, champs neumorphiques creusés et retour tactile spring.
-
+/// Écran principal de connexion utilisateur de l'application TechLink.
+///
+/// Propose une interface soignée avec design neumorphique 3D / Glassmorphism,
+/// animations d'entrée en cascade (staggered animation), support dynamique
+/// du mode sombre et gestion sécurisée des sessions.
 class LoginScreen extends ConsumerStatefulWidget {
+  /// Constructeur constant pour [LoginScreen].
   const LoginScreen({super.key});
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
+/// État associé à l'écran de connexion [LoginScreen].
+///
+/// Gère la saisie des identifiants, le masquage/démasquage du mot de passe,
+/// l'état de chargement et les animations d'entrée en cascade.
 class _LoginScreenState extends ConsumerState<LoginScreen>
     with SingleTickerProviderStateMixin {
+  /// Contrôleur du champ de saisie de l'adresse e-mail.
   final _emailController = TextEditingController();
+
+  /// Contrôleur du champ de saisie du mot de passe.
   final _passwordController = TextEditingController();
+
+  /// Indicateur déterminant si les caractères du mot de passe sont masqués.
   bool _isObscure = true;
+
+  /// Option pour mémoriser la session locale.
   bool _rememberMe = true;
+
+  /// Indicateur d'exécution d'une tentative de connexion réseau.
   bool _isLoading = false;
 
+  /// Contrôleur principal des animations d'apparition synchronisées.
   late AnimationController _animController;
+
+  /// Animation d'échelle avec effet ressort pour le logo 3D.
   late Animation<double> _logoScale;
+
+  /// Animation d'opacité pour l'en-tête (titre et sous-titre).
   late Animation<double> _fadeHeader;
+
+  /// Animation de translation verticale pour l'en-tête.
   late Animation<Offset> _slideHeader;
+
+  /// Animation d'opacité pour le formulaire de saisie.
   late Animation<double> _fadeForm;
+
+  /// Animation de translation pour le bloc de formulaire.
   late Animation<Offset> _slideForm;
+
+  /// Animation d'opacité pour les boutons d'action en pied de page.
   late Animation<double> _fadeFooter;
 
   @override
@@ -101,11 +138,50 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     super.dispose();
   }
 
+  /// Traduit les messages d'erreur courants de Supabase Auth en français limpide.
+  String _translateAuthError(String msg) {
+    final lower = msg.toLowerCase();
+    if (lower.contains('invalid login credentials') || lower.contains('invalid_grant')) {
+      return 'Adresse e-mail ou mot de passe incorrect.';
+    }
+    if (lower.contains('email not confirmed')) {
+      return 'Votre adresse e-mail n\'a pas encore été confirmée. Veuillez vérifier votre boîte de réception.';
+    }
+    if (lower.contains('user not found')) {
+      return 'Aucun compte associé à cette adresse e-mail.';
+    }
+    if (lower.contains('too many requests') || lower.contains('rate limit')) {
+      return 'Trop de tentatives de connexion. Veuillez patienter avant de réessayer.';
+    }
+    if (lower.contains('network') || lower.contains('socketexception')) {
+      return 'Erreur de connexion internet. Veuillez vérifier votre réseau.';
+    }
+    return msg;
+  }
+
+  /// Nettoie les messages d'erreur bruts pour un affichage utilisateur agréable.
+  String _cleanErrorMessage(String raw) {
+    if (raw.startsWith('Exception: ')) {
+      return raw.substring(11);
+    }
+    return raw;
+  }
+
+  /// Traite la soumission du formulaire de connexion.
+  ///
+  /// Valide les champs obligatoires, active le retour tactile, purge le cache
+  /// de rôle obsolète et délègue l'authentification à [authNotifierProvider].
   Future<void> _handleLogin() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
+    debugPrint('════════════════════════════════════════════════════════════════');
+    debugPrint('[CONNEXION] Tentative de connexion initiée');
+    debugPrint('[CONNEXION] Email saisi : $email');
+    debugPrint('════════════════════════════════════════════════════════════════');
+
     if (email.isEmpty || password.isEmpty) {
+      debugPrint('[CONNEXION] Échec validation : email ou mot de passe vide.');
       _showToast('Veuillez remplir votre email et mot de passe');
       return;
     }
@@ -114,22 +190,73 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     setState(() => _isLoading = true);
 
     try {
-      // Authentification Supabase (le flux réactif GoRouter déclenche automatiquement la redirection)
-      await ref.read(authNotifierProvider.notifier).login(email, password);
+      AppRouter.clearRoleCache();
+      debugPrint('[CONNEXION] Étape 1 : Envoi de la requête de connexion à Supabase...');
+
+      // Authentification Supabase
+      final authResponse = await ref.read(authNotifierProvider.notifier).login(email, password);
+      final user = authResponse.user;
+
+      if (user == null) {
+        debugPrint('[CONNEXION] Avertissement : Aucun utilisateur retourné.');
+        _showToast('Erreur : impossible de récupérer vos données utilisateur.');
+        return;
+      }
+
+      debugPrint('[CONNEXION] Étape 2 : Authentification réussie !');
+      debugPrint('[CONNEXION] ID Utilisateur : ${user.id}');
+      debugPrint('[CONNEXION] Email confirmé : ${user.emailConfirmedAt != null ? "Oui (${user.emailConfirmedAt})" : "Non"}');
+
+      // Étape 3 : Résolution du rôle
+      debugPrint('[CONNEXION] Étape 3 : Résolution du rôle utilisateur...');
+      final role = await AppRouter.resolveUserRole(Supabase.instance.client, user);
+      debugPrint('[CONNEXION] Rôle résolu : $role');
+
+      if (!mounted) return;
+
+      // Redirection déterministe basée sur le rôle si GoRouter n'a pas encore pris le relais
+      if (role == 'admin') {
+        debugPrint('[CONNEXION] Redirection vers l\'espace Administrateur (/admin/home)');
+        context.go('/admin/home');
+      } else if (role == 'technician') {
+        final status = await AppRouter.resolveTechnicianStatus(Supabase.instance.client, user.id);
+        debugPrint('[CONNEXION] Statut technicien : $status');
+        if (status == 'approved') {
+          debugPrint('[CONNEXION] Redirection Technicien approuvé (/technician/home)');
+          context.go('/technician/home');
+        } else if (status == 'pending') {
+          debugPrint('[CONNEXION] Redirection Technicien en attente (/technician/pending)');
+          context.go('/technician/pending');
+        } else {
+          debugPrint('[CONNEXION] Redirection Technicien onboarding (/technician/onboarding)');
+          context.go('/technician/onboarding');
+        }
+      } else {
+        // Client par défaut
+        debugPrint('[CONNEXION] Redirection vers l\'espace Client (/client/home)');
+        context.go('/client/home');
+      }
     } on AuthException catch (e) {
-      _showToast(e.message);
+      debugPrint('[CONNEXION] ERREUR AuthException : Code=${e.statusCode}, Message=${e.message}');
+      final frenchMessage = _translateAuthError(e.message);
+      _showToast(frenchMessage);
     } catch (e) {
+      debugPrint('[CONNEXION] ERREUR Inattendue : $e');
       // Ignorer l'erreur si la session Supabase est bien active
       if (e.toString().contains('Future already completed') ||
           Supabase.instance.client.auth.currentSession != null) {
+        debugPrint('[CONNEXION] Session Supabase valide malgré l\'exception de transition.');
         return;
       }
-      _showToast('Erreur de connexion: $e');
+      _showToast('Erreur de connexion : ${_cleanErrorMessage(e.toString())}');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
+  /// Affiche un message éphémère flottant (SnackBar) pour informer l'utilisateur.
+  ///
+  /// [msg] Message textuel à présenter à l'écran.
   void _showToast(String msg) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(

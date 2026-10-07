@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : subscription_selection_screen.dart
+// Rôle          : Écran de choix de formule d'abonnement (Essai gratuit 30j, Mensuel, Annuel) pour techniciens.
+// Module        : Presentation / Auth
+// Dépendances   : flutter, go_router, supabase_flutter, camerpay_service.dart, responsive_web_wrapper.dart
+// Sécurité/RLS  : Met à jour les dates d'essai et abonnements dans la table Supabase 'technicians'.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -5,19 +15,27 @@ import '../../core/constants/app_colors.dart';
 import '../../data/services/camerpay_service.dart';
 import '../shared/responsive_web_wrapper.dart';
 
-// =========================================================================
-// SÉLECTION D'ABONNEMENT (Technicien)
-// =========================================================================
-// Une fois le compte technicien créé, cet écran lui propose de choisir
-// un abonnement mensuel ou annuel. Le paiement est géré via CamerPay 
-// (Mobile Money). L'accès aux missions en dépend.
-
+/// Écran de souscription d'abonnement pour les techniciens nouvellement inscrits ou renouvelant leur statut.
+///
+/// Permet au professionnel de choisir entre :
+/// - Une période d'essai gratuit de 30 jours sans engagement (si éligible).
+/// - Un abonnement mensuel (2 000 FCFA / mois).
+/// - Un abonnement annuel avec réduction (20 000 FCFA / an).
+/// Intègre le déclenchement de paiement Mobile Money (MTN / Orange) avec attente automatique de validation USSD push.
 class SubscriptionSelectionScreen extends StatefulWidget {
+  /// Identifiant unique du technicien (clé primaire dans la table `technicians`).
   final String technicianId;
+
+  /// Nom complet du technicien.
   final String technicianName;
+
+  /// Adresse e-mail de facturation.
   final String technicianEmail;
+
+  /// Numéro de téléphone de contact et Mobile Money.
   final String technicianPhone;
 
+  /// Constructeur de l'écran [SubscriptionSelectionScreen].
   const SubscriptionSelectionScreen({
     super.key,
     required this.technicianId,
@@ -31,12 +49,22 @@ class SubscriptionSelectionScreen extends StatefulWidget {
       _SubscriptionSelectionScreenState();
 }
 
+/// État associé à l'écran [SubscriptionSelectionScreen].
 class _SubscriptionSelectionScreenState
     extends State<SubscriptionSelectionScreen> {
+  /// Service de passerelle de paiement Mobile Money CamerPay.
   final camerpayService = CamerPayService();
+
+  /// Indicateur de traitement asynchrone (initialisation ou attente de paiement).
   bool _isLoading = false;
-  String? _selectedPlan; // 'monthly', 'yearly', or 'trial'
+
+  /// Formule d'abonnement actuellement sélectionnée ('monthly', 'yearly', ou 'trial').
+  String? _selectedPlan;
+
+  /// Indicateur de vérification initiale d'éligibilité à l'essai gratuit.
   bool _checkingTrial = true;
+
+  /// Éligibilité du technicien à l'essai gratuit (vrai s'il n'en a jamais bénéficié).
   bool _eligibleForTrial = false;
 
   @override
@@ -45,12 +73,22 @@ class _SubscriptionSelectionScreenState
     _checkTrialEligibility();
   }
 
+  /// Vérifie auprès de Supabase si le technicien est éligible aux 30 jours d'essai gratuit.
+  ///
+  /// Interroge la colonne `trial_start_date` de la table `technicians`.
+  /// Si la date est nulle, le technicien n'a jamais utilisé son essai et est marqué comme éligible.
   Future<void> _checkTrialEligibility() async {
     try {
+      final currentUserId = Supabase.instance.client.auth.currentUser?.id;
+      final techId = widget.technicianId.isNotEmpty ? widget.technicianId : (currentUserId ?? '');
+      final query = currentUserId != null
+          ? 'id.eq.$techId,user_id.eq.$techId,user_id.eq.$currentUserId'
+          : 'id.eq.$techId,user_id.eq.$techId';
+
       final response = await Supabase.instance.client
           .from('technicians')
           .select('trial_start_date')
-          .eq('id', widget.technicianId)
+          .or(query)
           .maybeSingle();
 
       bool eligible = true;
@@ -74,13 +112,19 @@ class _SubscriptionSelectionScreenState
     }
   }
 
+  /// Présente un message d'erreur rouge sous forme de SnackBar.
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg), backgroundColor: AppColors.error),
     );
   }
 
-  /// Affiche la boîte de dialogue de saisie du numéro de téléphone avant de payer
+  /// Déclenche le processus de paiement pour le forfait sélectionné.
+  ///
+  /// Ouvre une boîte de dialogue pour confirmer ou ajuster le numéro Mobile Money payeur,
+  /// appelle l'API CamerPay, puis bascule vers la vérification USSD push ou la WebView de paiement.
+  ///
+  /// [planType] Identifiant du forfait ('monthly' ou 'yearly').
   Future<void> _subscribeToPlan(String planType) async {
     final TextEditingController phoneController = TextEditingController(text: widget.technicianPhone);
 
@@ -367,7 +411,26 @@ class _SubscriptionSelectionScreenState
                   backgroundColor: AppColors.success,
                 ),
               );
-              Navigator.pushNamedAndRemoveUntil(context, '/technician/home', (r) => false);
+              try {
+                final currentUserId = Supabase.instance.client.auth.currentUser?.id;
+                final techId = widget.technicianId.isNotEmpty ? widget.technicianId : (currentUserId ?? '');
+                final query = currentUserId != null
+                    ? 'id.eq.$techId,user_id.eq.$techId,user_id.eq.$currentUserId'
+                    : 'id.eq.$techId,user_id.eq.$techId';
+                final techData = await Supabase.instance.client
+                    .from('technicians')
+                    .select('validation_status')
+                    .or(query)
+                    .maybeSingle();
+                final statusTech = techData?['validation_status'] as String? ?? 'pending';
+                if (statusTech == 'approved') {
+                  context.go('/technician/home');
+                } else {
+                  context.go('/technician/pending');
+                }
+              } catch (_) {
+                context.go('/technician/pending');
+              }
             }
             return;
           } else if (['failed', 'cancelled'].contains(status.toLowerCase())) {
@@ -401,6 +464,21 @@ class _SubscriptionSelectionScreenState
     try {
       final now = DateTime.now();
       final trialEnd = now.add(const Duration(days: 30));
+      final currentUserId = Supabase.instance.client.auth.currentUser?.id;
+      final techId = widget.technicianId.isNotEmpty ? widget.technicianId : (currentUserId ?? '');
+
+      final query = currentUserId != null
+          ? 'id.eq.$techId,user_id.eq.$techId,user_id.eq.$currentUserId'
+          : 'id.eq.$techId,user_id.eq.$techId';
+
+      final techRecord = await Supabase.instance.client
+          .from('technicians')
+          .select('id, validation_status')
+          .or(query)
+          .maybeSingle();
+
+      final actualTechId = (techRecord?['id'] as String?) ?? techId;
+      final valStatus = (techRecord?['validation_status'] as String?) ?? 'pending';
 
       await Supabase.instance.client.from('technicians').update({
         'subscription_type': 'trial',
@@ -409,11 +487,11 @@ class _SubscriptionSelectionScreenState
         'trial_end_date': trialEnd.toIso8601String(),
         'subscription_start_date': now.toIso8601String(),
         'subscription_end_date': trialEnd.toIso8601String(),
-      }).eq('id', widget.technicianId);
+      }).eq('id', actualTechId);
 
       try {
         await Supabase.instance.client.from('technician_subscriptions').insert({
-          'technician_id': widget.technicianId,
+          'technician_id': actualTechId,
           'subscription_type': 'trial',
           'period_start': now.toIso8601String(),
           'period_end': trialEnd.toIso8601String(),
@@ -421,8 +499,7 @@ class _SubscriptionSelectionScreenState
           'status': 'active',
         });
       } catch (e) {
-        // Ignore RLS error for history table since the backend (service_role) normally handles this.
-        print('Warning: Could not insert subscription history: $e');
+        debugPrint('Avertissement historique subscription: $e');
       }
 
       if (mounted) {
@@ -434,7 +511,11 @@ class _SubscriptionSelectionScreenState
         );
         await Future.delayed(const Duration(seconds: 1));
         if (mounted) {
-          context.go('/technician/home');
+          if (valStatus == 'approved') {
+            context.go('/technician/home');
+          } else {
+            context.go('/technician/pending');
+          }
         }
       }
     } catch (e) {

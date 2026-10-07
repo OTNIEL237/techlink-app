@@ -1,12 +1,38 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : notchpay_service.dart
+// Rôle          : Intégration directe avec l'API REST de NotchPay (passerelle de paiement).
+// Module        : Data / Services
+// Dépendances   : dio, notchpay_config.dart, api_service.dart
+// Sécurité/RLS  : Utilise la clé publique NotchPay et configure les URLs de redirection de callback.
+// =============================================================================
+
 import 'package:dio/dio.dart';
 import '../constants/notchpay_config.dart';
 import 'api_service.dart';
 
+/// Service facilitant les appels directs à l'API de paiement NotchPay.
+///
+/// Gère la création de sessions de paiement en ligne avec redirection web,
+/// ainsi que la vérification synchrone du statut de la transaction.
 class NotchPayService {
+  /// URL de base de l'API REST NotchPay.
   static const String _baseUrl = 'https://api.notchpay.co';
+
+  /// Instance interne du service API pour l'exécution des requêtes HTTP.
   static final ApiService _apiService = ApiService();
 
-  // Initialiser un paiement
+  /// Initialise une transaction auprès de NotchPay et génère l'URL de paiement.
+  ///
+  /// [amount] Montant à facturer.
+  /// [currency] Devise de transaction (ex: 'XAF').
+  /// [email] Adresse e-mail du payeur.
+  /// [phone] Numéro de téléphone du payeur.
+  /// [missionId] Identifiant de la mission liée.
+  /// [description] Motif de facturation.
+  /// [callbackUrl] URL de retour optionnelle après paiement.
+  /// Retourne un dictionnaire contenant les détails de la transaction et la clé `_payment_url`.
   static Future<Map<String, dynamic>> initializePayment({
     required double amount,
     required String currency,
@@ -64,7 +90,10 @@ class NotchPayService {
     }
   }
 
-  // Vérifier le statut d'un paiement
+  /// Interroge l'API NotchPay pour vérifier le statut effectif d'un paiement.
+  ///
+  /// [reference] Référence unique de la transaction générée lors de l'initialisation.
+  /// Retourne les informations complètes sur le statut de la transaction.
   static Future<Map<String, dynamic>> verifyPayment(
       String reference) async {
     try {

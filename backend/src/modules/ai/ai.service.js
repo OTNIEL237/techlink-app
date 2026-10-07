@@ -1,12 +1,27 @@
+// =============================================================================
+// FICHIER : backend/src/modules/ai/ai.service.js
+// RÔLE : Orchestrateur de diagnostic IA (Cache LRU, Groq LLaMA, OpenAI Fallback, Analyse locale)
+// MODULE : Backend / Module IA (Service)
+// DÉPENDANCES : openai, dotenv
+// SÉCURITÉ / RLS : Nettoyage et assainissement des prompts, gestion sécurisée des clés d'API
+// =============================================================================
+
 const { OpenAI } = require('openai');
 
 // ---------------------------------------------------------
 // 1. CACHE EN MÉMOIRE
 // ---------------------------------------------------------
-// Structure: { "texte_normalisé": { response_data, timestamp } }
+/** Cache en mémoire pour stocker les diagnostics récents et réduire les coûts d'inférence */
 const analysisCache = new Map();
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 heures
+/** Durée de rétention des résultats en cache (24 heures) */
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
+/**
+ * Normalise une chaîne de texte pour servir de clé de hachage de cache (minuscules, sans accents ni ponctuation).
+ *
+ * @param {string} text - Texte brut à normaliser
+ * @returns {string} Chaîne normalisée
+ */
 const normalizeTextForCache = (text) => {
   return text.toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -18,6 +33,14 @@ const normalizeTextForCache = (text) => {
 // ---------------------------------------------------------
 // 2. ANALYSE LOCALE (FALLBACK ULTIME)
 // ---------------------------------------------------------
+/**
+ * Diagnostic local déterministe basé sur des expressions régulières et mots-clés métier.
+ * Utilisé en cas d'indisponibilité du réseau ou de quota LLM dépassé.
+ *
+ * @param {string} problem - Description du problème
+ * @param {number} photosCount - Nombre de photos jointes
+ * @returns {{success: boolean, data: Object}} Diagnostic structuré par défaut
+ */
 const fallbackAnalyze = (problem, photosCount) => {
   const problemNormalized = normalizeTextForCache(problem);
 
@@ -62,6 +85,17 @@ const fallbackAnalyze = (problem, photosCount) => {
 // ---------------------------------------------------------
 // 3. ANALYSE IA (GROQ -> OPENAI -> LOCAL)
 // ---------------------------------------------------------
+/**
+ * Analyse une description de panne en cascade :
+ * 1. Vérifie le cache local (TTL 24h).
+ * 2. Tente une inférence ultra-rapide avec Groq (LLaMA 3.3).
+ * 3. En cas d'échec, bascule sur OpenAI (GPT-4o-mini).
+ * 4. En cas de panne générale des API, bascule sur l'analyseur déterministe local.
+ *
+ * @param {string} problem - Description formulée par le client
+ * @param {number} [photosCount=0] - Nombre de clichés annexés
+ * @returns {Promise<{success: boolean, data: Object}>} Diagnostic complet validé
+ */
 const analyzeProblem = async (problem, photosCount = 0) => {
   try {
     // A. VÉRIFICATION DU CACHE

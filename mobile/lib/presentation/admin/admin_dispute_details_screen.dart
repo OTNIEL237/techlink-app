@@ -1,26 +1,44 @@
+// =============================================================================
+// FICHIER : admin_dispute_details_screen.dart
+// RÔLE : Arbitrage et résolution formelle des litiges clients / techniciens
+// MODULE : Presentation / Admin
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, app_colors.dart, api_service.dart
+// SÉCURITÉ / RLS : Rôle administrateur requis. Appel API sécurisé `/admin/disputes/:id/resolve` avec traçabilité de l'administrateur.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/services/api_service.dart';
 
-// =========================================================================
-// ÉCRAN DE DÉTAILS D'UN LITIGE (ADMIN)
-// =========================================================================
-// Permet de voir les détails d'un litige spécifique et de le résoudre.
-
+/// Écran administrateur d'instruction et de résolution d'un litige ouvert sur une mission.
+///
+/// Présente le motif de la réclamation, les déclarations de l'auteur, et offre des actions
+/// d'arbitrage (annulation sans frais, remboursement, dédommagement) avec saisie obligatoire de notes d'instruction.
 class AdminDisputeDetailsScreen extends StatefulWidget {
+  /// Données brutes de la réclamation ou du litige sélectionné.
   final Map<String, dynamic> dispute;
 
+  /// Constructeur constant du widget [AdminDisputeDetailsScreen].
   const AdminDisputeDetailsScreen({super.key, required this.dispute});
 
   @override
   State<AdminDisputeDetailsScreen> createState() => _AdminDisputeDetailsScreenState();
 }
 
+/// État associé à l'écran de traitement du litige.
+///
+/// Gère la saisie des motifs de résolution et la communication avec l'API backend pour clore le dossier.
 class _AdminDisputeDetailsScreenState extends State<AdminDisputeDetailsScreen> {
+  /// Indicateur d'appel réseau en cours pour finaliser l'arbitrage.
   bool _isProcessing = false;
+
+  /// Contrôleur du champ de saisie des conclusions et notes administratives obligatoires.
   final TextEditingController _notesController = TextEditingController();
 
+  /// Soumet la décision d'arbitrage [action] au backend avec les notes explicatives.
+  ///
+  /// Retourne `true` au navigateur en cas de succès pour rafraîchir la liste précédente.
   Future<void> _resolveDispute(String action) async {
     if (_notesController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -60,6 +78,7 @@ class _AdminDisputeDetailsScreenState extends State<AdminDisputeDetailsScreen> {
     }
   }
 
+  /// Construit la vue détaillée du litige avec les pièces justificatives et les options de résolution.
   @override
   Widget build(BuildContext context) {
     final d = widget.dispute;
@@ -137,6 +156,7 @@ class _AdminDisputeDetailsScreenState extends State<AdminDisputeDetailsScreen> {
     );
   }
 
+  /// Carte interactive présentant une action arbitrale disponible (titre, descriptif, icône et couleur d'alerte).
   Widget _buildActionCard({required String title, required String description, required Color color, required IconData icon, required VoidCallback onTap}) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),

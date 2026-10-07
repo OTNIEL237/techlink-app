@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : admin_missions_screen.dart
+// RÔLE : Supervision, filtrage multi-critères et pagination de toutes les missions
+// MODULE : Presentation / Admin
+// DÉPENDANCES : flutter/material.dart, flutter_riverpod, app_colors.dart, theme_provider.dart, mission_provider.dart, admin_mission_detail_screen.dart
+// SÉCURITÉ / RLS : Rôle administrateur requis. Lecture globale paginée de la table `missions`.
+// =============================================================================
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,28 +14,47 @@ import '../../core/theme/theme_provider.dart';
 import '../../providers/mission_provider.dart';
 import 'admin_mission_detail_screen.dart';
 
-// =========================================================================
-// ÉCRAN DE GESTION DES MISSIONS (ADMIN MODERNE)
-// =========================================================================
-
+/// Écran administrateur dédié au suivi opérationnel de l'ensemble des missions.
+///
+/// Intègre une barre de recherche rapide, des filtres par statut d'intervention
+/// (toutes, en attente, en cours, terminées, annulées), et une pagination dynamique.
 class AdminMissionsScreen extends ConsumerStatefulWidget {
+  /// Constructeur constant du widget [AdminMissionsScreen].
   const AdminMissionsScreen({super.key});
 
   @override
   ConsumerState<AdminMissionsScreen> createState() => _AdminMissionsScreenState();
 }
 
+/// État associé à l'écran de supervision des missions administratives.
+///
+/// Synchronise les requêtes paginées avec [missionListNotifierProvider] et gère l'anti-rebond de recherche.
 class _AdminMissionsScreenState extends ConsumerState<AdminMissionsScreen> {
+  /// Filtre de statut actif ('all', 'pending', 'in_progress', 'completed', 'cancelled').
   String _statusFilter = 'all';
 
-  // Pagination et recherche
+  /// Chaîne de recherche saisie par l'administrateur.
   String _searchQuery = '';
+
+  /// Colonne de tri actif dans la requête.
   String _sortBy = 'created_at';
+
+  /// Ordre de tri (ascendant ou descendant).
   bool _isAscending = false;
+
+  /// Index de la page courante.
   int _currentPage = 0;
+
+  /// Nombre de missions chargées par page.
   final int _itemsPerPage = 10;
+
+  /// Indique si d'autres missions restent à charger.
   bool _hasMore = true;
+
+  /// Minuteur pour temporiser les requêtes de recherche.
   Timer? _debounce;
+
+  /// Contrôleur du champ de saisie de recherche.
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -36,6 +63,7 @@ class _AdminMissionsScreenState extends ConsumerState<AdminMissionsScreen> {
     _loadMissions();
   }
 
+  /// Libère les ressources du contrôleur et du minuteur.
   @override
   void dispose() {
     _debounce?.cancel();
@@ -43,6 +71,7 @@ class _AdminMissionsScreenState extends ConsumerState<AdminMissionsScreen> {
     super.dispose();
   }
 
+  /// Déclenche la récupération des missions via [missionListNotifierProvider].
   Future<void> _loadMissions({bool resetPage = false}) async {
     if (resetPage) {
       setState(() {
@@ -72,6 +101,7 @@ class _AdminMissionsScreenState extends ConsumerState<AdminMissionsScreen> {
     }
   }
 
+  /// Applique un anti-rebond de 400ms avant de relancer la recherche de missions.
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 400), () {
@@ -82,6 +112,7 @@ class _AdminMissionsScreenState extends ConsumerState<AdminMissionsScreen> {
     });
   }
 
+  /// Construit la vue de supervision des missions avec barre de recherche, filtres et cartes détaillées.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -338,6 +369,7 @@ class _AdminMissionsScreenState extends ConsumerState<AdminMissionsScreen> {
     );
   }
 
+  /// Construit une pastille interactive pour filtrer les interventions par état d'avancement.
   Widget _buildFilterPill(String label, String value, TechLinkColors tc, bool isDark) {
     final isSelected = _statusFilter == value;
     return GestureDetector(
@@ -355,8 +387,8 @@ class _AdminMissionsScreenState extends ConsumerState<AdminMissionsScreen> {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
-                ? AppColors.primary
-                : (isDark ? tc.border : Colors.grey.shade300),
+              ? AppColors.primary
+              : (isDark ? tc.border : Colors.grey.shade300),
           ),
           boxShadow: isSelected
               ? [
@@ -380,6 +412,7 @@ class _AdminMissionsScreenState extends ConsumerState<AdminMissionsScreen> {
     );
   }
 
+  /// Construit la carte synthétique d'une mission avec ses protagonistes, son prix et son statut.
   Widget _buildMissionCard(Map<String, dynamic> m, TechLinkColors tc, bool isDark) {
     final clientName = m['clients']?['name'] ?? 'Client non spécifié';
     final techName = m['technicians']?['name'] ?? 'Non assigné';
@@ -598,6 +631,7 @@ class _AdminMissionsScreenState extends ConsumerState<AdminMissionsScreen> {
     );
   }
 
+  /// Associe une couleur d'alerte et un libellé français lisible au code technique de statut.
   (Color, String) _getStatusConfig(String status) {
     switch (status) {
       case 'pending':

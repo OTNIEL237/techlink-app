@@ -1,5 +1,17 @@
+// =============================================================================
+// FICHIER : camerpay.test.js
+// RÔLE : Tests unitaires Jest pour le service utilitaire camerpay.service
+//         (génération de références uniques, validation de configuration).
+// MODULE : Tests / Passerelle CamerPay (Backend)
+// DÉPENDANCES : ../src/utils/camerpay.service, jest
+// SÉCURITÉ / RLS : N/A (Tests unitaires isolés)
+// =============================================================================
+
 const camerpayService = require('../src/utils/camerpay.service');
 
+/**
+ * Suite de tests unitaires pour camerpay.service.
+ */
 describe('CamerPay Service Unit Tests', () => {
   
   describe('generateReference', () => {

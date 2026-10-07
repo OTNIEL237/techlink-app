@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : admin_categories_screen.dart
+// RÔLE : Gestion administrative du référentiel des catégories de métiers / services
+// MODULE : Presentation / Admin
+// DÉPENDANCES : flutter/material.dart, go_router, supabase_flutter, app_colors.dart, theme_provider.dart, techlink_widgets
+// SÉCURITÉ / RLS : Rôle administrateur requis. Lecture, insertion et activation/désactivation dans la table `categories`.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -7,20 +15,27 @@ import '../shared/widgets/techlink_button.dart';
 import '../shared/widgets/techlink_card.dart';
 import '../shared/widgets/techlink_input.dart';
 
-// =========================================================================
-// ÉCRAN DE GESTION DES CATÉGORIES (ADMIN)
-// =========================================================================
-// Permet d'ajouter de nouvelles catégories de services et de les activer/désactiver.
-
+/// Écran administrateur de configuration des catégories de prestations.
+///
+/// Permet de consulter l'ensemble des corps de métier référencés, d'activer ou désactiver
+/// une catégorie en direct, et d'enregistrer de nouveaux types d'interventions.
 class AdminCategoriesScreen extends StatefulWidget {
+  /// Constructeur constant du widget [AdminCategoriesScreen].
   const AdminCategoriesScreen({super.key});
 
   @override
   State<AdminCategoriesScreen> createState() => _AdminCategoriesScreenState();
 }
 
+/// État associé à l'écran de gestion des catégories.
+///
+/// Gère le chargement de la table `categories`, la boîte de dialogue modale de création
+/// et la mise à jour du champ `is_active`.
 class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
+  /// Liste des catégories chargées depuis la base de données.
   List<Map<String, dynamic>> _categories = [];
+
+  /// Indicateur de chargement asynchrone des catégories.
   bool _isLoading = true;
 
   @override
@@ -29,6 +44,7 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
     _loadCategories();
   }
 
+  /// Charge l'ensemble des catégories ordonnées par ordre alphabétique.
   Future<void> _loadCategories() async {
     setState(() => _isLoading = true);
     try {
@@ -49,6 +65,7 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
     }
   }
 
+  /// Inverse le statut d'activation (`is_active`) d'une catégorie donnée.
   Future<void> _toggleCategoryStatus(int id, bool currentStatus) async {
     try {
       await Supabase.instance.client
@@ -63,6 +80,7 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
     }
   }
 
+  /// Affiche la boîte de dialogue modale permettant de créer une nouvelle catégorie de service.
   void _showAddCategoryDialog() {
     final nameController = TextEditingController();
     final iconController = TextEditingController(text: 'build');
@@ -123,6 +141,7 @@ class _AdminCategoriesScreenState extends State<AdminCategoriesScreen> {
     );
   }
 
+  /// Construit la vue de liste des catégories avec commutateurs d'activation et FAB d'ajout.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;

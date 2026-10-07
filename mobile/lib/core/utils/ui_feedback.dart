@@ -1,7 +1,20 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : ui_feedback.dart
+// Rôle          : Système unifié de retours visuels (SnackBars modernes,
+//                 messages de succès, alertes d'avertissement et toasts).
+// Module        : Core / Utilitaires & Expérience Utilisateur
+// Dépendances   : Flutter Material, AppColors, AppErrorHandler
+// Sécurité/RLS  : Public / UI
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import 'app_error_handler.dart';
 
+/// [UiFeedback]
+///
 /// Système unifié d'affichage des messages et erreurs (Snackbars flottantes compactes).
 /// Garantit des messages en français, précis, élégants, et qui ne recouvrent JAMAIS l'application.
 class UiFeedback {

@@ -1,3 +1,16 @@
+-- =============================================================================
+-- FICHIER : 016_ratings_reviews.sql
+-- RÔLE : Gestion des évaluations et avis clients pour les techniciens :
+--         - Définition de la table 'ratings' (score 1-5, commentaire)
+--         - Contrainte unique (mission_id, client_id) anti-doublon
+--         - Fonction trigger 'update_technician_rating()' recalculant la moyenne
+--           et le nombre d'avis sur la table 'technicians'.
+-- MODULE : Schéma de base de données / Notations & Réputation
+-- DÉPENDANCES : public.missions, public.users, public.technicians
+-- SÉCURITÉ / RLS : Insertion par auth.uid() = client_id ; lecture publique autorisée.
+--                  Trigger exécuté avec SECURITY DEFINER pour mise à jour technicien.
+-- =============================================================================
+
 -- Create ratings table
 CREATE TABLE IF NOT EXISTS public.ratings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

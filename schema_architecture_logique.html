@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schéma Architecture Logique - TechLink</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header-title h2 {
+            color: #2c3e50;
+            margin: 0 0 8px 0;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+        .header-title p {
+            color: #7f8c8d;
+            margin: 0;
+            font-size: 14px;
+        }
+        #capture-zone {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 30px 45px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 1px solid #dce4ec;
+            display: inline-block;
+        }
+        .diagram-title-box {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #27ae60;
+        }
+        .diagram-title-box h3 {
+            margin: 0;
+            color: #1e8449;
+            font-size: 19px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .footer-caption {
+            margin-top: 25px;
+            text-align: center;
+            font-style: italic;
+            color: #2c3e50;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .btn-png {
+            background: #27ae60;
+        }
+        .btn-png:hover {
+            background: #219653;
+            transform: translateY(-2px);
+        }
+        #status-msg {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #27ae60;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">
+        <h2>GÉNÉRATEUR DU SCHÉMA D'ARCHITECTURE LOGIQUE</h2>
+        <p>TechLink - IAI-Cameroun / SANGOTECH SARL</p>
+    </div>
+
+    <!-- Zone exacte qui sera exportée en image PNG -->
+    <div id="capture-zone">
+        <div class="diagram-title-box">
+            <h3>ARCHITECTURE LOGIQUE EN COUCHES DU SYSTÈME TECHLINK</h3>
+        </div>
+
+        <pre class="mermaid">
+graph TB
+    %% Styles
+    classDef layer fill:#f8fbfd,stroke:#2980b9,stroke-width:2px,stroke-dasharray: 4 4,color:#1b4f72,font-weight:bold,rx:8,ry:8
+    classDef item fill:#ffffff,stroke:#34495e,stroke-width:2px,color:#000000,font-weight:bold,rx:5,ry:5
+    classDef db fill:#ffffff,stroke:#27ae60,stroke-width:2px,shape:cylinder,color:#000000,font-weight:bold
+
+    subgraph C1 [1. COUCHE PRÉSENTATION / INTERFACE UTILISATEUR]
+        direction LR
+        UI1["📱 Vues & Widgets Flutter<br/>(Écrans Client, Technicien, Admin)"]:::item
+        UI2["🔄 Contrôleurs d'États<br/>(Riverpod StateNotifier)"]:::item
+        UI3["⚙️ Formulaires & Validation locale<br/>(Contrôle des saisies)"]:::item
+    end
+
+    subgraph C2 [2. COUCHE LOGIQUE MÉTIER & DOMAINE]
+        direction LR
+        MET1["🛠️ Gestion des Missions<br/>(Machine à états / Lifecycle)"]:::item
+        MET2["💰 Modèle Économique<br/>(Zéro commission / 100% gain)"]:::item
+        MET3["📍 Moteur de Proximité<br/>(Calcul distance Haversine)"]:::item
+        MET4["📅 Abonnements & Essai<br/>(Cycle 30 jours & Forfaits)"]:::item
+    end
+
+    subgraph C3 [3. COUCHE SERVICES & ORCHESTRATION]
+        direction LR
+        SRV1["💳 Service Paiement<br/>(CamerPayService)"]:::item
+        SRV2["🤖 Service IA<br/>(GroqNLPService)"]:::item
+        SRV3["📹 Service Visio<br/>(ZegoCallService)"]:::item
+        SRV4["🗺️ Service Carto<br/>(LocationService)"]:::item
+    end
+
+    subgraph C4 [4. COUCHE ACCÈS AUX DONNÉES & PERSISTANCE]
+        direction LR
+        DAT1["🌐 Client HTTP (Dio)<br/>& Protocoles REST"]:::item
+        DAT2["💾 Repositories & DTOs<br/>(Sérialisation JSON)"]:::item
+        DAT3["🔒 Sécurité RLS & JWT<br/>(Supabase Auth)"]:::item
+        DAT4[("🗄️ PostgreSQL & Storage<br/>(Tables & Médias)")]:::db
+    end
+
+    %% Flux verticaux entre les couches
+    C1 ==>|"Événements UI & Actions utilisateurs"| C2
+    C2 ==>|"Appels des cas d'utilisation métiers"| C3
+    C3 ==>|"Requêtes de persistance & intégrations"| C4
+
+    class C1,C2,C3,C4 layer
+        </pre>
+
+        <div class="footer-caption">
+            <strong>Figure 19 :</strong> Schéma de l'architecture logique en couches (Clean Architecture) de la solution TechLink.
+        </div>
+    </div>
+
+    <div class="btn-container">
+        <button class="btn btn-png" id="btn-download-png" onclick="telechargerPNG()">
+            📥 Télécharger l'Image PNG (Prête pour Word)
+        </button>
+    </div>
+
+    <div id="status-msg">✅ Téléchargement réussi ! Vérifiez votre dossier Téléchargements.</div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'default',
+            flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+        });
+
+        function telechargerPNG() {
+            const btn = document.getElementById('btn-download-png');
+            const statusMsg = document.getElementById('status-msg');
+            btn.innerText = "⏳ Génération de l'image...";
+            btn.style.opacity = "0.7";
+
+            const element = document.getElementById('capture-zone');
+
+            html2canvas(element, {
+                scale: 2.5,
+                backgroundColor: "#ffffff",
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'architecture_logique_techlink.png';
+                link.href = canvas.toDataURL('image/png', 1.0);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                btn.innerText = "📥 Télécharger l'Image PNG (Prête pour Word)";
+                btn.style.opacity = "1";
+                statusMsg.style.display = "block";
+                setTimeout(() => { statusMsg.style.display = "none"; }, 4000);
+            }).catch(err => {
+                console.error(err);
+                btn.innerText = "📥 Télécharger l'Image PNG (Prête pour Word)";
+                btn.style.opacity = "1";
+                alert("Erreur lors de la capture. Utilisez Windows + Maj + S.");
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,11 +1,27 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : app_theme.dart
+// Rôle          : Configuration globale des thèmes Material 3 (Clair et Sombre).
+//                 Personnalise l'AppBar, les boutons, les champs de formulaire,
+//                 les cartes et les barres de navigation selon la charte TechLink.
+// Module        : Core / Thèmes & Design System
+// Dépendances   : Flutter Material, AppColors
+// Sécurité/RLS  : Public / UI
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
+/// [AppTheme]
+///
+/// Fabrique de thèmes [ThemeData] pour l'application mobile.
+/// Expose [lightTheme] et [darkTheme].
 class AppTheme {
   // ========================================================
   // ────────────────── THÈME CLAIR (LIGHT THEME) ───────────
   // ========================================================
-  // Ce thème est utilisé quand le téléphone est en mode clair
+  /// Configuration du thème en mode clair (fonds blancs et contrastes vifs).
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,

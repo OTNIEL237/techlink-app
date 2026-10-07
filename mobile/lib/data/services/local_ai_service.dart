@@ -1,4 +1,24 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : local_ai_service.dart
+// Rôle          : Moteur d'analyse heuristique locale et autonome (fonctionnement 100% hors-ligne).
+// Module        : Data / Services
+// Dépendances   : Aucune
+// Sécurité/RLS  : Traitement purement local sur le smartphone ; zéro envoi de données externes.
+// =============================================================================
+
+/// Moteur d'analyse et de diagnostic heuristique embarqué dans l'application.
+///
+/// Fonctionne sans aucune connexion internet grâce à un système de reconnaissance
+/// lexicale, pondération par mots-clés, détection d'urgence et base de connaissances
+/// pré-remplie pour formuler des conseils de sécurité immédiats.
 class LocalAiService {
+  /// Analyse une description de problème et produit un diagnostic complet sans réseau.
+  ///
+  /// [problem] Texte brut de la panne saisi par le client.
+  /// [photoCount] Nombre de photos prises en appui.
+  /// Retourne un dictionnaire normalisé contenant catégorie, urgence, étapes de résolution temporaire et consignes de sécurité.
   static Map<String, dynamic> analyze(String problem, {int photoCount = 0}) {
     final text = normalize(problem);
     final category = _detectCategory(text);
@@ -18,6 +38,10 @@ class LocalAiService {
     };
   }
 
+  /// Normalise une chaîne de caractères en supprimant les accents et en convertissant en minuscules.
+  ///
+  /// [text] Texte d'origine à nettoyer.
+  /// Retourne une chaîne normalisée facilitant les correspondances partielles de mots-clés.
   static String normalize(String text) {
     const accents = {
       'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
@@ -32,6 +56,10 @@ class LocalAiService {
     return result;
   }
 
+  /// Détecte la catégorie de métier la plus adaptée en fonction des mots-clés présents dans le texte.
+  ///
+  /// Intègre une règle de sécurité prioritaire : si de l'eau et du courant coexistent,
+  /// la catégorie électricité l'emporte impérativement sur la plomberie.
   static Map<String, String> _detectCategory(String text) {
     // Cas spécial : eau + électricité/prise/etincelle -> Électricité
     if ((text.contains('eau') || text.contains('inond')) &&
@@ -144,6 +172,7 @@ class LocalAiService {
     return {'slug': bestSlug, 'name': bestName};
   }
 
+  /// Évalue le niveau d'urgence de la situation ('urgent', 'normal', 'low').
   static String _detectUrgency(String text) {
     const urgentKw = [
       'urgent', 'vite', 'maintenant', 'feu', 'flamme', 'brule', 'brulant',
@@ -161,11 +190,13 @@ class LocalAiService {
     return 'normal';
   }
 
+  /// Traduit l'identifiant d'urgence en étiquette textuelle soignée en français.
   static String _urgencyLabel(String urgency) {
     const labels = {'urgent': 'Urgent', 'normal': 'Normal', 'low': 'Faible'};
     return labels[urgency] ?? 'Normal';
   }
 
+  /// Fournit la recommandation pré-formatée avec étapes numérotées, durée estimée et alertes.
   static Map<String, String> _getSolution(
       String slug, String urgency, String text) {
 

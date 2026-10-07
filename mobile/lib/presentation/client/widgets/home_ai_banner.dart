@@ -1,10 +1,22 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : home_ai_banner.dart
+// Rôle          : Bannière interactive d'accueil incitant le client à utiliser
+//                 le diagnostic d'intelligence artificielle pour qualifier son besoin.
+// Module        : Présentation Client (Widgets Accueil)
+// Dépendances   : flutter/material.dart, go_router, app_colors.dart, theme_provider.dart
+// Sécurité/RLS  : Widget de présentation sans restriction d'accès.
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/theme_provider.dart';
 
+/// Bannière incitative promouvant le diagnostic intelligent assisté par IA.
 class ClientHomeAIBanner extends StatelessWidget {
+  /// Constructeur constant de la bannière IA d'accueil
   const ClientHomeAIBanner({super.key});
 
   @override

@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : zego_call_service.dart
+// Rôle          : Service de gestion des appels audio/vidéo temps réel (ZegoCloud + Supabase Realtime).
+// Module        : Data / Services
+// Dépendances   : flutter, go_router, supabase_flutter, app_colors.dart
+// Sécurité/RLS  : Écoute et met à jour les sessions d'appel sur la table Supabase 'calls'.
+// =============================================================================
+
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -5,30 +15,47 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
 
+/// Service singleton orchestrant la signalisation d'appels voix et vidéo en temps réel.
+///
+/// Fonctionne en arrière-plan en observant les mutations de la table `calls` dans Supabase :
+/// - Détecte les appels entrants (`ringing`) et affiche automatiquement l'écran d'appel entrant.
+/// - Lance des appels sortants (`audio` ou `video`) avec détection d'absence de réponse (timeout 40s).
+/// - Synchronise les statuts (`ringing`, `accepted`, `declined`, `ended`, `missed`) entre interlocuteurs.
 class ZegoCallService {
-  // =========================================================================
-  // SERVICE D'APPELS (ZegoCloud + Supabase Realtime)
-  // =========================================================================
-  // Ce service tourne en arrière-plan dès le lancement de l'application.
-  // Il écoute en temps réel la table "calls" de Supabase pour détecter
-  // si quelqu'un essaie d'appeler l'utilisateur connecté.
+  /// Instance unique du singleton.
   static final ZegoCallService _instance = ZegoCallService._internal();
+
+  /// Constructeur usine renvoyant l'instance partagée.
   factory ZegoCallService() => _instance;
+
+  /// Constructeur interne privé.
   ZegoCallService._internal();
 
+  /// Clé globale du navigateur permettant d'afficher l'interface d'appel sans BuildContext local.
   GlobalKey<NavigatorState>? _navigatorKey;
+
+  /// Canal Supabase Realtime pour l'écoute des appels entrants.
   RealtimeChannel? _callsChannel;
+
+  /// Souscription au flux d'authentification pour attacher/détacher l'écouteur.
   StreamSubscription<AuthState>? _authSubscription;
+
+  /// Identifiant de la ligne d'appel en cours dans la table `calls`.
   String? _currentCallRowId;
+
+  /// Indicateur d'appel en cours actif.
   bool _isCallActive = false;
 
-  // Stream pour notifier l'AudioCallScreen des changements de statut
+  /// Contrôleur de flux notifiant l'écran audio/vidéo des transitions d'état.
   final _callStatusController = StreamController<String>.broadcast();
+
+  /// Flux public des statuts d'appel ('ringing', 'accepted', 'declined', 'ended', 'missed').
   Stream<String> get callStatusStream => _callStatusController.stream;
 
+  /// Initialise le service d'écoute des appels avec la clé de navigation globale.
+  ///
+  /// [navigatorKey] Clé globale de navigation de l'application.
   void initialize(GlobalKey<NavigatorState> navigatorKey) {
-    // navigatorKey permet d'ouvrir l'écran d'appel entrant même si
-    // l'utilisateur est n'importe où dans l'application (pas besoin de BuildContext).
     _navigatorKey = navigatorKey;
     
     // Écouter les changements d'authentification
@@ -49,12 +76,16 @@ class ZegoCallService {
     }
   }
 
+  /// Libère les ressources du service et ferme les flux d'événements.
   void dispose() {
     _authSubscription?.cancel();
     _unsubscribeFromCalls();
     _callStatusController.close();
   }
 
+  /// Établit la souscription temps réel pour recevoir les notifications d'appels entrants.
+  ///
+  /// [userId] Identifiant de l'utilisateur destinataire.
   void _subscribeToCalls(String userId) {
     _unsubscribeFromCalls();
 
@@ -148,6 +179,7 @@ class ZegoCallService {
         });
   }
 
+  /// Désabonne le canal d'appels et réinitialise les états d'appel actif.
   void _unsubscribeFromCalls() {
     _callsChannel?.unsubscribe();
     _callsChannel = null;
@@ -155,7 +187,15 @@ class ZegoCallService {
     _isCallActive = false;
   }
 
-  /// Lance un appel sortant vers un technicien ou un client
+  /// Initie un appel sortant (audio ou vidéo) vers un correspondant.
+  ///
+  /// Effectue les vérifications préalables (auto-appel interdit, compte destinataire existant et non suspendu),
+  /// insère l'enregistrement dans la table `calls` avec statut `ringing`, puis navigue vers l'écran d'appel.
+  ///
+  /// [context] Contexte d'interface pour l'affichage des notifications et navigation.
+  /// [receiverId] Identifiant unique du destinataire.
+  /// [receiverName] Nom affiché du correspondant.
+  /// [callType] Modalité d'appel ('audio' ou 'video').
   Future<void> startCall(BuildContext context, {
     required String receiverId,
     required String receiverName,
@@ -243,6 +283,7 @@ class ZegoCallService {
     }
   }
 
+  /// Écoute les changements d'état d'un appel sortant (acceptation, refus, raccrochage ou absence de réponse).
   void _listenToOutgoingCallStatus(
     String rowId,
     String callId,
@@ -318,6 +359,7 @@ class ZegoCallService {
         });
   }
 
+  /// Présente un message éphémère informant l'utilisateur de la fin d'un appel.
   void _showCallEndedSnackBar(String message) {
     final context = _navigatorKey?.currentContext;
     if (context != null) {
@@ -331,7 +373,9 @@ class ZegoCallService {
     }
   }
 
-  /// Accepte l'appel entrant (met à jour le statut dans Supabase)
+  /// Accepte un appel entrant en passant son statut à 'accepted' dans Supabase.
+  ///
+  /// [rowId] Identifiant unique de la session d'appel.
   Future<void> acceptCall(String rowId) async {
     try {
       await Supabase.instance.client
@@ -343,7 +387,9 @@ class ZegoCallService {
     }
   }
 
-  /// Refuse l'appel entrant
+  /// Décline un appel entrant en passant son statut à 'declined' dans Supabase.
+  ///
+  /// [rowId] Identifiant unique de la session d'appel.
   Future<void> declineCall(String rowId) async {
     try {
       await Supabase.instance.client
@@ -357,7 +403,9 @@ class ZegoCallService {
     }
   }
 
-  /// Termine (raccroche) un appel en cours
+  /// Clôture définitivement un appel en cours en passant son statut à 'ended'.
+  ///
+  /// [rowId] Identifiant unique de la session d'appel.
   Future<void> endCall(String rowId) async {
     try {
       await Supabase.instance.client

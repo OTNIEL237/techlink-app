@@ -1,11 +1,16 @@
--- ============================================================================
--- 030_missing_indexes.sql
--- Index de performance pour les colonnes fréquemment filtrées
--- À exécuter dans la console SQL du dashboard Supabase
--- ============================================================================
--- Ces index accélèrent les sous-requêtes utilisées dans les politiques RLS
--- et les requêtes courantes de l'application.
--- ============================================================================
+-- =============================================================================
+-- FICHIER : 030_missing_indexes.sql
+-- RÔLE : Index de performance pour les colonnes fréquemment filtrées et les clauses RLS :
+--         - Index sur payments (client_id, technician_id, mission_id, status, camerpay_reference)
+--         - Index sur wallet_transactions (technician_id, mission_id, created_at)
+--         - Index sur calls (caller_id, receiver_id, status)
+--         - Index sur mission_requests (mission_id, technician_id, status)
+--         - Index sur quotes (technician_id, status)
+--         - Index sur notifications (created_at DESC).
+-- MODULE : Schéma de base de données / Performance & Indexation BDD
+-- DÉPENDANCES : public.payments, public.wallet_transactions, public.calls, public.mission_requests, public.quotes, public.notifications
+-- SÉCURITÉ / RLS : N/A (Optimisation bas niveau des plans d'exécution PostgreSQL).
+-- =============================================================================
 
 
 -- ─── Payments ────────────────────────────────────────────────────────────────

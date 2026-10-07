@@ -1,3 +1,13 @@
+// =============================================================================
+// TECHLINK - APPLICATION MOBILE FLUTTER
+// =============================================================================
+// Fichier       : home_screen.dart
+// Rôle          : Écran d'accueil principal de l'espace Client
+// Module        : Présentation / Client / Accueil
+// Dépendances   : Supabase Flutter, GoRouter, ResponsiveBuilder, NeumorphicTheme
+// Sécurité/RLS  : Accès réservé aux utilisateurs authentifiés avec rôle 'client'
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -17,9 +27,9 @@ import 'widgets/home_header.dart';
 import 'widgets/home_ai_banner.dart';
 import 'widgets/home_categories.dart';
 
-// =========================================================================
-// ÉCRAN D'ACCUEIL CLIENT (Animation Fluide Pinterest & Effet Morphose)
-// =========================================================================
+/// [ClientHomeScreen] est la vue racine du tableau de bord client.
+/// Elle gère la navigation principale par onglets (Accueil, Missions, Messagerie, Profil)
+/// ainsi que l'adaptabilité multiplateforme (Mobile, Tablette avec NavigationRail, Desktop avec Sidebar).
 class ClientHomeScreen extends StatefulWidget {
   const ClientHomeScreen({super.key});
 
@@ -27,13 +37,26 @@ class ClientHomeScreen extends StatefulWidget {
   State<ClientHomeScreen> createState() => _ClientHomeScreenState();
 }
 
+/// État interne de [ClientHomeScreen] assurant le chargement des catégories actives,
+/// des métadonnées du profil client et l'orchestration des animations d'entrée.
 class _ClientHomeScreenState extends State<ClientHomeScreen>
     with SingleTickerProviderStateMixin {
+  /// Données de l'utilisateur courant récupérées depuis Supabase.
   Map<String, dynamic>? _userData;
+
+  /// Liste des catégories de services actives.
   List<Map<String, dynamic>> _categories = [];
+
+  /// Indicateur d'état de chargement initial.
   bool _isLoading = true;
+
+  /// Index de l'onglet actuellement sélectionné (0: Accueil, 1: Missions, 2: Messages, 3: Profil).
   int _currentIndex = 0;
+
+  /// Contrôleur de défilement de pages lié à la navigation principale.
   late final PageController _pageController;
+
+  /// Contrôleur de l'animation d'entrée en cascade des différentes sections.
   late final AnimationController _entranceController;
 
   @override
@@ -54,6 +77,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen>
     super.dispose();
   }
 
+  /// Change l'onglet actif avec retour haptique et animation fluide de transition.
   void _switchTab(int index) {
     if (_currentIndex == index) return;
     HapticFeedback.lightImpact();
@@ -67,6 +91,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen>
     }
   }
 
+  /// Récupère le profil de l'utilisateur et la liste des catégories actives depuis Supabase.
   Future<void> _loadData() async {
     try {
       final userId = Supabase.instance.client.auth.currentUser!.id;
@@ -169,11 +194,18 @@ class _ClientHomeScreenState extends State<ClientHomeScreen>
         backgroundColor: tc.background,
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
-            : _buildHomeContent(tc, isDark),
+            : PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: screens,
+              ),
+        bottomNavigationBar: _buildBottomNav(tc, isDark),
       ),
     );
   }
 
+  /// Enveloppe un widget enfant dans une animation de translation verticale et fondu
+  /// déclenchée selon un intervalle temporel défini sur [_entranceController].
   Widget _buildAnimatedSection({
     required Widget child,
     required double startInterval,
@@ -198,6 +230,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen>
     );
   }
 
+  /// Construit le contenu scrollable de l'onglet Accueil (En-tête, Bannière IA, Catégories, Engagements).
   Widget _buildHomeContent(TechLinkColors tc, bool isDark) {
     return RefreshIndicator(
       onRefresh: () async {
@@ -246,6 +279,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen>
     );
   }
 
+  /// Affiche la section de réassurance client (artisans vérifiés KYC, rapidité, paiement garanti).
   Widget _buildTrustGuaranteesSection(TechLinkColors tc, bool isDark) {
     final guarantees = [
       {
@@ -387,6 +421,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen>
     );
   }
 
+  /// Barre de navigation inférieure sur mobile avec effet d'élévation et ombrage doux.
   Widget _buildBottomNav(TechLinkColors tc, bool isDark) {
     final bottomPadding = MediaQuery.paddingOf(context).bottom;
     return Container(
@@ -414,6 +449,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen>
     );
   }
 
+  /// Élément de navigation animé (effet "jump" et pastille de sélection) pour un onglet donné.
   Widget _buildJumpingNavItem(
     IconData filledIcon,
     IconData outlinedIcon,
@@ -477,6 +513,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen>
     );
   }
 
+  /// Rail latéral de navigation pour tablettes avec bascule compact/étendu selon la largeur d'écran.
   Widget _buildNavigationRail(TechLinkColors tc, bool isDark) {
     return NavigationRail(
       extended: MediaQuery.of(context).size.width >= 1000,

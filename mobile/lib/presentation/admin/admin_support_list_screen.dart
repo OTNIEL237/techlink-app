@@ -1,3 +1,11 @@
+// =============================================================================
+// FICHIER : admin_support_list_screen.dart
+// RÔLE : Interface administrative de support client et messagerie directe
+// MODULE : Présentation Administrateur (Admin Support)
+// DÉPENDANCES : flutter/material.dart, supabase_flutter, timeago, app_colors.dart, theme_provider.dart, support_chat_screen.dart
+// SÉCURITÉ / RLS : Réservé aux administrateurs (rôle admin requis)
+// =============================================================================
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/app_colors.dart';
@@ -5,29 +13,43 @@ import '../../core/theme/theme_provider.dart';
 import '../shared/support_chat_screen.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-// =========================================================================
-// ÉCRAN DU SUPPORT CLIENT (ADMIN MODERNE)
-// =========================================================================
-
+/// Écran administrateur listant les conversations de support technique et l'annuaire des utilisateurs.
+///
+/// Permet à un administrateur d'assurer l'assistance directe aux clients et techniciens,
+/// de suivre les messages non lus en temps réel et d'initier de nouvelles discussions.
 class AdminSupportListScreen extends StatefulWidget {
+  /// Constructeur par défaut de [AdminSupportListScreen].
   const AdminSupportListScreen({super.key});
 
   @override
   State<AdminSupportListScreen> createState() => _AdminSupportListScreenState();
 }
 
+/// État associé à [AdminSupportListScreen] gérant les onglets, la pagination et le flux Realtime Supabase.
 class _AdminSupportListScreenState extends State<AdminSupportListScreen>
     with SingleTickerProviderStateMixin {
+  /// Contrôleur gérant la bascule entre l'onglet Discussions et l'onglet Annuaire.
   late TabController _tabController;
+
+  /// Index de l'onglet actif (0: Discussions, 1: Annuaire).
   int _currentTab = 0;
 
+  /// Indicateur de chargement asynchrone des conversations actives.
   bool _isLoadingConversations = true;
+
+  /// Indicateur de chargement asynchrone de l'annuaire d'utilisateurs.
   bool _isLoadingDirectory = true;
 
+  /// Liste des dernières conversations consolidées par utilisateur.
   List<Map<String, dynamic>> _conversations = [];
+
+  /// Annuaire complet des utilisateurs (clients et techniciens).
   List<Map<String, dynamic>> _allUsers = [];
+
+  /// Requête de filtrage textuel appliquée à l'annuaire.
   String _searchDirectoryQuery = '';
 
+  /// Canal d'écoute temps réel Supabase pour les nouveaux messages entrants.
   RealtimeChannel? _channel;
 
   @override
@@ -52,6 +74,8 @@ class _AdminSupportListScreenState extends State<AdminSupportListScreen>
     super.dispose();
   }
 
+  /// Récupère les derniers messages de la table `admin_messages` et regroupe
+  /// les échanges par utilisateur afin d'afficher le fil le plus récent.
   Future<void> _loadConversations() async {
     try {
       final data = await Supabase.instance.client
@@ -69,7 +93,7 @@ class _AdminSupportListScreenState extends State<AdminSupportListScreen>
         }
       }
 
-      final conversations = grouped.values.toList();
+      final conversations = List<Map<String, dynamic>>.from(grouped.values);
       conversations.sort((a, b) {
         final dateA = DateTime.parse(a['created_at']);
         final dateB = DateTime.parse(b['created_at']);
@@ -89,6 +113,7 @@ class _AdminSupportListScreenState extends State<AdminSupportListScreen>
     }
   }
 
+  /// Charge l'annuaire de tous les clients et techniciens enregistrés sur la plateforme.
   Future<void> _loadDirectory() async {
     try {
       final data = await Supabase.instance.client
@@ -110,6 +135,8 @@ class _AdminSupportListScreenState extends State<AdminSupportListScreen>
     }
   }
 
+  /// Initialise la souscription temps réel Supabase sur la table `admin_messages`
+  /// pour rafraîchir instantanément la liste des conversations lors d'un message reçu.
   void _subscribeToNewMessages() {
     _channel = Supabase.instance.client
         .channel('admin-messages-list')
@@ -124,6 +151,10 @@ class _AdminSupportListScreenState extends State<AdminSupportListScreen>
         .subscribe();
   }
 
+  /// Ouvre l'écran de messagerie instantanée [SupportChatScreen] avec l'utilisateur spécifié.
+  ///
+  /// [userId] : Identifiant Supabase de l'utilisateur concerné.
+  /// [userName] : Nom d'affichage de l'utilisateur.
   void _openChat(String userId, String userName) {
     Navigator.push(
       context,
@@ -139,6 +170,7 @@ class _AdminSupportListScreenState extends State<AdminSupportListScreen>
       _loadConversations();
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -351,6 +383,7 @@ class _AdminSupportListScreenState extends State<AdminSupportListScreen>
     );
   }
 
+  /// Construit la vue de la liste des conversations récentes avec aperçu du dernier message et badge non lu.
   Widget _buildConversationsView(TechLinkColors tc, bool isDark) {
     if (_isLoadingConversations) {
       return const Center(child: CircularProgressIndicator());
@@ -545,6 +578,7 @@ class _AdminSupportListScreenState extends State<AdminSupportListScreen>
     );
   }
 
+  /// Construit la vue de l'annuaire des utilisateurs permettant la recherche et le lancement de nouvelles discussions.
   Widget _buildDirectoryView(TechLinkColors tc, bool isDark) {
     if (_isLoadingDirectory) {
       return const Center(child: CircularProgressIndicator());

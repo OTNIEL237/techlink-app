@@ -1,3 +1,14 @@
+-- =============================================================================
+-- FICHIER : 021_technician_documents_rls.sql
+-- RÔLE : Politiques RLS sur la table 'technician_documents' :
+--         - Activation de Row Level Security
+--         - Consultation par tout utilisateur / administrateur
+--         - Dépôt, modification et suppression par utilisateurs authentifiés.
+-- MODULE : Schéma de base de données / Sécurité & Documents KYC
+-- DÉPENDANCES : public.technician_documents
+-- SÉCURITÉ / RLS : RLS activé. Permet l'upload des pièces justificatives lors de l'onboarding technicien.
+-- =============================================================================
+
 -- Activer RLS sur la table s'il n'est pas déjà activé
 ALTER TABLE public.technician_documents ENABLE ROW LEVEL SECURITY;
 
